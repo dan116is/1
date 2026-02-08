@@ -1,0 +1,87 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS User (
+  id TEXT PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  passwordHash TEXT NOT NULL,
+  createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS Shipment (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  blNumber TEXT NOT NULL,
+  carrier TEXT NOT NULL,
+  originPort TEXT,
+  destinationPort TEXT,
+  createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  lastRefreshAt DATETIME,
+  FOREIGN KEY (userId) REFERENCES User(id)
+);
+
+CREATE TABLE IF NOT EXISTS Container (
+  id TEXT PRIMARY KEY,
+  shipmentId TEXT NOT NULL,
+  containerNumber TEXT NOT NULL,
+  lastStatus TEXT NOT NULL,
+  lastStatusAt DATETIME,
+  etaPort DATETIME,
+  etaWarehouse DATETIME,
+  confidence TEXT NOT NULL,
+  updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (shipmentId) REFERENCES Shipment(id)
+);
+
+CREATE TABLE IF NOT EXISTS Event (
+  id TEXT PRIMARY KEY,
+  containerId TEXT NOT NULL,
+  eventType TEXT NOT NULL,
+  location TEXT,
+  eventTime DATETIME NOT NULL,
+  rawText TEXT NOT NULL,
+  source TEXT NOT NULL,
+  createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (containerId) REFERENCES Container(id)
+);
+
+CREATE TABLE IF NOT EXISTS Notification (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  shipmentId TEXT NOT NULL,
+  channel TEXT NOT NULL,
+  target TEXT NOT NULL,
+  enabled BOOLEAN NOT NULL DEFAULT 1,
+  createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (userId) REFERENCES User(id),
+  FOREIGN KEY (shipmentId) REFERENCES Shipment(id)
+);
+
+CREATE TABLE IF NOT EXISTS RefreshLog (
+  id TEXT PRIMARY KEY,
+  shipmentId TEXT NOT NULL,
+  ranAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  success BOOLEAN NOT NULL,
+  message TEXT NOT NULL,
+  FOREIGN KEY (shipmentId) REFERENCES Shipment(id)
+);
+
+CREATE TABLE IF NOT EXISTS DestinationProfile (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  averageLandTransportDays INTEGER NOT NULL,
+  coordinationDays INTEGER NOT NULL,
+  knownExceptions TEXT NOT NULL,
+  createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS UserStageHistory (
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,
+  stage TEXT NOT NULL,
+  averageDays REAL NOT NULL,
+  stdDeviation REAL NOT NULL,
+  samples INTEGER NOT NULL,
+  updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (userId) REFERENCES User(id)
+);

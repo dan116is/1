@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: itam23
+      POSTGRES_PASSWORD: itam23
+      POSTGRES_DB: itam23
+    ports:
+      - "5432:5432"
+    volumes:
+      - itam23-db:/var/lib/postgresql/data
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://itam23:itam23@db:5432/itam23"
+      JWT_SECRET: "itam23-dev-secret"
+      REFRESH_CRON: "0 */6 * * *"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+volumes:
+  itam23-db:
