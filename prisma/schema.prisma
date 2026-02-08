@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  passwordHash String
+  createdAt    DateTime       @default(now())
+  shipments    Shipment[]
+  notifications Notification[]
+}
+
+model Shipment {
+  id             String        @id @default(cuid())
+  userId         String
+  blNumber       String
+  carrier        String
+  originPort     String?
+  destinationPort String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  lastRefreshAt  DateTime?
+  containers     Container[]
+  refreshLogs    RefreshLog[]
+  user           User          @relation(fields: [userId], references: [id])
+  notifications  Notification[]
+}
+
+model Container {
+  id             String      @id @default(cuid())
+  shipmentId     String
+  containerNumber String
+  lastStatus     String
+  lastStatusAt   DateTime?
+  etaPort        DateTime?
+  etaWarehouse   DateTime?
+  confidence     String
+  updatedAt      DateTime     @updatedAt
+  events         Event[]
+  shipment       Shipment     @relation(fields: [shipmentId], references: [id])
+}
+
+model Event {
+  id         String   @id @default(cuid())
+  containerId String
+  eventType  String
+  location   String?
+  eventTime  DateTime
+  rawText    String
+  source     String
+  createdAt  DateTime @default(now())
+  container  Container @relation(fields: [containerId], references: [id])
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  userId     String
+  shipmentId String
+  channel    String
+  target     String
+  enabled    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  shipment   Shipment @relation(fields: [shipmentId], references: [id])
+}
+
+model RefreshLog {
+  id         String   @id @default(cuid())
+  shipmentId String
+  ranAt      DateTime @default(now())
+  success    Boolean
+  message    String
+  shipment   Shipment @relation(fields: [shipmentId], references: [id])
+}
+
+model DestinationProfile {
+  id                       String   @id @default(cuid())
+  name                     String
+  averageLandTransportDays  Int
+  coordinationDays          Int
+  knownExceptions           String
+  createdAt                DateTime @default(now())
+}
+
+model UserStageHistory {
+  id            String   @id @default(cuid())
+  userId        String
+  stage         String
+  averageDays   Float
+  stdDeviation  Float
+  samples       Int
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id])
+}
