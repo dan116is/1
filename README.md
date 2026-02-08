@@ -22,6 +22,11 @@ npm run seed
 npm run dev
 ```
 
+לאחר שהשרת עולה, פותחים בדפדפן:
+```
+http://localhost:3000
+```
+
 ## הרצה עם Docker (אפליקציה + PostgreSQL)
 ```bash
 docker compose up --build
