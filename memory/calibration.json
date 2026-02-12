@@ -1,0 +1,53 @@
+{
+  "_schema": "calibration_v1",
+  "_description": "Probability calibration data. Compares predicted probabilities against actual outcomes to improve accuracy over time.",
+  "calibration_buckets": {
+    "0.0-0.1": {"predictions": 0, "hits": 0, "actual_rate": null},
+    "0.1-0.2": {"predictions": 0, "hits": 0, "actual_rate": null},
+    "0.2-0.3": {"predictions": 0, "hits": 0, "actual_rate": null},
+    "0.3-0.4": {"predictions": 0, "hits": 0, "actual_rate": null},
+    "0.4-0.5": {"predictions": 0, "hits": 0, "actual_rate": null},
+    "0.5-0.6": {"predictions": 0, "hits": 0, "actual_rate": null},
+    "0.6-0.7": {"predictions": 0, "hits": 0, "actual_rate": null},
+    "0.7-0.8": {"predictions": 0, "hits": 0, "actual_rate": null},
+    "0.8-0.9": {"predictions": 0, "hits": 0, "actual_rate": null},
+    "0.9-1.0": {"predictions": 0, "hits": 0, "actual_rate": null}
+  },
+  "adjustment_factors": {
+    "_description": "Multipliers applied to raw probability estimates based on historical calibration error",
+    "smart_wallet_convergence": 1.0,
+    "social_volume_breakout": 1.0,
+    "insider_accumulation": 1.0,
+    "hyperliquid_whale_position": 1.0,
+    "onchain_anomaly": 1.0,
+    "narrative_catalyst": 1.0,
+    "solana_trench_discovery": 1.0,
+    "multi_signal_confluence": 1.0
+  },
+  "ev_model_params": {
+    "base_risk_free_rate": 0.0,
+    "default_position_size_pct": 2.0,
+    "max_position_size_pct": 5.0,
+    "kelly_fraction": 0.25,
+    "min_ev_threshold": 1.2,
+    "scenarios": {
+      "bull": {"weight_default": 0.30, "description": "Best case: thesis plays out fully"},
+      "base": {"weight_default": 0.50, "description": "Expected case: partial thesis realization"},
+      "bear": {"weight_default": 0.20, "description": "Worst case: thesis fails, stop loss hit"}
+    }
+  },
+  "brier_scores": {
+    "_description": "Brier score measures calibration accuracy. Lower is better. 0 = perfect, 0.25 = random",
+    "overall": null,
+    "by_signal_type": {},
+    "by_chain": {},
+    "rolling_30d": null
+  },
+  "recalibration_log": [],
+  "metadata": {
+    "total_calibration_points": 0,
+    "last_recalibration": null,
+    "model_version": "1.0",
+    "sessions_since_recalibration": 0
+  }
+}

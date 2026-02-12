@@ -1,0 +1,57 @@
+{
+  "_schema": "token_watchlist_v1",
+  "_description": "Tokens actively being monitored with multi-source verification status and alert thresholds.",
+  "active_watchlist": [],
+  "token_schema": {
+    "_note": "Template for token entries - remove when real tokens are added",
+    "symbol": "EXAMPLE",
+    "contract_address": "0x...",
+    "chain": "solana",
+    "added_date": "2025-01-01",
+    "discovery_source": "social_intel_agent",
+    "current_mcap": null,
+    "mcap_at_discovery": null,
+    "verification_status": {
+      "contract_verified": null,
+      "liquidity_locked": null,
+      "honeypot_check": null,
+      "holder_distribution": null,
+      "team_tokens_vested": null,
+      "audit_status": null
+    },
+    "social_metrics": {
+      "twitter_mentions_24h": null,
+      "telegram_members": null,
+      "sentiment_score": null,
+      "influencer_mentions": []
+    },
+    "onchain_metrics": {
+      "unique_holders": null,
+      "top10_holder_pct": null,
+      "daily_volume": null,
+      "liquidity_depth": null,
+      "buy_sell_ratio_24h": null
+    },
+    "smart_wallet_interest": {
+      "wallets_holding": [],
+      "recent_buys": [],
+      "recent_sells": []
+    },
+    "alert_thresholds": {
+      "price_above": null,
+      "price_below": null,
+      "volume_spike_multiplier": 3.0,
+      "holder_drop_pct": 10
+    },
+    "status": "monitoring",
+    "notes": ""
+  },
+  "graduated_tokens": [],
+  "dead_tokens": [],
+  "metadata": {
+    "total_active": 0,
+    "total_graduated": 0,
+    "total_dead": 0,
+    "last_scan": null
+  }
+}

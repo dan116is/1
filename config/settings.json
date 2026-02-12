@@ -1,0 +1,64 @@
+{
+  "_schema": "settings_v1",
+  "scan_config": {
+    "chains_enabled": ["solana", "ethereum", "base", "hyperliquid"],
+    "min_mcap_filter": 10000,
+    "max_mcap_filter": 500000000,
+    "min_liquidity": 5000,
+    "min_holders": 50,
+    "social_scan_keywords": [
+      "100x", "gem", "alpha", "degen", "moonshot", "insider", "whale",
+      "accumulating", "stealth launch", "fair launch", "locked liquidity",
+      "based dev", "utility", "revenue", "buyback", "burn"
+    ],
+    "excluded_tokens": [],
+    "max_token_age_hours": 168
+  },
+  "risk_management": {
+    "max_simultaneous_predictions": 15,
+    "default_stop_loss_pct": 30,
+    "take_profit_levels": [2.0, 5.0, 10.0],
+    "max_correlation_between_positions": 0.6,
+    "require_verification_sources": 2
+  },
+  "data_sources": {
+    "social": {
+      "grok_x_search": true,
+      "twitter_ct_accounts": [
+        "note: add CT accounts you follow here"
+      ]
+    },
+    "onchain": {
+      "defillama": "https://api.llama.fi",
+      "dexscreener": "https://api.dexscreener.com",
+      "birdeye": "https://public-api.birdeye.so",
+      "solscan": "https://api.solscan.io",
+      "etherscan": "https://api.etherscan.io",
+      "basescan": "https://api.basescan.org"
+    },
+    "trading": {
+      "hypurrscan": "https://hypurrscan.io",
+      "hyperliquid_info": "https://api.hyperliquid.xyz/info",
+      "kolscan": "https://kolscan.com"
+    },
+    "aggregators": {
+      "coingecko": "https://api.coingecko.com/api/v3",
+      "defined_fi": "https://api.defined.fi"
+    }
+  },
+  "briefing_config": {
+    "max_recommendations": 10,
+    "include_ev_calculations": true,
+    "include_risk_warnings": true,
+    "include_smart_wallet_convergence": true,
+    "include_prediction_review": true,
+    "include_calibration_stats": true
+  },
+  "memory_config": {
+    "max_active_predictions": 50,
+    "max_tracked_wallets": 200,
+    "max_watchlist_tokens": 100,
+    "signal_expiry_hours": 72,
+    "archive_completed_after_days": 30
+  }
+}

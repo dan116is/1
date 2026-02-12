@@ -1,0 +1,42 @@
+{
+  "_schema": "smart_wallets_v1",
+  "_description": "Tracked wallet addresses, their historical activity, suspected insider status, and convergence tracking.",
+  "tracked_wallets": [],
+  "wallet_schema": {
+    "_note": "Template for wallet entries - remove when real wallets are added",
+    "address": "0x...",
+    "chain": "ethereum",
+    "label": "Smart Money #1",
+    "source": "discovered via DexScreener top traders",
+    "first_seen": "2025-01-01",
+    "tags": ["early_buyer", "high_win_rate", "suspected_insider"],
+    "stats": {
+      "tracked_trades": 0,
+      "wins": 0,
+      "avg_entry_timing": null,
+      "avg_hold_duration": null,
+      "estimated_pnl": null
+    },
+    "recent_activity": [],
+    "insider_score": 0.0,
+    "insider_evidence": []
+  },
+  "convergence_events": [],
+  "convergence_schema": {
+    "_note": "When 3+ tracked wallets buy the same token within a window",
+    "token": "EXAMPLE",
+    "chain": "solana",
+    "wallets_involved": [],
+    "detection_time": null,
+    "time_window": "24h",
+    "avg_entry_price": null,
+    "convergence_strength": null
+  },
+  "insider_watchlist": [],
+  "metadata": {
+    "total_wallets_tracked": 0,
+    "last_full_scan": null,
+    "wallets_added_this_session": 0,
+    "convergence_events_active": 0
+  }
+}

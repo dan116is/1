@@ -1,0 +1,78 @@
+{
+  "_schema": "alpha_signals_v1",
+  "_description": "Accumulated alpha signals across sessions. Each signal is scored, sourced, and tracked for outcome analysis.",
+  "active_signals": [],
+  "signal_schema": {
+    "_note": "Template for signal entries - remove when real signals are added",
+    "id": "sig_example_001",
+    "timestamp": "2025-01-01T00:00:00Z",
+    "type": "smart_wallet_convergence",
+    "strength": "strong",
+    "source_agent": "smart_wallets",
+    "token": "EXAMPLE",
+    "chain": "solana",
+    "description": "3 tracked smart wallets accumulated EXAMPLE within 6 hours",
+    "supporting_data": {},
+    "conflicting_signals": [],
+    "acted_on": false,
+    "prediction_id": null,
+    "outcome": null
+  },
+  "signal_types": {
+    "smart_wallet_convergence": {
+      "description": "Multiple tracked wallets buying the same token in a short window",
+      "base_weight": 0.85,
+      "historical_hit_rate": null,
+      "count": 0
+    },
+    "social_volume_breakout": {
+      "description": "Sudden spike in social mentions before significant price movement",
+      "base_weight": 0.40,
+      "historical_hit_rate": null,
+      "count": 0
+    },
+    "insider_accumulation": {
+      "description": "Suspected insider wallets accumulating before any public catalyst",
+      "base_weight": 0.75,
+      "historical_hit_rate": null,
+      "count": 0
+    },
+    "hyperliquid_whale_position": {
+      "description": "Top leaderboard trader opens significant position",
+      "base_weight": 0.60,
+      "historical_hit_rate": null,
+      "count": 0
+    },
+    "onchain_anomaly": {
+      "description": "Unusual on-chain activity (large transfers, contract interactions, liquidity adds)",
+      "base_weight": 0.50,
+      "historical_hit_rate": null,
+      "count": 0
+    },
+    "narrative_catalyst": {
+      "description": "Emerging narrative or catalyst identified through social scanning",
+      "base_weight": 0.35,
+      "historical_hit_rate": null,
+      "count": 0
+    },
+    "solana_trench_discovery": {
+      "description": "Early-stage Solana token showing organic traction metrics",
+      "base_weight": 0.30,
+      "historical_hit_rate": null,
+      "count": 0
+    },
+    "multi_signal_confluence": {
+      "description": "Multiple independent signal types firing on the same token",
+      "base_weight": 0.90,
+      "historical_hit_rate": null,
+      "count": 0
+    }
+  },
+  "expired_signals": [],
+  "metadata": {
+    "total_signals_generated": 0,
+    "total_acted_on": 0,
+    "signals_this_session": 0,
+    "strongest_active_signal": null
+  }
+}

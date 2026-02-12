@@ -1,0 +1,19 @@
+{
+  "_schema": "daily_intel_v1",
+  "_description": "Current day's intelligence findings from all agents. Reset each session, archived to track_record.",
+  "session_date": null,
+  "social_signals": [],
+  "onchain_verified": [],
+  "smart_wallet_moves": [],
+  "hyperliquid_positions": [],
+  "solana_discoveries": [],
+  "aggregated_alpha": [],
+  "risk_warnings": [],
+  "metadata": {
+    "agents_completed": [],
+    "scan_start": null,
+    "scan_end": null,
+    "total_signals_raw": 0,
+    "total_signals_verified": 0
+  }
+}

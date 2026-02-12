@@ -1,0 +1,32 @@
+{
+  "_schema": "track_record_v1",
+  "_description": "Historical win/loss record with full prediction details for calibration analysis.",
+  "summary": {
+    "total_predictions": 0,
+    "wins": 0,
+    "losses": 0,
+    "breakeven": 0,
+    "win_rate": null,
+    "avg_win_pct": null,
+    "avg_loss_pct": null,
+    "profit_factor": null,
+    "best_trade": null,
+    "worst_trade": null,
+    "current_streak": 0,
+    "streak_type": null
+  },
+  "by_confidence_tier": {
+    "high": {"total": 0, "wins": 0, "losses": 0, "win_rate": null, "avg_ev_predicted": null, "avg_ev_actual": null},
+    "medium": {"total": 0, "wins": 0, "losses": 0, "win_rate": null, "avg_ev_predicted": null, "avg_ev_actual": null},
+    "low": {"total": 0, "wins": 0, "losses": 0, "win_rate": null, "avg_ev_predicted": null, "avg_ev_actual": null}
+  },
+  "by_chain": {
+    "solana": {"total": 0, "wins": 0, "win_rate": null},
+    "ethereum": {"total": 0, "wins": 0, "win_rate": null},
+    "base": {"total": 0, "wins": 0, "win_rate": null},
+    "hyperliquid": {"total": 0, "wins": 0, "win_rate": null}
+  },
+  "by_signal_type": {},
+  "completed_predictions": [],
+  "daily_pnl_log": []
+}
