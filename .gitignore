@@ -1,0 +1,5 @@
+# Daily briefing outputs (generated per session)
+output/briefings/*.md
+
+# Keep the directory structure
+!output/briefings/.gitkeep
