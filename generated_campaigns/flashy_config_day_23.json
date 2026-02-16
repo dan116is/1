@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_23_Samsung_Super_Fast_Travel_Charger_45W_2026-02-16",
+  "subject_line": "⚡ הזדמנות אחרונה! מטען Samsung Super Fast 45W",
+  "preview_text": "גלו את מטען Samsung Super Fast 45W במחיר שלא תמצאו בשום מקום אחר",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "מטען Samsung Super Fast 45W",
+    "name_en": "Samsung Super Fast Travel Charger 45W",
+    "category": "מטענים וכבלים",
+    "url": "https://www.shopips.co.il/items/4142648",
+    "description": "מטען קיר סופר מהיר מבית Samsung בהספק 45W. טעינה מהירה במיוחד לכל מכשירי Galaxy. מקורי ובטיחותי עם טכנולוגיית PD."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

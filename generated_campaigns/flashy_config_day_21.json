@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_21_Havit_GAMENOTE_4IN1_Gaming_Kit_2026-02-16",
+  "subject_line": "🎮 ערכת גיימינג Havit 4IN1 - מבצע מיוחד רק היום!",
+  "preview_text": "ערכת גיימינג מושלמת הכוללת מקלדת, עכבר, אוזניות ומשטח לעכבר. תאורת RGB מרהיבה. ה...",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "ערכת גיימינג Havit 4IN1",
+    "name_en": "Havit GAMENOTE 4IN1 Gaming Kit",
+    "category": "גיימינג",
+    "url": "https://www.shopips.co.il/items/4177594",
+    "description": "ערכת גיימינג מושלמת הכוללת מקלדת, עכבר, אוזניות ומשטח לעכבר. תאורת RGB מרהיבה. הכל מה שצריך כדי להתחיל לשחק ברמה גבוהה!"
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

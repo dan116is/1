@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_4_Amazfit_GTS_2_Smartwatch_2026-02-16",
+  "subject_line": "⭐ המוצר של היום: שעון ספורט Amazfit GTS 2 - אל תפספסו!",
+  "preview_text": "⌚ הטכנולוגיה שתשנה את השגרה שלכם! - רק בשופיפס!",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "שעון ספורט Amazfit GTS 2",
+    "name_en": "Amazfit GTS 2 Smartwatch",
+    "category": "שעונים חכמים",
+    "url": "https://www.shopips.co.il/items/4279522",
+    "description": "שעון חכם עם מסך AMOLED מרהיב, מעקב בריאות מתקדם, GPS מובנה ועוד 90+ מצבי ספורט. עיצוב אלגנטי שמתאים לכל סגנון."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

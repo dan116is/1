@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_11_JBL_PartyBox_710_2026-02-16",
+  "subject_line": "🎉 רמקול JBL PartyBox 710 - מבצע מיוחד רק היום!",
+  "preview_text": "גלו את רמקול JBL PartyBox 710 במחיר שלא תמצאו בשום מקום אחר",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "רמקול JBL PartyBox 710",
+    "name_en": "JBL PartyBox 710",
+    "category": "רמקולים",
+    "url": "https://www.shopips.co.il/items/4642819",
+    "description": "רמקול מסיבות ענק מבית JBL עם סאונד אדיר, תאורת LED מרהיבה וקישוריות מתקדמת. הרמקול שיהפוך כל אירוע למסיבה בלתי נשכחת!"
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

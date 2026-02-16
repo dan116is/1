@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_20_Seagate_Expansion_Portable_4TB_2026-02-16",
+  "subject_line": "📦 חדש באתר! כונן קשיח חיצוני Seagate 4TB במבצע",
+  "preview_text": "גלו את כונן קשיח חיצוני Seagate 4TB במחיר שלא תמצאו בשום מקום אחר",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "כונן קשיח חיצוני Seagate 4TB",
+    "name_en": "Seagate Expansion Portable 4TB",
+    "category": "אחסון",
+    "url": "https://www.shopips.co.il/items/4106432-Seagate-Expansion-Portable-4TB",
+    "description": "כונן קשיח חיצוני בנפח 4TB מבית Seagate. מקום לכל התמונות, הסרטים והקבצים שלכם. חיבור USB 3.0 מהיר, הכנס והשתמש."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_3_Apple_20W_USB_Type-C_Charger_2026-02-16",
+  "subject_line": "⚡ הזדמנות אחרונה! מטען קיר Apple 20W USB-C",
+  "preview_text": "מטען קיר מקורי מבית Apple בהספק 20W עם חיבור USB-C. טעינה מהירה לאייפון ולאייפד ...",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "מטען קיר Apple 20W USB-C",
+    "name_en": "Apple 20W USB Type-C Charger",
+    "category": "מטענים וכבלים",
+    "url": "https://www.shopips.co.il/items/4104208-%D7%9E%D7%98%D7%A2%D7%9F-%D7%A7%D7%99%D7%A8-Apple-20W-USB-Type-C",
+    "description": "מטען קיר מקורי מבית Apple בהספק 20W עם חיבור USB-C. טעינה מהירה לאייפון ולאייפד - עד 50% תוך 30 דקות בלבד!"
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

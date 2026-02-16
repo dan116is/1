@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_8_JBL_Go_3_Portable_Speaker_2026-02-16",
+  "subject_line": "🔈 הזדמנות אחרונה! רמקול נייד JBL Go 3",
+  "preview_text": "גלו את רמקול נייד JBL Go 3 במחיר שלא תמצאו בשום מקום אחר",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "רמקול נייד JBL Go 3",
+    "name_en": "JBL Go 3 Portable Speaker",
+    "category": "רמקולים",
+    "url": "https://www.shopips.co.il/items/4301303",
+    "description": "רמקול מיני חזק ועמיד מבית JBL. קומפקטי, צבעוני ומושלם לכל מקום. עמיד במים ובאבק עם סאונד JBL מקצועי."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

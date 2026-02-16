@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_9_Apple_AirTag_Tracker_2026-02-16",
+  "subject_line": "⭐ המוצר של היום: Apple AirTag - אל תפספסו!",
+  "preview_text": "גשש חכם מבית Apple. מצאו את החפצים שלכם בקלות דרך אפליקציית Find My. סוללה שמחזי...",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "Apple AirTag",
+    "name_en": "Apple AirTag Tracker",
+    "category": "אביזרים",
+    "url": "https://www.shopips.co.il/items/4193145",
+    "description": "גשש חכם מבית Apple. מצאו את החפצים שלכם בקלות דרך אפליקציית Find My. סוללה שמחזיקה שנה, עמיד במים ומדויק להפליא."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_19_JBL_Bar_2.1_Deep_Bass_Soundbar_2026-02-16",
+  "subject_line": "⭐ המוצר של היום: מקרן קול JBL Bar 2.1 Deep Bass - אל תפספסו!",
+  "preview_text": "🎬 הקולנוע עבר אליכם הביתה! - רק בשופיפס!",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "מקרן קול JBL Bar 2.1 Deep Bass",
+    "name_en": "JBL Bar 2.1 Deep Bass Soundbar",
+    "category": "רמקולים",
+    "url": "https://www.shopips.co.il/items/4262675",
+    "description": "מקרן קול פרימיום מבית JBL עם סאב-וופר אלחוטי. סאונד קולנועי עוצר נשימה ישירות מהסלון שלכם. חיבור Bluetooth ו-HDMI ARC."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

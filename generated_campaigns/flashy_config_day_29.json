@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_29_SanDisk_Cruzer_Glide_USB_3.0_64GB_2026-02-16",
+  "subject_line": "⭐ המוצר של היום: דיסק און קי SanDisk 64GB - אל תפספסו!",
+  "preview_text": "גלו את דיסק און קי SanDisk 64GB במחיר שלא תמצאו בשום מקום אחר",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "דיסק און קי SanDisk 64GB",
+    "name_en": "SanDisk Cruzer Glide USB 3.0 64GB",
+    "category": "אחסון",
+    "url": "https://www.shopips.co.il/items/4689305",
+    "description": "דיסק און קי מהיר מבית SanDisk בנפח 64GB עם חיבור USB 3.0. קומפקטי ואמין, מושלם להעברת קבצים מהירה ולגיבוי."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

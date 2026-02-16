@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_1_Apple_AirPods_Pro_True_Wireless_2026-02-16",
+  "subject_line": "🎧 אוזניות אלחוטיות Apple AirPods Pro - מבצע מיוחד רק היום!",
+  "preview_text": "🎧 השדרוג שהאוזניים שלכם מחכות לו! - רק בשופיפס!",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "אוזניות אלחוטיות Apple AirPods Pro",
+    "name_en": "Apple AirPods Pro True Wireless",
+    "category": "אוזניות",
+    "url": "https://www.shopips.co.il/items/4104250-%D7%90%D7%95%D7%96%D7%A0%D7%99%D7%95%D7%AA-%D7%90%D7%9C%D7%97%D7%95%D7%98%D7%99%D7%95%D7%AA-Apple-AirPods-Pro",
+    "description": "אוזניות אלחוטיות מבית Apple עם ביטול רעשים אקטיבי, שקיפות מותאמת וסאונד מרחבי. חוויית שמע פרימיום עם נוחות מושלמת לכל היום."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

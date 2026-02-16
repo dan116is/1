@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_28_LED_Projector_PC-80_2026-02-16",
+  "subject_line": "🎬 הזדמנות אחרונה! מקרן LED להקרנה עד 110 אינץ'",
+  "preview_text": "🎬 110 אינץ' של חוויה קולנועית! - רק בשופיפס!",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "מקרן LED להקרנה עד 110 אינץ'",
+    "name_en": "LED Projector PC-80",
+    "category": "אביזרים",
+    "url": "https://www.shopips.co.il/items/4262788",
+    "description": "מקרן LED קומפקטי להקרנה על מסך עד 110 אינץ'. תואם אנדרואיד ו-iOS. הפכו כל קיר לקולנוע ביתי! קל להתקנה ולשימוש."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

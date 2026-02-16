@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_10_Havit_GC916_Gaming_Chair_2026-02-16",
+  "subject_line": "🎮 חדש באתר! כיסא גיימינג Havit GC916 במבצע",
+  "preview_text": "🎮 שדרגו את חוויית הגיימינג שלכם! - רק בשופיפס!",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "כיסא גיימינג Havit GC916",
+    "name_en": "Havit GC916 Gaming Chair",
+    "category": "גיימינג",
+    "url": "https://www.shopips.co.il/items/4161952",
+    "description": "כיסא גיימינג ארגונומי ונוח מבית Havit. תמיכה מלאה לגב ולצוואר, ריפוד פרימיום וזווית הטייה מתכווננת. מושלם לשעות ארוכות מול המחשב."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_18_Canon_PowerShot_SX740_HS_2026-02-16",
+  "subject_line": "📷 הזדמנות אחרונה! מצלמה Canon PowerShot SX740",
+  "preview_text": "מצלמה קומפקטית פרימיום מבית Canon עם זום אופטי x40, צילום 4K ו-WiFi/BT מובנה. קט...",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "מצלמה Canon PowerShot SX740",
+    "name_en": "Canon PowerShot SX740 HS",
+    "category": "מצלמות",
+    "url": "https://www.shopips.co.il/items/4261937",
+    "description": "מצלמה קומפקטית פרימיום מבית Canon עם זום אופטי x40, צילום 4K ו-WiFi/BT מובנה. קטנה, חזקה ומושלמת לטיולים ואירועים."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

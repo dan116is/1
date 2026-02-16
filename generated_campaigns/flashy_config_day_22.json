@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_22_Apple_TV_HD_32GB_2021_2026-02-16",
+  "subject_line": "🔥 מבצע בלעדי! Apple TV HD 32GB במחיר מיוחד",
+  "preview_text": "📺 כל הבידור - במסך אחד! - רק בשופיפס!",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "Apple TV HD 32GB",
+    "name_en": "Apple TV HD 32GB 2021",
+    "category": "אביזרים",
+    "url": "https://www.shopips.co.il/items/4322569",
+    "description": "סטרימר Apple TV HD עם שלט Siri Remote חדש. גישה לכל האפליקציות, Apple TV+ ועוד. חוויית צפייה מושלמת ישירות מהטלוויזיה שלכם."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

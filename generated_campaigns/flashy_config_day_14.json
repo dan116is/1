@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_14_Apple_MagSafe_Wireless_Charger_2026-02-16",
+  "subject_line": "⭐ המוצר של היום: מטען MagSafe אלחוטי Apple - אל תפספסו!",
+  "preview_text": "גלו את מטען MagSafe אלחוטי Apple במחיר שלא תמצאו בשום מקום אחר",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "מטען MagSafe אלחוטי Apple",
+    "name_en": "Apple MagSafe Wireless Charger",
+    "category": "מטענים וכבלים",
+    "url": "https://www.shopips.co.il/items/4104225-%D7%9E%D7%98%D7%A2%D7%9F-%D7%90%D7%9C%D7%97%D7%95%D7%98%D7%99-Apple-MagSafe-Charger",
+    "description": "משטח טעינה אלחוטי מגנטי מקורי מבית Apple. מתחבר בצורה מושלמת לאייפון ומבטיח טעינה מהירה ויעילה. פשוט מניחים וזה נטען!"
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

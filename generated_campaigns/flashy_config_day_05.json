@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_5_JBL_Charge_5_Portable_Speaker_2026-02-16",
+  "subject_line": "🎶 חדש באתר! רמקול נייד JBL Charge 5 במבצע",
+  "preview_text": "גלו את רמקול נייד JBL Charge 5 במחיר שלא תמצאו בשום מקום אחר",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "רמקול נייד JBL Charge 5",
+    "name_en": "JBL Charge 5 Portable Speaker",
+    "category": "רמקולים",
+    "url": "https://www.shopips.co.il/items/4323683",
+    "description": "רמקול נייד פרימיום מבית JBL עם סאונד עוצמתי, בס אדיר וסוללה שמחזיקה עד 20 שעות. גם טוען את הטלפון דרך USB!"
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

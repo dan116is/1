@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_12_HP_Smart_Tank_790_All-In-One_2026-02-16",
+  "subject_line": "🔥 מבצע בלעדי! מדפסת HP Smart Tank 790 במחיר מיוחד",
+  "preview_text": "מדפסת הזרקת דיו משולבת מבית HP עם טנק דיו חסכוני. הדפסה, סריקה והעתקה - הכל במכש...",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "מדפסת HP Smart Tank 790",
+    "name_en": "HP Smart Tank 790 All-In-One",
+    "category": "מדפסות",
+    "url": "https://www.shopips.co.il/items/4461838",
+    "description": "מדפסת הזרקת דיו משולבת מבית HP עם טנק דיו חסכוני. הדפסה, סריקה והעתקה - הכל במכשיר אחד. חיבור WiFi אלחוטי ו-ADF."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

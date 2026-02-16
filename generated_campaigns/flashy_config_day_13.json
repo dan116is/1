@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_13_SanDisk_Portable_SSD_E30_1TB_2026-02-16",
+  "subject_line": "💾 הזדמנות אחרונה! כונן SSD חיצוני SanDisk 1TB",
+  "preview_text": "💾 כל הקבצים שלכם - מהר, בטוח, בכל מקום! - רק בשופיפס!",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "כונן SSD חיצוני SanDisk 1TB",
+    "name_en": "SanDisk Portable SSD E30 1TB",
+    "category": "אחסון",
+    "url": "https://www.shopips.co.il/items/4267889",
+    "description": "כונן SSD חיצוני מהיר מבית SanDisk בנפח 1TB. מהירות קריאה גבוהה, קומפקטי וקל. הפתרון המושלם לגיבוי ולהעברת קבצים."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}

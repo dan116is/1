@@ -1,0 +1,19 @@
+{
+  "campaign_name": "Daily_Product_27_Samsung_Galaxy_Tab_A7_10.4\"_LTE_2026-02-16",
+  "subject_line": "🔥 מבצע בלעדי! טאבלט Samsung Galaxy Tab A7 במחיר מיוחד",
+  "preview_text": "טאבלט 10.4 אינץ' מבית Samsung עם מסך רחב, סוללה חזקה ותמיכת LTE. מושלם לצפייה, ג...",
+  "from_name": "שופיפס-Shopips",
+  "from_email": "info@shopips.co.il",
+  "reply_to": "info@shopips.co.il",
+  "unsubscribe_link": "{{unsubscribe_url}}",
+  "product_details": {
+    "name": "טאבלט Samsung Galaxy Tab A7",
+    "name_en": "Samsung Galaxy Tab A7 10.4\" LTE",
+    "category": "אביזרים",
+    "url": "https://www.shopips.co.il/items/4645032",
+    "description": "טאבלט 10.4 אינץ' מבית Samsung עם מסך רחב, סוללה חזקה ותמיכת LTE. מושלם לצפייה, גלישה ולימודים. קל ונוח לנשיאה."
+  },
+  "notes": {
+    "he": "1. העתק את קוד ה-HTML מקובץ הקמפיין לעורך של פלאשי\n2. ודא שקישור ההסרה {{unsubscribe_url}} מוגדר נכון\n3. בדוק תצוגה מקדימה לפני שליחה\n4. שלח טסט לעצמך לבדיקה"
+  }
+}
