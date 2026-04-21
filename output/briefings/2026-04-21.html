@@ -103,11 +103,29 @@ body{background:#fff;color:#000;padding:20px}
 table th{background:#eee;color:#333}
 }
 
+/* Top Nav */
+.topnav{display:flex;align-items:center;gap:4px;padding:10px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:24px;flex-wrap:wrap}
+.topnav a{font-size:12px;font-weight:600;color:var(--t2);text-decoration:none;padding:6px 12px;border-radius:6px;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
+.topnav a:hover{background:var(--bg3);color:var(--blue)}
+.topnav a.active{background:rgba(88,166,255,.12);color:var(--blue)}
+.topnav .sep{color:var(--t3);margin:0 2px}
+.topnav .home{color:var(--blue);font-weight:700}
+@media print{.topnav{display:none}}
+
 @media(max-width:640px){.risk-grid{grid-template-columns:1fr 1fr}.dg{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="page">
+    <!-- NAV -->
+    <nav class="topnav">
+        <a href="../index.html" class="home">&#9670; Home</a>
+        <span class="sep">/</span>
+        <a href="../index.html">Overview</a>
+        <a href="../dashboard.html">Dashboard</a>
+        <a href="2026-04-21.html" class="active">Briefing 2026-04-21</a>
+        <a href="../architecture.svg">Architecture</a>
+    </nav>
     <!-- HEADER -->
     <div class="hdr">
         <div class="hdr-badge">Uncalibrated &middot; Session 001</div>
