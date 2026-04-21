@@ -112,7 +112,7 @@
         },
         {
           "type": "ETH long",
-          "size_usd": "unknown",
+          "size_usd": null,
           "leverage": "20x",
           "entry_price": 2289.26,
           "unrealized_pnl": -170700

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Intelligence System v1.0</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #1c2128;
+            --border: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #484f58;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-red: #f85149;
+            --accent-yellow: #d29922;
+            --accent-purple: #bc8cff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(88, 166, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(88, 166, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-blue);
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 9999px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 50%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-top: 40px;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+
+        .hero-stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+
+        .nav-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(88, 166, 255, 0.1);
+        }
+
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .nav-card:hover::before { opacity: 1; }
+
+        .nav-card-icon {
+            font-size: 28px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .nav-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .nav-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .nav-card .badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-top: 12px;
+        }
+
+        .badge-live { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
+        .badge-latest { background: rgba(88, 166, 255, 0.15); color: var(--accent-blue); }
+        .badge-system { background: rgba(188, 140, 255, 0.15); color: var(--accent-purple); }
+        .badge-config { background: rgba(210, 153, 34, 0.15); color: var(--accent-yellow); }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 60px;
+        }
+
+        .agent-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .agent-card:hover { border-color: var(--accent-blue); }
+
+        .agent-number {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .agent-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .agent-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .memory-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .memory-chip {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 11px;
+            padding: 6px 12px;
+            background: rgba(188, 140, 255, 0.08);
+            border: 1px solid rgba(188, 140, 255, 0.2);
+            border-radius: 6px;
+            color: var(--accent-purple);
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .hero-stats { flex-direction: column; gap: 20px; }
+            .agent-grid { grid-template-columns: 1fr; }
+            .nav-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="container">
+        <div class="hero">
+            <span class="hero-badge">Autonomous Intelligence</span>
+            <h1>Crypto Intelligence System</h1>
+            <p>6 specialized agents scan, verify, and analyze crypto markets in real time. Self-calibrating probability model with expected value calculations.</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value">6</div>
+                    <div class="hero-stat-label">Agents</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">7</div>
+                    <div class="hero-stat-label">Memory Files</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">3</div>
+                    <div class="hero-stat-label">Scenario EV Model</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">4</div>
+                    <div class="hero-stat-label">Chains Tracked</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">Navigation</div>
+        <div class="nav-grid">
+            <a href="dashboard.html" class="nav-card">
+                <span class="nav-card-icon">&#x1F4CA;</span>
+                <h3>Live Dashboard</h3>
+                <p>Real-time intelligence dashboard with market data, signals, predictions, and risk metrics.</p>
+                <span class="badge badge-live">Live</span>
+            </a>
+            <a href="briefings/2026-04-21.html" class="nav-card">
+                <span class="nav-card-icon">&#x1F4CB;</span>
+                <h3>Latest Briefing</h3>
+                <p>Full intelligence briefing with actionable recommendations, EV calculations, and risk analysis.</p>
+                <span class="badge badge-latest">2026-04-21</span>
+            </a>
+            <a href="architecture.svg" class="nav-card">
+                <span class="nav-card-icon">&#x1F3D7;</span>
+                <h3>System Architecture</h3>
+                <p>Visual architecture diagram showing agent flow, data sources, memory system, and output pipeline.</p>
+                <span class="badge badge-system">Architecture</span>
+            </a>
+        </div>
+
+        <div class="section-title">Intelligence Agents</div>
+        <div class="agent-grid">
+            <div class="agent-card">
+                <div class="agent-number">Agent 01</div>
+                <div class="agent-name">Social Intelligence</div>
+                <div class="agent-desc">X/Twitter, CT narratives, KOL tracking</div>
+            </div>
+            <div class="agent-card">
+                <div class="agent-number">Agent 02</div>
+                <div class="agent-name">On-Chain Verification</div>
+                <div class="agent-desc">DexScreener, DeFiLlama, explorers</div>
+            </div>
+            <div class="agent-card">
+                <div class="agent-number">Agent 03</div>
+                <div class="agent-name">Smart Wallet Tracker</div>
+                <div class="agent-desc">Whale detection, convergence events</div>
+            </div>
+            <div class="agent-card">
+                <div class="agent-number">Agent 04</div>
+                <div class="agent-name">Hyperliquid Monitor</div>
+                <div class="agent-desc">Leaderboard, positions, funding</div>
+            </div>
+            <div class="agent-card">
+                <div class="agent-number">Agent 05</div>
+                <div class="agent-name">Solana Trenches</div>
+                <div class="agent-desc">pump.fun, early-stage discovery</div>
+            </div>
+            <div class="agent-card">
+                <div class="agent-number">Agent 06</div>
+                <div class="agent-name">EV Calculator</div>
+                <div class="agent-desc">3-scenario model, Kelly criterion</div>
+            </div>
+        </div>
+
+        <div class="section-title">Memory System</div>
+        <div class="memory-bar">
+            <span class="memory-chip">daily_intel.json</span>
+            <span class="memory-chip">predictions.json</span>
+            <span class="memory-chip">track_record.json</span>
+            <span class="memory-chip">smart_wallets.json</span>
+            <span class="memory-chip">token_watchlist.json</span>
+            <span class="memory-chip">alpha_signals.json</span>
+            <span class="memory-chip">calibration.json</span>
+        </div>
+
+        <div class="footer">
+            <p>Crypto Intelligence System v1.0 &mdash; Powered by Claude Code</p>
+            <p>For research and educational purposes only. Not financial advice.</p>
+        </div>
+    </div>
+</body>
+</html>

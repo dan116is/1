@@ -1,0 +1,145 @@
+{
+  "_schema": "design_system_v1",
+  "_description": "Visual design system for all output formats (HTML dashboard, briefings, diagrams)",
+  "colors": {
+    "background": {
+      "primary": "#0d1117",
+      "secondary": "#161b22",
+      "tertiary": "#1c2128",
+      "card": "#161b22",
+      "elevated": "#21262d"
+    },
+    "border": {
+      "default": "#30363d",
+      "muted": "#21262d",
+      "emphasis": "#58a6ff"
+    },
+    "text": {
+      "primary": "#e6edf3",
+      "secondary": "#8b949e",
+      "muted": "#484f58",
+      "link": "#58a6ff"
+    },
+    "accent": {
+      "blue": "#58a6ff",
+      "green": "#3fb950",
+      "red": "#f85149",
+      "yellow": "#d29922",
+      "purple": "#bc8cff",
+      "orange": "#d18616",
+      "teal": "#39d353"
+    },
+    "semantic": {
+      "buy": "#3fb950",
+      "sell": "#f85149",
+      "watch": "#d29922",
+      "skip": "#484f58",
+      "bullish": "#3fb950",
+      "bearish": "#f85149",
+      "neutral": "#8b949e",
+      "verified": "#3fb950",
+      "cautious": "#d29922",
+      "suspicious": "#d18616",
+      "reject": "#f85149"
+    },
+    "signal_strength": {
+      "strong": "#3fb950",
+      "medium": "#d29922",
+      "weak": "#f85149"
+    },
+    "confidence": {
+      "high": "#3fb950",
+      "medium": "#58a6ff",
+      "low": "#d29922"
+    },
+    "chart": {
+      "positive": "#3fb950",
+      "negative": "#f85149",
+      "line": "#58a6ff",
+      "grid": "#21262d",
+      "area_fill": "rgba(88, 166, 255, 0.1)"
+    }
+  },
+  "typography": {
+    "font_family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif",
+    "font_family_mono": "'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace",
+    "sizes": {
+      "xs": "11px",
+      "sm": "12px",
+      "base": "14px",
+      "md": "16px",
+      "lg": "20px",
+      "xl": "24px",
+      "xxl": "32px",
+      "hero": "48px"
+    },
+    "weights": {
+      "normal": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    }
+  },
+  "spacing": {
+    "xs": "4px",
+    "sm": "8px",
+    "md": "16px",
+    "lg": "24px",
+    "xl": "32px",
+    "xxl": "48px"
+  },
+  "border_radius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "xl": "16px",
+    "full": "9999px"
+  },
+  "shadows": {
+    "sm": "0 1px 2px rgba(0, 0, 0, 0.3)",
+    "md": "0 4px 6px rgba(0, 0, 0, 0.3)",
+    "lg": "0 10px 15px rgba(0, 0, 0, 0.3)",
+    "glow_blue": "0 0 12px rgba(88, 166, 255, 0.3)",
+    "glow_green": "0 0 12px rgba(63, 185, 80, 0.3)",
+    "glow_red": "0 0 12px rgba(248, 81, 73, 0.3)"
+  },
+  "components": {
+    "card": {
+      "background": "#161b22",
+      "border": "1px solid #30363d",
+      "border_radius": "12px",
+      "padding": "24px",
+      "shadow": "0 4px 6px rgba(0, 0, 0, 0.3)"
+    },
+    "badge": {
+      "buy": {"bg": "rgba(63, 185, 80, 0.15)", "text": "#3fb950", "border": "#3fb950"},
+      "sell": {"bg": "rgba(248, 81, 73, 0.15)", "text": "#f85149", "border": "#f85149"},
+      "watch": {"bg": "rgba(210, 153, 34, 0.15)", "text": "#d29922", "border": "#d29922"},
+      "active": {"bg": "rgba(88, 166, 255, 0.15)", "text": "#58a6ff", "border": "#58a6ff"},
+      "monitoring": {"bg": "rgba(139, 148, 158, 0.15)", "text": "#8b949e", "border": "#8b949e"}
+    },
+    "table": {
+      "header_bg": "#21262d",
+      "row_hover": "rgba(88, 166, 255, 0.05)",
+      "border": "#30363d"
+    },
+    "gauge": {
+      "track": "#21262d",
+      "fear": "#f85149",
+      "greed": "#3fb950",
+      "neutral": "#d29922"
+    }
+  },
+  "animations": {
+    "fade_in": "fadeIn 0.5s ease-out",
+    "slide_up": "slideUp 0.3s ease-out",
+    "pulse": "pulse 2s infinite",
+    "glow": "glow 2s ease-in-out infinite alternate"
+  },
+  "breakpoints": {
+    "mobile": "640px",
+    "tablet": "768px",
+    "desktop": "1024px",
+    "wide": "1280px"
+  }
+}
