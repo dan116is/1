@@ -9,7 +9,7 @@
       "chain": "ethereum",
       "direction": "long",
       "entry_price": 9.41,
-      "current_price": 9.41,
+      "current_price": 9.35,
       "targets": [
         {"level": 1, "price": 12.00, "probability": 0.472},
         {"level": 2, "price": 14.00, "probability": 0.30},
