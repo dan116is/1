@@ -1,42 +1,43 @@
 {
   "_schema": "smart_wallets_v1",
   "_description": "Tracked wallet addresses, their historical activity, suspected insider status, and convergence tracking.",
-  "tracked_wallets": [],
-  "wallet_schema": {
-    "_note": "Template for wallet entries - remove when real wallets are added",
-    "address": "0x...",
-    "chain": "ethereum",
-    "label": "Smart Money #1",
-    "source": "discovered via DexScreener top traders",
-    "first_seen": "2025-01-01",
-    "tags": ["early_buyer", "high_win_rate", "suspected_insider"],
-    "stats": {
-      "tracked_trades": 0,
-      "wins": 0,
-      "avg_entry_timing": null,
-      "avg_hold_duration": null,
-      "estimated_pnl": null
-    },
-    "recent_activity": [],
-    "insider_score": 0.0,
-    "insider_evidence": []
-  },
+  "tracked_wallets": [
+    {
+      "address": "unknown_hl_whale_btc_short",
+      "chain": "hyperliquid",
+      "label": "HL Whale - BTC Short $40M",
+      "source": "Discovered via WEEX/Coinglass whale tracking",
+      "first_seen": "2026-04-21",
+      "tags": ["hyperliquid", "large_position", "contrarian_btc_short"],
+      "stats": {
+        "tracked_trades": 1,
+        "wins": 0,
+        "avg_entry_timing": null,
+        "avg_hold_duration": null,
+        "estimated_pnl": null
+      },
+      "recent_activity": [
+        {
+          "action": "open_short",
+          "token": "BTC",
+          "size_usd": 40000000,
+          "entry_price": 68760,
+          "leverage": "7x",
+          "liquidation_price": 80083,
+          "timestamp": "2026-04-21"
+        }
+      ],
+      "insider_score": 0.3,
+      "insider_evidence": ["Large position size suggests institutional or whale player"]
+    }
+  ],
   "convergence_events": [],
-  "convergence_schema": {
-    "_note": "When 3+ tracked wallets buy the same token within a window",
-    "token": "EXAMPLE",
-    "chain": "solana",
-    "wallets_involved": [],
-    "detection_time": null,
-    "time_window": "24h",
-    "avg_entry_price": null,
-    "convergence_strength": null
-  },
   "insider_watchlist": [],
   "metadata": {
-    "total_wallets_tracked": 0,
-    "last_full_scan": null,
-    "wallets_added_this_session": 0,
-    "convergence_events_active": 0
+    "total_wallets_tracked": 1,
+    "last_full_scan": "2026-04-21",
+    "wallets_added_this_session": 1,
+    "convergence_events_active": 0,
+    "note": "First session. Need to harvest specific wallet addresses from Lookonchain/Arkham for LINK and BTC accumulators in next session."
   }
 }

@@ -1,19 +1,171 @@
 {
   "_schema": "daily_intel_v1",
   "_description": "Current day's intelligence findings from all agents. Reset each session, archived to track_record.",
-  "session_date": null,
-  "social_signals": [],
-  "onchain_verified": [],
-  "smart_wallet_moves": [],
-  "hyperliquid_positions": [],
-  "solana_discoveries": [],
-  "aggregated_alpha": [],
-  "risk_warnings": [],
+  "session_date": "2026-04-21",
+  "social_signals": [
+    {
+      "type": "narrative_catalyst",
+      "token": null,
+      "chain": null,
+      "narrative": "RWA tokenization is the leading crypto narrative in 2026. Total tokenized RWA at $26.4-29.2B, up 380% in 3 years. Institutional adoption via BlackRock, JPMorgan, UBS driving demand.",
+      "social_volume": "high",
+      "sentiment": "bullish",
+      "organic_score": 0.9,
+      "key_accounts_discussing": ["CoinGecko", "MEXC", "Cwallet", "crypto.news"],
+      "evidence": ["RWA market grew from $5.5B to $29.2B", "Private credit ~$17B tokenized", "Institutional demand accelerating"],
+      "confidence": "high",
+      "urgency": "this_week"
+    },
+    {
+      "type": "narrative_catalyst",
+      "token": null,
+      "chain": null,
+      "narrative": "AI + Crypto convergence shifting from experimentation to infrastructure. Focus on data ownership, monetization, and verification of AI-generated content.",
+      "social_volume": "medium",
+      "sentiment": "bullish",
+      "organic_score": 0.8,
+      "evidence": ["Multiple sources confirm narrative shift to infrastructure phase"],
+      "confidence": "medium",
+      "urgency": "this_week"
+    },
+    {
+      "type": "token_discovery",
+      "token": "LINK",
+      "chain": "ethereum",
+      "narrative": "Chainlink whale accumulation at 3-month high. CCIP cleared $18B Q1 2026. ADI Foundation selected CCIP for $240B institutional bridge. JPMorgan/UBS SWIFT pilots.",
+      "social_volume": "high",
+      "sentiment": "bullish",
+      "organic_score": 0.95,
+      "key_accounts_discussing": ["CoinPedia", "CryptoAdventure", "99bitcoins"],
+      "evidence": ["Whale addresses 100K+ LINK increased transfers 25%", "1.01M LINK added by whales", "CCIP $18B Q1 volume +62% QoQ"],
+      "confidence": "high",
+      "urgency": "today"
+    },
+    {
+      "type": "sentiment_shift",
+      "token": null,
+      "chain": null,
+      "narrative": "Market recovering from extreme fear (F&G index 8 in early April to 54 now). KelpDAO hack ($292M) caused $13B DeFi TVL wipeout but BTC holding $76K.",
+      "social_volume": "high",
+      "sentiment": "mixed",
+      "organic_score": 0.9,
+      "evidence": ["Fear & Greed 8 -> 54", "$292M KelpDAO hack", "Aave TVL dropped $6B", "$13B total DeFi TVL lost"],
+      "confidence": "high",
+      "urgency": "immediate"
+    }
+  ],
+  "onchain_verified": [
+    {
+      "token": "LINK",
+      "chain": "ethereum",
+      "verification_score": 8,
+      "verdict": "VERIFIED",
+      "evidence": {
+        "whale_accumulation": "1.01M LINK added by whales early April",
+        "exchange_outflows": "$2.45M withdrawn from Binance, 1.2M LINK off exchanges in 48h",
+        "holder_growth": "1K+ LINK addresses at 8-month high (25,420)",
+        "fundamental_catalyst": "CCIP $18B Q1 volume, ADI $240B bridge, JPMorgan/UBS pilots"
+      }
+    },
+    {
+      "token": "ONDO",
+      "chain": "ethereum",
+      "verification_score": 6,
+      "verdict": "CAUTIOUS",
+      "evidence": {
+        "tvl": "$3.6B ATH",
+        "concern": "Token price -80%+ despite ATH TVL — structural divergence",
+        "products": "USDY (4.8% yield), OUSG (short-term gov bonds)"
+      }
+    }
+  ],
+  "smart_wallet_moves": [
+    {
+      "type": "btc_mega_accumulation",
+      "details": "270K BTC ($23B) accumulated by large holders in 30 days. Exchange reserves at 7-year low (2.21M BTC). Record single-day withdrawal 32K BTC on March 7.",
+      "significance": "high"
+    },
+    {
+      "type": "link_whale_surge",
+      "details": "100K+ LINK holder transfers up 25% above average. 1.01M LINK (~$9M) added in early April. Wallet cohort with 1K+ LINK at 25,420 (8-month high).",
+      "significance": "high"
+    },
+    {
+      "type": "altcoin_accumulation",
+      "details": "QNT whale supply rose from 7.88M to 7.9M (~$1.4M added). BCH whale cohort added 260K BCH (~$120M).",
+      "significance": "medium"
+    }
+  ],
+  "hyperliquid_positions": [
+    {
+      "total_whale_positions_usd": 3447000000,
+      "long_short_ratio": 1.04,
+      "long_positions_usd": 1756000000,
+      "short_positions_usd": 1692000000,
+      "notable_positions": [
+        {
+          "type": "BTC short",
+          "size_usd": 40000000,
+          "leverage": "7x",
+          "entry_price": 68760,
+          "liquidation_price": 80083
+        },
+        {
+          "type": "ETH long",
+          "size_usd": "unknown",
+          "leverage": "20x",
+          "entry_price": 2289.26,
+          "unrealized_pnl": -170700
+        }
+      ]
+    }
+  ],
+  "solana_discoveries": [
+    {
+      "note": "DexScreener boosted tokens: ASTRO PEPE, SPIKE, IMOUT, HOLD, MAGA — all Solana micro-cap memes",
+      "verdict": "UNVERIFIED — insufficient on-chain data for any recommendation",
+      "pump_fun_stats": {
+        "daily_launches": 30000,
+        "graduation_rate": "less than 0.5%",
+        "dex_volume_ath": "2B daily",
+        "failure_rate_24h": "98%+"
+      }
+    }
+  ],
+  "aggregated_alpha": [
+    {
+      "rank": 1,
+      "token": "LINK",
+      "signal_type": "multi_signal_confluence",
+      "confluence_count": 3,
+      "signals": ["whale_accumulation", "narrative_catalyst_rwa_ccip", "onchain_exchange_outflows"],
+      "action": "BUY",
+      "ev_score": 1.23,
+      "confidence": "medium"
+    },
+    {
+      "rank": 2,
+      "token": "ONDO",
+      "signal_type": "narrative_catalyst",
+      "confluence_count": 2,
+      "signals": ["rwa_narrative", "tvl_price_divergence"],
+      "action": "WATCH",
+      "ev_score": 1.14,
+      "confidence": "low"
+    }
+  ],
+  "risk_warnings": [
+    "KelpDAO $292M hack — DeFi contagion risk elevated",
+    "Aave faces $123-230M in potential losses; TVL dropped $6B",
+    "US-Iran geopolitical tensions impacting risk assets",
+    "BTC -39% from ATH ($126K), macro environment uncertain",
+    "UNCALIBRATED system — first session, all sizes halved"
+  ],
   "metadata": {
-    "agents_completed": [],
-    "scan_start": null,
-    "scan_end": null,
-    "total_signals_raw": 0,
-    "total_signals_verified": 0
+    "agents_completed": ["social_intel", "smart_wallets", "hyperliquid", "solana_trenches", "onchain_verify", "ev_calculator"],
+    "scan_start": "2026-04-21T00:00:00Z",
+    "scan_end": "2026-04-21T00:00:00Z",
+    "total_signals_raw": 12,
+    "total_signals_verified": 2
   }
 }

@@ -4,9 +4,9 @@
   "calibration_buckets": {
     "0.0-0.1": {"predictions": 0, "hits": 0, "actual_rate": null},
     "0.1-0.2": {"predictions": 0, "hits": 0, "actual_rate": null},
-    "0.2-0.3": {"predictions": 0, "hits": 0, "actual_rate": null},
+    "0.2-0.3": {"predictions": 1, "hits": 0, "actual_rate": null, "note": "LINK bull scenario 24.5%, LINK bear scenario 28.3%"},
     "0.3-0.4": {"predictions": 0, "hits": 0, "actual_rate": null},
-    "0.4-0.5": {"predictions": 0, "hits": 0, "actual_rate": null},
+    "0.4-0.5": {"predictions": 1, "hits": 0, "actual_rate": null, "note": "LINK base scenario 47.2%"},
     "0.5-0.6": {"predictions": 0, "hits": 0, "actual_rate": null},
     "0.6-0.7": {"predictions": 0, "hits": 0, "actual_rate": null},
     "0.7-0.8": {"predictions": 0, "hits": 0, "actual_rate": null},
@@ -43,7 +43,13 @@
     "by_chain": {},
     "rolling_30d": null
   },
-  "recalibration_log": [],
+  "recalibration_log": [
+    {
+      "date": "2026-04-21",
+      "action": "system_initialized",
+      "details": "First session. All adjustment factors set to 1.0. System is UNCALIBRATED. Position sizes halved until 10+ predictions are resolved."
+    }
+  ],
   "metadata": {
     "total_calibration_points": 0,
     "last_recalibration": null,

@@ -1,57 +1,111 @@
 {
   "_schema": "token_watchlist_v1",
   "_description": "Tokens actively being monitored with multi-source verification status and alert thresholds.",
-  "active_watchlist": [],
-  "token_schema": {
-    "_note": "Template for token entries - remove when real tokens are added",
-    "symbol": "EXAMPLE",
-    "contract_address": "0x...",
-    "chain": "solana",
-    "added_date": "2025-01-01",
-    "discovery_source": "social_intel_agent",
-    "current_mcap": null,
-    "mcap_at_discovery": null,
-    "verification_status": {
-      "contract_verified": null,
-      "liquidity_locked": null,
-      "honeypot_check": null,
-      "holder_distribution": null,
-      "team_tokens_vested": null,
-      "audit_status": null
+  "active_watchlist": [
+    {
+      "symbol": "LINK",
+      "contract_address": "0x514910771af9ca656af840dff83e8264ecf986ca",
+      "chain": "ethereum",
+      "added_date": "2026-04-21",
+      "discovery_source": "multi_signal_confluence",
+      "current_mcap": 6840000000,
+      "mcap_at_discovery": 6840000000,
+      "verification_status": {
+        "contract_verified": true,
+        "liquidity_locked": true,
+        "honeypot_check": "pass",
+        "holder_distribution": "good",
+        "team_tokens_vested": true,
+        "audit_status": "audited"
+      },
+      "onchain_metrics": {
+        "unique_holders": "25420+ with 1K+ LINK",
+        "daily_volume": null,
+        "liquidity_depth": "high (major CEX + DEX)",
+        "buy_sell_ratio_24h": null
+      },
+      "smart_wallet_interest": {
+        "wallets_holding": ["multiple whale cohorts"],
+        "recent_buys": ["1.01M LINK early April", "1.2M off exchanges in 48h"],
+        "recent_sells": []
+      },
+      "alert_thresholds": {
+        "price_above": 12.00,
+        "price_below": 7.00,
+        "volume_spike_multiplier": 3.0
+      },
+      "status": "active_prediction",
+      "notes": "Primary recommendation. Entry $9.41, stop $7.00, targets $12/$14/$16."
     },
-    "social_metrics": {
-      "twitter_mentions_24h": null,
-      "telegram_members": null,
-      "sentiment_score": null,
-      "influencer_mentions": []
+    {
+      "symbol": "ONDO",
+      "contract_address": "0xfAbA6f8e4a5E8Ab82F62fe7C39859FA577269BE3",
+      "chain": "ethereum",
+      "added_date": "2026-04-21",
+      "discovery_source": "narrative_catalyst",
+      "current_mcap": 1260000000,
+      "mcap_at_discovery": 1260000000,
+      "verification_status": {
+        "contract_verified": true,
+        "liquidity_locked": true,
+        "honeypot_check": "pass",
+        "holder_distribution": "unknown",
+        "team_tokens_vested": "needs_verification",
+        "audit_status": "audited"
+      },
+      "onchain_metrics": {
+        "tvl": 3600000000,
+        "note": "TVL at ATH but token price -80%+ — divergence"
+      },
+      "alert_thresholds": {
+        "price_above": 0.35,
+        "price_below": 0.18,
+        "volume_spike_multiplier": 3.0
+      },
+      "status": "monitoring",
+      "notes": "WATCH only. TVL/price divergence interesting but EV below threshold (1.14x). Need to verify unlock schedule."
     },
-    "onchain_metrics": {
-      "unique_holders": null,
-      "top10_holder_pct": null,
-      "daily_volume": null,
-      "liquidity_depth": null,
-      "buy_sell_ratio_24h": null
+    {
+      "symbol": "AAVE",
+      "contract_address": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
+      "chain": "ethereum",
+      "added_date": "2026-04-21",
+      "discovery_source": "market_dislocation",
+      "current_mcap": null,
+      "mcap_at_discovery": null,
+      "verification_status": {
+        "contract_verified": true,
+        "note": "Post-KelpDAO hack impact: TVL dropped from $26.4B to ~$20B, token -16%"
+      },
+      "alert_thresholds": {
+        "price_above": null,
+        "price_below": null
+      },
+      "status": "monitoring",
+      "notes": "Post-hack recovery play. Wait for loss quantification and TVL stabilization before acting."
     },
-    "smart_wallet_interest": {
-      "wallets_holding": [],
-      "recent_buys": [],
-      "recent_sells": []
-    },
-    "alert_thresholds": {
-      "price_above": null,
-      "price_below": null,
-      "volume_spike_multiplier": 3.0,
-      "holder_drop_pct": 10
-    },
-    "status": "monitoring",
-    "notes": ""
-  },
+    {
+      "symbol": "CFG",
+      "contract_address": null,
+      "chain": "ethereum",
+      "added_date": "2026-04-21",
+      "discovery_source": "narrative_catalyst",
+      "current_mcap": null,
+      "mcap_at_discovery": null,
+      "verification_status": {
+        "note": "RWA private credit leader. $1.1B active loans. 8-12% yields."
+      },
+      "alert_thresholds": {},
+      "status": "monitoring",
+      "notes": "RWA play. Centrifuge private credit leader. Needs deeper on-chain analysis."
+    }
+  ],
   "graduated_tokens": [],
   "dead_tokens": [],
   "metadata": {
-    "total_active": 0,
+    "total_active": 4,
     "total_graduated": 0,
     "total_dead": 0,
-    "last_scan": null
+    "last_scan": "2026-04-21"
   }
 }
