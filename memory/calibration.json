@@ -1,12 +1,27 @@
 {
   "_schema": "calibration_v1",
   "_description": "Probability calibration data. Compares predicted probabilities against actual outcomes to improve accuracy over time.",
+  "system_status": "CALIBRATING",
+  "calibration_methodology": {
+    "approach": "Bayesian updating with signal-type weighting",
+    "min_predictions_for_calibrated": 10,
+    "current_predictions": 1,
+    "confidence_penalty": 0.5,
+    "position_size_multiplier": 0.5,
+    "rules": [
+      "All position sizes halved until 10+ resolved predictions",
+      "EV threshold remains 1.2x minimum",
+      "Probabilities adjusted toward base rates when uncertain",
+      "Signal weights updated after each resolved prediction",
+      "Brier score tracked per signal type for accuracy measurement"
+    ]
+  },
   "calibration_buckets": {
     "0.0-0.1": {"predictions": 0, "hits": 0, "actual_rate": null},
     "0.1-0.2": {"predictions": 0, "hits": 0, "actual_rate": null},
-    "0.2-0.3": {"predictions": 1, "hits": 0, "actual_rate": null},
+    "0.2-0.3": {"predictions": 1, "hits": 0, "actual_rate": null, "entries": ["pred_001_bear_28.3%"]},
     "0.3-0.4": {"predictions": 0, "hits": 0, "actual_rate": null},
-    "0.4-0.5": {"predictions": 1, "hits": 0, "actual_rate": null},
+    "0.4-0.5": {"predictions": 1, "hits": 0, "actual_rate": null, "entries": ["pred_001_base_47.2%"]},
     "0.5-0.6": {"predictions": 0, "hits": 0, "actual_rate": null},
     "0.6-0.7": {"predictions": 0, "hits": 0, "actual_rate": null},
     "0.7-0.8": {"predictions": 0, "hits": 0, "actual_rate": null},
@@ -14,7 +29,7 @@
     "0.9-1.0": {"predictions": 0, "hits": 0, "actual_rate": null}
   },
   "adjustment_factors": {
-    "_description": "Multipliers applied to raw probability estimates based on historical calibration error",
+    "_description": "Multipliers applied to raw probability estimates. Updated after each resolved prediction.",
     "smart_wallet_convergence": 1.0,
     "social_volume_breakout": 1.0,
     "insider_accumulation": 1.0,
@@ -22,7 +37,15 @@
     "onchain_anomaly": 1.0,
     "narrative_catalyst": 1.0,
     "solana_trench_discovery": 1.0,
-    "multi_signal_confluence": 1.0
+    "multi_signal_confluence": 1.0,
+    "market_dominance": 1.0
+  },
+  "signal_performance": {
+    "_description": "Track which signal types lead to profitable trades",
+    "multi_signal_confluence": {"total": 1, "profitable": 0, "avg_return": null, "win_rate": null},
+    "insider_accumulation": {"total": 0, "profitable": 0, "avg_return": null, "win_rate": null},
+    "narrative_catalyst": {"total": 0, "profitable": 0, "avg_return": null, "win_rate": null},
+    "market_dominance": {"total": 0, "profitable": 0, "avg_return": null, "win_rate": null}
   },
   "ev_model_params": {
     "base_risk_free_rate": 0.0,
@@ -30,30 +53,60 @@
     "max_position_size_pct": 5.0,
     "kelly_fraction": 0.25,
     "min_ev_threshold": 1.2,
+    "confluence_bonus": {
+      "2_signals": 1.0,
+      "3_signals": 1.15,
+      "4_signals": 1.30,
+      "5_plus_signals": 1.45
+    },
     "scenarios": {
-      "bull": {"weight_default": 0.30, "description": "Best case: thesis plays out fully"},
-      "base": {"weight_default": 0.50, "description": "Expected case: partial thesis realization"},
-      "bear": {"weight_default": 0.20, "description": "Worst case: thesis fails, stop loss hit"}
+      "bull": {"weight_default": 0.25, "description": "Best case: thesis plays out fully, multiple targets hit"},
+      "base": {"weight_default": 0.47, "description": "Expected case: partial thesis realization, first target hit"},
+      "bear": {"weight_default": 0.28, "description": "Worst case: thesis fails, stop loss hit or time expires"}
+    },
+    "risk_adjustments": {
+      "high_fg_above_75": {"position_multiplier": 0.7, "reason": "Reduce in greed"},
+      "low_fg_below_25": {"position_multiplier": 0.8, "reason": "Fear often precedes more fear"},
+      "post_hack_7days": {"position_multiplier": 0.6, "reason": "Contagion risk"},
+      "btc_below_ath_40pct": {"position_multiplier": 0.8, "reason": "Macro headwind"}
     }
   },
+  "active_risk_adjustments": [
+    {"rule": "btc_below_ath_40pct", "active": true, "effect": "Position sizes * 0.8"},
+    {"rule": "calibration_penalty", "active": true, "effect": "Position sizes * 0.5 (uncalibrated)"},
+    {"rule": "post_hack_7days", "active": false, "effect": "Expired — KelpDAO hack > 14 days ago"}
+  ],
   "brier_scores": {
     "_description": "Brier score measures calibration accuracy. Lower is better. 0 = perfect, 0.25 = random",
     "overall": null,
     "by_signal_type": {},
     "by_chain": {},
-    "rolling_30d": null
+    "rolling_30d": null,
+    "target": 0.15
   },
   "recalibration_log": [
     {
       "date": "2026-04-21",
+      "session": 1,
       "action": "system_initialized",
-      "details": "First session. All adjustment factors set to 1.0. System is UNCALIBRATED. Position sizes halved until 10+ predictions are resolved."
+      "details": "First session. All adjustment factors set to 1.0. System UNCALIBRATED. Position sizes halved."
+    },
+    {
+      "date": "2026-05-03",
+      "session": 2,
+      "action": "calibration_framework_established",
+      "details": "Added methodology documentation, risk adjustments, signal performance tracking, confluence bonus system. LINK prediction nearing expiry (May 5). First calibration point imminent."
     }
   ],
+  "next_calibration_trigger": {
+    "event": "LINK prediction expiry on 2026-05-05",
+    "action": "Resolve prediction, update calibration buckets, calculate first Brier score component, adjust signal weights if needed"
+  },
   "metadata": {
     "total_calibration_points": 0,
-    "last_recalibration": null,
-    "model_version": "1.0",
-    "sessions_since_recalibration": 0
+    "last_recalibration": "2026-05-03",
+    "model_version": "1.1",
+    "sessions_completed": 2,
+    "next_milestone": "10 resolved predictions for CALIBRATED status"
   }
 }
