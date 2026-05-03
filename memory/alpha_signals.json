@@ -5,19 +5,23 @@
     {
       "id": "sig_2026_04_21_001",
       "timestamp": "2026-04-21T00:00:00Z",
+      "updated": "2026-05-03T00:00:00Z",
       "type": "multi_signal_confluence",
       "strength": "strong",
       "source_agent": "aggregated",
       "token": "LINK",
       "chain": "ethereum",
-      "description": "3-signal confluence: whale accumulation (1.01M LINK, exchange outflows), CCIP institutional adoption ($18B Q1, JPMorgan/UBS), RWA narrative leadership",
+      "description": "4-signal confluence (upgraded from 3): whale accumulation continuing (970K LINK withdrawn Apr 27), CCIP v1.5 mainnet, ETF inflows $111M, StanChart $15 target",
       "supporting_data": {
-        "whale_addresses_1k_plus": 25420,
-        "exchange_outflow_48h": "1.2M LINK",
-        "ccip_q1_volume": "$18B",
+        "whale_withdrawal_apr27": "970K LINK ($8.95M) — largest since Dec 2025",
+        "etf_inflows": "$111M cumulative",
+        "ccip_weekly_volume": "$1.3B (up 260%)",
+        "ccip_monthly_volume": "$18B",
+        "ccip_version": "v1.5 mainnet live",
+        "institutional_target": "Standard Chartered $15 by late 2026",
         "institutional_partners": ["JPMorgan", "UBS", "ADI Foundation"]
       },
-      "conflicting_signals": ["macro_uncertainty", "defi_contagion", "geopolitical_risk"],
+      "conflicting_signals": ["macro_uncertainty", "fg_45_fear", "btc_80k_resistance"],
       "acted_on": true,
       "prediction_id": "pred_2026_04_21_001",
       "outcome": null
@@ -25,16 +29,20 @@
     {
       "id": "sig_2026_04_21_002",
       "timestamp": "2026-04-21T00:00:00Z",
+      "updated": "2026-05-03T00:00:00Z",
       "type": "narrative_catalyst",
       "strength": "strong",
       "source_agent": "social_intel",
       "token": null,
       "chain": null,
-      "description": "RWA tokenization is the dominant 2026 narrative. $26.4-29.2B total tokenized assets, 380% growth in 3 years. Institutional adoption accelerating.",
+      "description": "RWA tokenization dominant 2026 narrative. Updated: $19.32B on-chain (+256% in 15 months). Tokenized US Treasuries $11B. EU MiCA boosted European issuance +34% Q1.",
       "supporting_data": {
-        "total_rwa_tokenized": "$26.4-29.2B",
-        "private_credit": "$17B",
-        "growth_3yr": "380%"
+        "total_rwa_onchain": "$19.32B",
+        "tokenized_treasuries": "$11B",
+        "blackrock_buidl": "$5.2B",
+        "circle_usyc": "$2.2B",
+        "eu_mica_effect": "+34% Q1 issuance",
+        "growth_15m": "+256%"
       },
       "conflicting_signals": [],
       "acted_on": false,
@@ -44,19 +52,22 @@
     {
       "id": "sig_2026_04_21_003",
       "timestamp": "2026-04-21T00:00:00Z",
+      "updated": "2026-05-03T00:00:00Z",
       "type": "insider_accumulation",
-      "strength": "strong",
+      "strength": "critical",
       "source_agent": "smart_wallets",
       "token": "BTC",
       "chain": "bitcoin",
-      "description": "270K BTC ($23B) accumulated by large holders in 30 days. Exchange reserves at 7-year low (2.21M BTC).",
+      "description": "BTC whale accumulation largest since 2013. 270K BTC in April. LTH at 78.3% supply. Exchange reserves 7yr low. 2,140 whale addresses (1000+ BTC).",
       "supporting_data": {
-        "btc_accumulated": "270K BTC",
-        "value_usd": "$23B",
+        "btc_accumulated_april": "270K BTC ($23B)",
         "exchange_reserves": "2.21M BTC (7-year low)",
-        "record_withdrawal": "32K BTC single day (March 7)"
+        "lth_supply_pct": "78.3%",
+        "whale_addresses_1000plus": 2140,
+        "whale_addresses_added_since_dec": 58,
+        "parallel_to": "Q4 2020 structure before $10K->$60K run"
       },
-      "conflicting_signals": ["geopolitical_risk", "macro_uncertainty"],
+      "conflicting_signals": ["btc_stuck_below_80k", "macro_uncertainty"],
       "acted_on": false,
       "prediction_id": null,
       "outcome": null
@@ -64,78 +75,99 @@
     {
       "id": "sig_2026_04_21_004",
       "timestamp": "2026-04-21T00:00:00Z",
+      "updated": "2026-05-03T00:00:00Z",
       "type": "onchain_anomaly",
       "strength": "medium",
       "source_agent": "onchain_verify",
       "token": "ONDO",
       "chain": "ethereum",
-      "description": "ONDO TVL at ATH $3.6B while token price -80%+ from highs. Massive divergence between protocol growth and token performance.",
+      "description": "ONDO at $0.2686 (+2.1% 24h). TVL still ATH. RWA market grew to $19.32B. Divergence persists.",
       "supporting_data": {
-        "tvl": "$3.6B",
-        "token_price": "$0.259",
-        "divergence": "TVL ATH + token -80%"
+        "price": "$0.2686",
+        "tvl": "ATH territory",
+        "rwa_market": "$19.32B"
       },
-      "conflicting_signals": ["persistent_token_downtrend", "possible_unlock_pressure"],
+      "conflicting_signals": ["persistent_token_downtrend"],
+      "acted_on": false,
+      "prediction_id": null,
+      "outcome": null
+    },
+    {
+      "id": "sig_2026_05_03_001",
+      "timestamp": "2026-05-03T00:00:00Z",
+      "type": "market_dominance",
+      "strength": "strong",
+      "source_agent": "direct_scan",
+      "token": "HYPE",
+      "chain": "hyperliquid",
+      "description": "Hyperliquid captured 70% on-chain perp market. $493B Q1 derivatives volume. $619B total Q1. Whale positioning shifted net-long BTC ($257M vs $126M shorts).",
+      "supporting_data": {
+        "market_share": "70%",
+        "q1_volume": "$619B",
+        "q1_derivatives": "$493B",
+        "whale_btc_longs": "$257M",
+        "whale_btc_shorts": "$126M",
+        "long_short_ratio": 2.04
+      },
+      "conflicting_signals": ["token_concentration_risk"],
+      "acted_on": false,
+      "prediction_id": null,
+      "outcome": null
+    },
+    {
+      "id": "sig_2026_05_03_002",
+      "timestamp": "2026-05-03T00:00:00Z",
+      "type": "insider_accumulation",
+      "strength": "strong",
+      "source_agent": "direct_scan",
+      "token": "ETH",
+      "chain": "ethereum",
+      "description": "ETH whales bought $322M as CLARITY Act advances. Institutional accumulation at $2,300 levels.",
+      "supporting_data": {
+        "whale_buying": "$322M",
+        "catalyst": "CLARITY Act markup",
+        "price_level": "$2,315"
+      },
+      "conflicting_signals": ["bearish_technicals", "fg_fear"],
+      "acted_on": false,
+      "prediction_id": null,
+      "outcome": null
+    },
+    {
+      "id": "sig_2026_05_03_003",
+      "timestamp": "2026-05-03T00:00:00Z",
+      "type": "narrative_catalyst",
+      "strength": "medium",
+      "source_agent": "direct_scan",
+      "token": "TAO",
+      "chain": "multi",
+      "description": "AI infrastructure tokens with real revenue diverging from vaporware. Bittensor $43M Q1 revenue. Market shifting to usage metrics.",
+      "supporting_data": {
+        "bittensor_q1_revenue": "$43M",
+        "narrative_shift": "Infrastructure with revenue > vaporware"
+      },
+      "conflicting_signals": ["high_valuation_risk"],
       "acted_on": false,
       "prediction_id": null,
       "outcome": null
     }
   ],
   "signal_types": {
-    "smart_wallet_convergence": {
-      "description": "Multiple tracked wallets buying the same token in a short window",
-      "base_weight": 0.85,
-      "historical_hit_rate": null,
-      "count": 0
-    },
-    "social_volume_breakout": {
-      "description": "Sudden spike in social mentions before significant price movement",
-      "base_weight": 0.40,
-      "historical_hit_rate": null,
-      "count": 0
-    },
-    "insider_accumulation": {
-      "description": "Suspected insider wallets accumulating before any public catalyst",
-      "base_weight": 0.75,
-      "historical_hit_rate": null,
-      "count": 1
-    },
-    "hyperliquid_whale_position": {
-      "description": "Top leaderboard trader opens significant position",
-      "base_weight": 0.60,
-      "historical_hit_rate": null,
-      "count": 0
-    },
-    "onchain_anomaly": {
-      "description": "Unusual on-chain activity (large transfers, contract interactions, liquidity adds)",
-      "base_weight": 0.50,
-      "historical_hit_rate": null,
-      "count": 1
-    },
-    "narrative_catalyst": {
-      "description": "Emerging narrative or catalyst identified through social scanning",
-      "base_weight": 0.35,
-      "historical_hit_rate": null,
-      "count": 1
-    },
-    "solana_trench_discovery": {
-      "description": "Early-stage Solana token showing organic traction metrics",
-      "base_weight": 0.30,
-      "historical_hit_rate": null,
-      "count": 0
-    },
-    "multi_signal_confluence": {
-      "description": "Multiple independent signal types firing on the same token",
-      "base_weight": 0.90,
-      "historical_hit_rate": null,
-      "count": 1
-    }
+    "smart_wallet_convergence": {"description": "Multiple tracked wallets buying the same token", "base_weight": 0.85, "historical_hit_rate": null, "count": 0},
+    "social_volume_breakout": {"description": "Sudden spike in social mentions before price movement", "base_weight": 0.40, "historical_hit_rate": null, "count": 0},
+    "insider_accumulation": {"description": "Suspected insider wallets accumulating before catalyst", "base_weight": 0.75, "historical_hit_rate": null, "count": 3},
+    "hyperliquid_whale_position": {"description": "Top leaderboard trader opens significant position", "base_weight": 0.60, "historical_hit_rate": null, "count": 0},
+    "onchain_anomaly": {"description": "Unusual on-chain activity", "base_weight": 0.50, "historical_hit_rate": null, "count": 1},
+    "narrative_catalyst": {"description": "Emerging narrative or catalyst via social scanning", "base_weight": 0.35, "historical_hit_rate": null, "count": 2},
+    "solana_trench_discovery": {"description": "Early-stage Solana token showing organic traction", "base_weight": 0.30, "historical_hit_rate": null, "count": 0},
+    "multi_signal_confluence": {"description": "Multiple independent signal types on same token", "base_weight": 0.90, "historical_hit_rate": null, "count": 1},
+    "market_dominance": {"description": "Protocol capturing dominant market share", "base_weight": 0.65, "historical_hit_rate": null, "count": 1}
   },
   "expired_signals": [],
   "metadata": {
-    "total_signals_generated": 4,
+    "total_signals_generated": 7,
     "total_acted_on": 1,
-    "signals_this_session": 4,
+    "signals_this_session": 3,
     "strongest_active_signal": "sig_2026_04_21_001"
   }
 }

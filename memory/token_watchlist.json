@@ -7,8 +7,10 @@
       "contract_address": "0x514910771af9ca656af840dff83e8264ecf986ca",
       "chain": "ethereum",
       "added_date": "2026-04-21",
+      "updated_date": "2026-05-03",
       "discovery_source": "multi_signal_confluence",
-      "current_mcap": 6840000000,
+      "current_price": 9.12,
+      "current_mcap": 5960000000,
       "mcap_at_discovery": 6840000000,
       "verification_status": {
         "contract_verified": true,
@@ -20,13 +22,14 @@
       },
       "onchain_metrics": {
         "unique_holders": "25420+ with 1K+ LINK",
-        "daily_volume": null,
-        "liquidity_depth": "high (major CEX + DEX)",
-        "buy_sell_ratio_24h": null
+        "exchange_outflow_apr27": "970K LINK ($8.95M)",
+        "etf_inflows": "$111M cumulative",
+        "ccip_version": "v1.5 mainnet",
+        "ccip_weekly_volume": "$1.3B (+260%)"
       },
       "smart_wallet_interest": {
         "wallets_holding": ["multiple whale cohorts"],
-        "recent_buys": ["1.01M LINK early April", "1.2M off exchanges in 48h"],
+        "recent_buys": ["970K LINK off exchanges Apr 27", "Continued accumulation pattern"],
         "recent_sells": []
       },
       "alert_thresholds": {
@@ -35,14 +38,16 @@
         "volume_spike_multiplier": 3.0
       },
       "status": "active_prediction",
-      "notes": "Primary recommendation. Entry $9.41, stop $7.00, targets $12/$14/$16."
+      "notes": "Active position. Entry $9.41, current $9.12 (-3.1%). Thesis strengthening but price lagging. Expiry May 5."
     },
     {
       "symbol": "ONDO",
       "contract_address": "0xfAbA6f8e4a5E8Ab82F62fe7C39859FA577269BE3",
       "chain": "ethereum",
       "added_date": "2026-04-21",
+      "updated_date": "2026-05-03",
       "discovery_source": "narrative_catalyst",
+      "current_price": 0.2686,
       "current_mcap": 1260000000,
       "mcap_at_discovery": 1260000000,
       "verification_status": {
@@ -54,8 +59,9 @@
         "audit_status": "audited"
       },
       "onchain_metrics": {
-        "tvl": 3600000000,
-        "note": "TVL at ATH but token price -80%+ — divergence"
+        "tvl": "ATH territory",
+        "rwa_market_size": "$19.32B",
+        "tokenized_treasuries": "$11B"
       },
       "alert_thresholds": {
         "price_above": 0.35,
@@ -63,49 +69,61 @@
         "volume_spike_multiplier": 3.0
       },
       "status": "monitoring",
-      "notes": "WATCH only. TVL/price divergence interesting but EV below threshold (1.14x). Need to verify unlock schedule."
+      "notes": "WATCH. RWA market grew to $19.32B. TVL/price divergence persists. EV still below threshold."
     },
     {
       "symbol": "AAVE",
       "contract_address": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
       "chain": "ethereum",
       "added_date": "2026-04-21",
+      "updated_date": "2026-05-03",
       "discovery_source": "market_dislocation",
       "current_mcap": null,
-      "mcap_at_discovery": null,
       "verification_status": {
         "contract_verified": true,
-        "note": "Post-KelpDAO hack impact: TVL dropped from $26.4B to ~$20B, token -16%"
-      },
-      "alert_thresholds": {
-        "price_above": null,
-        "price_below": null
+        "note": "Coalition committed $300M+ to stabilize post-KelpDAO. Deposits returning."
       },
       "status": "monitoring",
-      "notes": "Post-hack recovery play. Wait for loss quantification and TVL stabilization before acting."
+      "notes": "Recovery in progress. Aave-led $300M coalition stabilizing system. Yields normalizing. Watch for full TVL recovery."
     },
     {
       "symbol": "CFG",
       "contract_address": null,
       "chain": "ethereum",
       "added_date": "2026-04-21",
+      "updated_date": "2026-05-03",
       "discovery_source": "narrative_catalyst",
       "current_mcap": null,
-      "mcap_at_discovery": null,
-      "verification_status": {
-        "note": "RWA private credit leader. $1.1B active loans. 8-12% yields."
-      },
-      "alert_thresholds": {},
       "status": "monitoring",
-      "notes": "RWA play. Centrifuge private credit leader. Needs deeper on-chain analysis."
+      "notes": "RWA private credit leader. Centrifuge benefits from $19.32B RWA market growth."
+    },
+    {
+      "symbol": "HYPE",
+      "contract_address": null,
+      "chain": "hyperliquid",
+      "added_date": "2026-05-03",
+      "discovery_source": "market_dominance",
+      "current_mcap": null,
+      "status": "research",
+      "notes": "NEW: Hyperliquid 70% perp market share. $619B Q1 volume. Whale positioning shifted net-long. Needs deeper analysis."
+    },
+    {
+      "symbol": "TAO",
+      "contract_address": null,
+      "chain": "multi",
+      "added_date": "2026-05-03",
+      "discovery_source": "narrative_catalyst",
+      "current_mcap": null,
+      "status": "research",
+      "notes": "NEW: Bittensor $43M Q1 revenue. AI infrastructure with real usage. Market bifurcating — real revenue vs vaporware."
     }
   ],
   "graduated_tokens": [],
   "dead_tokens": [],
   "metadata": {
-    "total_active": 4,
+    "total_active": 6,
     "total_graduated": 0,
     "total_dead": 0,
-    "last_scan": "2026-04-21"
+    "last_scan": "2026-05-03"
   }
 }

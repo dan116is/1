@@ -193,7 +193,8 @@ tr:hover td{background:rgba(88,166,255,.03)}
     </div>
     <div class="topbar-right">
         <div class="pill pill-yellow"><span class="dot dot-yellow"></span> UNCALIBRATED</div>
-        <div class="pill pill-green"><span class="dot dot-green"></span> BTC $76,458</div>
+        <div class="pill pill-green"><span class="dot dot-green"></span> BTC <span id="btc-topbar">$78,804</span></div>
+        <div class="pill" style="background:rgba(88,166,255,.12);color:var(--blue)">F&amp;G <span id="fg-topbar">45</span></div>
     </div>
 </div>
 </div>
@@ -261,24 +262,25 @@ tr:hover td{background:rgba(88,166,255,.03)}
 <!-- ========== DASHBOARD VIEW ========== -->
 <div id="view-dashboard" class="view">
 <div class="dash-wrap">
-    <div class="alert alert-red">&#9888; <strong>KelpDAO Hack:</strong> $292M exploited via LayerZero bridge (Apr 19). Aave TVL -$6B. Total DeFi TVL dropped $13B+. Contagion risk elevated.</div>
+    <div class="alert alert-yellow">&#9888; <strong>KelpDAO Recovery:</strong> Aave-led coalition committed $300M+ to stabilize post-hack. Deposits returning, yields normalizing. DeFi TVL rebounding from $86B low.</div>
 
     <div class="grid grid-top" style="margin-bottom:16px">
-        <div class="card market-card"><div class="symbol">BTC</div><div class="price">$76,458</div><div class="change up">+1.90%</div></div>
-        <div class="card market-card"><div class="symbol">ETH</div><div class="price">$2,325</div><div class="change up">+0.92%</div></div>
-        <div class="card market-card"><div class="symbol">SOL</div><div class="price">$85.85</div><div class="change up">+1.06%</div></div>
-        <div class="card market-card highlight"><div class="symbol">LINK &#9733;</div><div class="price">$9.41</div><div class="change up">+1.94%</div></div>
-        <div class="card market-card"><div class="symbol">ONDO</div><div class="price">$0.259</div><div class="change up">+2.34%</div></div>
+        <div class="card market-card"><div class="symbol">BTC</div><div class="price" id="p-btc">$78,804</div><div class="change up" id="c-btc">+0.60%</div></div>
+        <div class="card market-card"><div class="symbol">ETH</div><div class="price" id="p-eth">$2,315</div><div class="change down" id="c-eth">-0.40%</div></div>
+        <div class="card market-card"><div class="symbol">SOL</div><div class="price" id="p-sol">$83.97</div><div class="change down" id="c-sol">-0.24%</div></div>
+        <div class="card market-card highlight"><div class="symbol">LINK &#9733;</div><div class="price" id="p-link">$9.12</div><div class="change down" id="c-link">-0.49%</div></div>
+        <div class="card market-card"><div class="symbol">ONDO</div><div class="price" id="p-ondo">$0.269</div><div class="change up" id="c-ondo">+2.10%</div></div>
     </div>
 
     <div class="grid grid-main" style="margin-bottom:16px">
         <div class="card">
             <div class="card-title">Alpha Signals</div>
-            <div class="signal signal-strong"><div class="signal-icon" style="background:rgba(63,185,80,.15)">&#9670;</div><div class="signal-body"><div class="signal-header"><span class="signal-name">LINK — Multi-Signal Confluence</span><span class="signal-badge badge-strong">Strong</span></div><div class="signal-desc">3 independent signals: whale accumulation (1.01M LINK), CCIP institutional adoption ($18B Q1), RWA narrative leadership</div><div class="signal-meta">Confluence: 3 · Social + Wallets + On-Chain</div></div></div>
-            <div class="signal signal-strong"><div class="signal-icon" style="background:rgba(88,166,255,.15)">&#9651;</div><div class="signal-body"><div class="signal-header"><span class="signal-name">RWA Narrative — Sector Rotation</span><span class="signal-badge badge-strong">Strong</span></div><div class="signal-desc">Tokenized RWA at $26-29B (+380% 3yr). Private credit $17B. BlackRock, JPMorgan, UBS driving institutional demand.</div><div class="signal-meta">Confluence: 2 · Social + On-Chain</div></div></div>
+            <div class="signal signal-strong"><div class="signal-icon" style="background:rgba(63,185,80,.15)">&#9670;</div><div class="signal-body"><div class="signal-header"><span class="signal-name">LINK — 4-Signal Confluence (Upgraded)</span><span class="signal-badge badge-strong">Strong</span></div><div class="signal-desc">970K LINK withdrawn Apr 27 (largest since Dec). CCIP v1.5 mainnet. ETF inflows $111M. StanChart target $15. Thesis strengthening.</div><div class="signal-meta">Confluence: 4 · Wallets + On-Chain + Institutional + ETF</div></div></div>
+            <div class="signal signal-strong"><div class="signal-icon" style="background:rgba(88,166,255,.15)">&#9651;</div><div class="signal-body"><div class="signal-header"><span class="signal-name">RWA Narrative — $19.3B On-Chain</span><span class="signal-badge badge-strong">Strong</span></div><div class="signal-desc">RWA at $19.32B (+256% in 15mo). Tokenized Treasuries $11B. BlackRock BUIDL $5.2B. EU MiCA boosted issuance +34% Q1.</div><div class="signal-meta">Confluence: 2 · Social + On-Chain</div></div></div>
             <div class="signal signal-strong"><div class="signal-icon" style="background:rgba(210,153,34,.15)">&#9671;</div><div class="signal-body"><div class="signal-header"><span class="signal-name">BTC Whale Accumulation</span><span class="signal-badge badge-strong">Strong</span></div><div class="signal-desc">270K BTC ($23B) accumulated in 30 days. Exchange reserves at 7-year low (2.21M BTC).</div><div class="signal-meta">Confluence: 2 · Wallets + On-Chain</div></div></div>
             <div class="signal signal-medium"><div class="signal-icon" style="background:rgba(248,81,73,.15)">&#9888;</div><div class="signal-body"><div class="signal-header"><span class="signal-name">DeFi Dislocation — Post-Hack</span><span class="signal-badge badge-medium">Medium</span></div><div class="signal-desc">$13B DeFi TVL drop. AAVE -16%. Quality protocols oversold on panic. Contagion risk remains.</div><div class="signal-meta">Source: On-Chain</div></div></div>
-            <div class="signal signal-weak"><div class="signal-icon" style="background:rgba(139,148,158,.1)">&#8644;</div><div class="signal-body"><div class="signal-header"><span class="signal-name">Hyperliquid Market Structure</span><span class="signal-badge badge-weak">Weak</span></div><div class="signal-desc">$3.45B whale positions, L/S ratio 1.04. No clear convergence. Notable $40M BTC short.</div><div class="signal-meta">Source: Hyperliquid Monitor</div></div></div>
+            <div class="signal signal-strong"><div class="signal-icon" style="background:rgba(88,166,255,.15)">&#8644;</div><div class="signal-body"><div class="signal-header"><span class="signal-name">Hyperliquid — 70% Market Dominance</span><span class="signal-badge badge-strong">Strong</span></div><div class="signal-desc">$619B Q1 volume. Whales shifted net-long BTC: $257M longs vs $126M shorts (2:1 ratio). Most bullish since March.</div><div class="signal-meta">Source: Hyperliquid Monitor · NEW</div></div></div>
+            <div class="signal signal-medium"><div class="signal-icon" style="background:rgba(88,166,255,.15)">&#9670;</div><div class="signal-body"><div class="signal-header"><span class="signal-name">ETH Whale Buying — $322M</span><span class="signal-badge badge-medium">Medium</span></div><div class="signal-desc">ETH whales bought $322M as CLARITY Act advances toward markup. Institutional accumulation at $2,300 level.</div><div class="signal-meta">Source: On-Chain · NEW</div></div></div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:16px">
@@ -296,11 +298,11 @@ tr:hover td{background:rgba(88,166,255,.03)}
                     <div class="scenario-bar"><span class="label" style="color:var(--red)">Bear</span><div class="bar-track"><div class="bar-fill bar-bear" style="width:28.3%">28.3%</div></div><span class="value">$7.00</span></div>
                 </div>
                 <div style="font-size:12px;color:var(--t2);line-height:1.8">
-                    <div><strong style="color:var(--t1)">Entry:</strong> <span class="mono">$9.41</span></div>
+                    <div><strong style="color:var(--t1)">Entry:</strong> <span class="mono">$9.41</span> → Current: <span class="mono" style="color:var(--red)">$9.12 (-3.1%)</span></div>
                     <div><strong style="color:var(--t1)">Stop Loss:</strong> <span class="mono" style="color:var(--red)">$7.00 (-25.6%)</span></div>
                     <div><strong style="color:var(--t1)">Position:</strong> <span class="mono">2.5%</span> (Kelly-adjusted)</div>
-                    <div><strong style="color:var(--t1)">Timeframe:</strong> <span class="mono">2 weeks</span></div>
-                    <div><strong style="color:var(--t1)">Confidence:</strong> <span style="color:var(--blue)">MEDIUM</span></div>
+                    <div><strong style="color:var(--t1)">Expiry:</strong> <span class="mono" style="color:var(--yellow)">May 5, 2026 (2 days)</span></div>
+                    <div><strong style="color:var(--t1)">Confidence:</strong> <span style="color:var(--blue)">MEDIUM-HIGH</span> (thesis strengthening)</div>
                 </div>
             </div>
             <div class="card">
@@ -309,7 +311,7 @@ tr:hover td{background:rgba(88,166,255,.03)}
                     <div class="risk-item"><div class="r-label">Active Predictions</div><div class="r-value">1</div></div>
                     <div class="risk-item"><div class="r-label">Portfolio Heat</div><div class="r-value" style="color:var(--green)">LOW</div></div>
                     <div class="risk-item"><div class="r-label">Win Rate</div><div class="r-value" style="color:var(--t3)">N/A</div></div>
-                    <div class="risk-item"><div class="r-label">Fear &amp; Greed</div><div class="r-value" style="color:var(--yellow)">54</div></div>
+                    <div class="risk-item"><div class="r-label">Fear &amp; Greed</div><div class="r-value" style="color:var(--yellow)">45</div></div>
                 </div>
             </div>
         </div>
@@ -323,17 +325,19 @@ tr:hover td{background:rgba(88,166,255,.03)}
                 <tbody>
                     <tr><td><strong>LINK</strong></td><td>ETH</td><td><span class="wl-badge wl-active">Active</span></td><td class="mono">$6.84B</td><td style="color:var(--t2);font-size:11px">BUY — EV 1.23x</td></tr>
                     <tr><td><strong>ONDO</strong></td><td>ETH</td><td><span class="wl-badge wl-monitoring">Watch</span></td><td class="mono">$1.26B</td><td style="color:var(--t2);font-size:11px">TVL/price divergence</td></tr>
-                    <tr><td><strong>AAVE</strong></td><td>ETH</td><td><span class="wl-badge wl-monitoring">Watch</span></td><td class="mono">-</td><td style="color:var(--t2);font-size:11px">Post-hack recovery</td></tr>
-                    <tr><td><strong>CFG</strong></td><td>ETH</td><td><span class="wl-badge wl-monitoring">Watch</span></td><td class="mono">-</td><td style="color:var(--t2);font-size:11px">RWA private credit</td></tr>
+                    <tr><td><strong>AAVE</strong></td><td>ETH</td><td><span class="wl-badge wl-monitoring">Watch</span></td><td class="mono">-</td><td style="color:var(--t2);font-size:11px">$300M coalition recovery</td></tr>
+                    <tr><td><strong>HYPE</strong></td><td>HL</td><td><span class="wl-badge" style="background:rgba(88,166,255,.15);color:var(--blue)">Research</span></td><td class="mono">-</td><td style="color:var(--t2);font-size:11px">70% perp dominance, $619B Q1</td></tr>
+                    <tr><td><strong>TAO</strong></td><td>Multi</td><td><span class="wl-badge" style="background:rgba(88,166,255,.15);color:var(--blue)">Research</span></td><td class="mono">-</td><td style="color:var(--t2);font-size:11px">$43M Q1 revenue, AI infra</td></tr>
                 </tbody>
             </table>
         </div>
         <div class="card">
             <div class="card-title">Smart Wallet Activity</div>
-            <div class="feed-item"><div class="feed-dot" style="background:var(--green)"></div><div class="feed-text"><strong>BTC Mega-Accumulation:</strong> 270K BTC ($23B) accumulated by large holders in 30 days. Exchange reserves at 7-year low.</div></div>
-            <div class="feed-item"><div class="feed-dot" style="background:var(--blue)"></div><div class="feed-text"><strong>LINK Whale Surge:</strong> 1.01M LINK added by whales. 100K+ holder addresses at 3-month activity high.</div></div>
-            <div class="feed-item"><div class="feed-dot" style="background:var(--yellow)"></div><div class="feed-text"><strong>Altcoin Accumulation:</strong> QNT whale supply +$1.4M. BCH whale cohort added 260K BCH (~$120M).</div></div>
-            <div class="feed-item"><div class="feed-dot" style="background:var(--red)"></div><div class="feed-text"><strong>HL Contrarian:</strong> Whale opened $40M BTC short at $68,760 with 7x leverage. Liquidation at $80,083.</div></div>
+            <div class="feed-item"><div class="feed-dot" style="background:var(--green)"></div><div class="feed-text"><strong>BTC Record Accumulation:</strong> 270K BTC ($23B) in April — largest since 2013. LTH hold 78.3% of supply. 2,140 whale addresses.</div></div>
+            <div class="feed-item"><div class="feed-dot" style="background:var(--blue)"></div><div class="feed-text"><strong>LINK Outflow Spike:</strong> 970K LINK ($8.95M) withdrawn from exchanges Apr 27 — largest since Dec 2025. ETF inflows $111M.</div></div>
+            <div class="feed-item"><div class="feed-dot" style="background:var(--purple)"></div><div class="feed-text"><strong>ETH Whale Buying:</strong> $322M bought as CLARITY Act advances. Institutional accumulation at $2,300 levels.</div></div>
+            <div class="feed-item"><div class="feed-dot" style="background:var(--yellow)"></div><div class="feed-text"><strong>HL Whales Flip Long:</strong> Shifted from net-short to net-long BTC. $257M longs vs $126M shorts (2:1). Most bullish since March.</div></div>
+            <div class="feed-item"><div class="feed-dot" style="background:var(--red)"></div><div class="feed-text"><strong>HL Contrarian at Risk:</strong> $40M BTC short from $68K near liquidation at $80K. BTC at $78.8K — only $1.2K away.</div></div>
         </div>
     </div>
     <div class="alert alert-yellow" style="margin-top:16px">&#9888; UNCALIBRATED SYSTEM — Session 001. All position sizes reduced by 50%. Calibration begins after 10+ resolved predictions.</div>
@@ -344,10 +348,10 @@ tr:hover td{background:rgba(88,166,255,.03)}
 <div id="view-briefing" class="view">
 <div class="brief-wrap">
     <div class="hdr">
-        <div class="hdr-badge">Uncalibrated · Session 001</div>
+        <div class="hdr-badge">Uncalibrated · Session 002</div>
         <h1>CRYPTO INTELLIGENCE BRIEFING</h1>
-        <div class="date">2026-04-21</div>
-        <div class="meta">Track Record: 0 predictions · Win Rate: N/A · Brier Score: N/A</div>
+        <div class="date">2026-05-03</div>
+        <div class="meta">Track Record: 0 resolved · 1 active (LINK) · Win Rate: N/A · Brier Score: N/A</div>
     </div>
 
     <div class="alert alert-red" style="display:block"><strong>&#9888; CRITICAL EVENT: KelpDAO Hack (April 19)</strong><br>$292M exploited via LayerZero bridge vulnerability. Aave TVL dropped from $26.4B to ~$20B (AAVE -16%). Total DeFi TVL wiped: $13B+ in 48 hours.</div>
@@ -358,17 +362,17 @@ tr:hover td{background:rgba(88,166,255,.03)}
             <table>
                 <thead><tr><th>Asset</th><th>Price</th><th>24h</th><th>Market Cap</th></tr></thead>
                 <tbody>
-                    <tr><td><strong>BTC</strong></td><td class="mono">$76,458</td><td class="mono up">+1.90%</td><td class="mono">$1.53T</td></tr>
-                    <tr><td><strong>ETH</strong></td><td class="mono">$2,325.94</td><td class="mono up">+0.92%</td><td class="mono">$280.79B</td></tr>
-                    <tr><td><strong>SOL</strong></td><td class="mono">$85.85</td><td class="mono up">+1.06%</td><td class="mono">$49.41B</td></tr>
-                    <tr><td><strong>LINK</strong></td><td class="mono">$9.41</td><td class="mono up">+1.94%</td><td class="mono">$6.84B</td></tr>
-                    <tr><td><strong>ONDO</strong></td><td class="mono">$0.259</td><td class="mono up">+2.34%</td><td class="mono">$1.26B</td></tr>
+                    <tr><td><strong>BTC</strong></td><td class="mono">$78,804</td><td class="mono up">+0.60%</td><td class="mono">$1.58T</td></tr>
+                    <tr><td><strong>ETH</strong></td><td class="mono">$2,315</td><td class="mono down">-0.40%</td><td class="mono">$280B</td></tr>
+                    <tr><td><strong>SOL</strong></td><td class="mono">$83.97</td><td class="mono down">-0.24%</td><td class="mono">$45B</td></tr>
+                    <tr><td><strong>LINK</strong></td><td class="mono">$9.12</td><td class="mono down">-0.49%</td><td class="mono">$5.96B</td></tr>
+                    <tr><td><strong>ONDO</strong></td><td class="mono">$0.269</td><td class="mono up">+2.10%</td><td class="mono">$1.26B</td></tr>
                 </tbody>
             </table>
             <div style="display:flex;gap:16px;margin-top:12px;font-size:12px;color:var(--t2);flex-wrap:wrap">
-                <span><strong style="color:var(--t1)">F&amp;G:</strong> <span style="color:var(--yellow)" class="mono">54</span> (Neutral)</span>
-                <span><strong style="color:var(--t1)">BTC ATH:</strong> <span class="mono">$126,198</span> (-39.4%)</span>
-                <span><strong style="color:var(--t1)">Regime:</strong> Fear → Recovery</span>
+                <span><strong style="color:var(--t1)">F&amp;G:</strong> <span style="color:var(--yellow)" class="mono">45</span> (Fear)</span>
+                <span><strong style="color:var(--t1)">BTC ATH:</strong> <span class="mono">$126,198</span> (-37.5%)</span>
+                <span><strong style="color:var(--t1)">Regime:</strong> Fear · DeFi Recovery · Whale Accumulation</span>
             </div>
         </div>
     </div>
@@ -568,6 +572,35 @@ function showView(id){
     if(map[id]!==undefined)tabs[map[id]].classList.add('active');
     window.scrollTo({top:0,behavior:'smooth'});
 }
+
+async function fetchPrices(){
+    try{
+        const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,chainlink,ondo&vs_currencies=usd&include_24hr_change=true');
+        const d=await r.json();
+        const map={bitcoin:{el:'btc',dec:0},ethereum:{el:'eth',dec:0},solana:{el:'sol',dec:2},chainlink:{el:'link',dec:2},ondo:{el:'ondo',dec:4}};
+        for(const[k,v]of Object.entries(map)){
+            if(!d[k])continue;
+            const price=d[k].usd;
+            const change=d[k].usd_24h_change;
+            const pEl=document.getElementById('p-'+v.el);
+            const cEl=document.getElementById('c-'+v.el);
+            if(pEl)pEl.textContent='$'+price.toLocaleString('en-US',{minimumFractionDigits:v.dec,maximumFractionDigits:v.dec});
+            if(cEl){cEl.textContent=(change>=0?'+':'')+change.toFixed(2)+'%';cEl.className='change '+(change>=0?'up':'down');}
+        }
+        const btcTopbar=document.getElementById('btc-topbar');
+        if(btcTopbar&&d.bitcoin)btcTopbar.textContent='$'+d.bitcoin.usd.toLocaleString('en-US',{maximumFractionDigits:0});
+        document.title='CIS v1.0 | BTC $'+d.bitcoin.usd.toLocaleString('en-US',{maximumFractionDigits:0});
+    }catch(e){}
+}
+fetchPrices();
+setInterval(fetchPrices,60000);
+
+const updateEl=document.createElement('div');
+updateEl.style.cssText='position:fixed;bottom:12px;right:12px;font-size:10px;color:var(--t3);font-family:monospace;z-index:999';
+updateEl.id='last-update';
+document.body.appendChild(updateEl);
+function showUpdate(){const d=new Date();updateEl.textContent='Last update: '+d.toLocaleTimeString();}
+showUpdate();setInterval(showUpdate,60000);
 </script>
 </body>
 </html>

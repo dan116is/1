@@ -9,7 +9,7 @@
       "chain": "ethereum",
       "direction": "long",
       "entry_price": 9.41,
-      "current_price": 9.35,
+      "current_price": 9.12,
       "targets": [
         {"level": 1, "price": 12.00, "probability": 0.472},
         {"level": 2, "price": 14.00, "probability": 0.30},
@@ -25,18 +25,27 @@
       "signals_supporting": [
         "smart_wallet_convergence",
         "narrative_catalyst",
-        "onchain_anomaly"
+        "onchain_anomaly",
+        "ccip_v1.5_mainnet",
+        "etf_inflows_111m",
+        "standard_chartered_target_15"
       ],
       "signals_against": [
         "macro_uncertainty",
         "defi_contagion_risk",
-        "geopolitical_tensions"
+        "btc_80k_resistance",
+        "fg_dropping_to_45_fear"
       ],
       "calibration_status": "UNCALIBRATED",
       "outcome": null,
       "outcome_date": null,
       "pnl_percent": null,
-      "review_notes": null
+      "review_notes": [
+        "2026-05-03: Price $9.12 vs entry $9.41 (-3.1%). 2 days to expiry.",
+        "Thesis STRENGTHENING: 970K LINK withdrawn Apr 27 (largest since Dec 2025), CCIP v1.5 live, ETF $111M inflows, StanChart $15 target.",
+        "Macro headwind: F&G dropped from 70 to 45 in one week, BTC stuck below $80K.",
+        "Decision: Thesis intact but time running out. Expiry May 5. Will mark outcome at expiry."
+      ]
     }
   ],
   "pending_review": []
