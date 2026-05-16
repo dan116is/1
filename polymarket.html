@@ -219,8 +219,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
             <div class="card-title">אסטרטגיה</div>
             <div class="setting"><label>יתרה התחלתית ($)</label><input type="number" id="set-balance" value="10"></div>
             <div class="setting"><label>גודל הימור מקסימלי (%)</label><input type="number" id="set-maxbet" value="15" min="1" max="50"></div>
-            <div class="setting"><label>עוצמת סיגנל מינימלית (%)</label><input type="number" id="set-minsignal" value="65" min="55" max="90"></div>
-            <div class="setting"><label>זמן המתנה בין הימורים (שניות)</label><input type="number" id="set-cooldown" value="60" min="10" max="600"></div>
+            <div class="setting"><label>עוצמת סיגנל מינימלית (%)</label><input type="number" id="set-minsignal" value="40" min="25" max="90"></div>
+            <div class="setting"><label>זמן המתנה בין הימורים (שניות)</label><input type="number" id="set-cooldown" value="45" min="10" max="600"></div>
             <div class="setting"><label>חוזק יחסי — קניית יתר</label><input type="number" id="set-rsi-ob" value="72" min="60" max="90"></div>
             <div class="setting"><label>חוזק יחסי — מכירת יתר</label><input type="number" id="set-rsi-os" value="28" min="10" max="40"></div>
         </div>
@@ -246,7 +246,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 // ===== STATE =====
 const DEFAULT={
     balance:10,initial:10,trades:[],logs:[],
-    config:{maxBetPct:15,minSignal:65,cooldown:60,rsiOB:72,rsiOS:28,paper:true,auto:true,pk:'',clobKey:'',clobSecret:'',clobPass:''},
+    config:{maxBetPct:15,minSignal:40,cooldown:45,rsiOB:72,rsiOS:28,paper:true,auto:true,pk:'',clobKey:'',clobSecret:'',clobPass:''},
     stats:{wins:0,losses:0,streak:0,bestStreak:0}
 };
 let ST=JSON.parse(localStorage.getItem('pm_sniper'))||{...DEFAULT};
@@ -406,12 +406,12 @@ function generateSignal(){
     const ema9=calcEMA(closes,9);
     const ema21=calcEMA(closes,21);
     const emaDiff=((ema9-ema21)/ema21)*100;
-    if(emaDiff>0.05){score+=15;reasons.push(`EMA9>EMA21 (+${emaDiff.toFixed(3)}%)`);}
-    else if(emaDiff<-0.05){score-=15;reasons.push(`EMA9<EMA21 (${emaDiff.toFixed(3)}%)`);}
+    if(emaDiff>0.02){score+=15;reasons.push(`EMA9>EMA21 (+${emaDiff.toFixed(3)}%)`);}
+    else if(emaDiff<-0.02){score-=15;reasons.push(`EMA9<EMA21 (${emaDiff.toFixed(3)}%)`);}
 
     // 3. Volume spike
     const volSpike=volumeSpike(vols);
-    if(volSpike>2.5){
+    if(volSpike>1.8){
         const lastChange=closes[closes.length-1]-closes[closes.length-2];
         if(lastChange>0){score+=18;reasons.push(`Vol spike ${volSpike.toFixed(1)}x + UP`);}
         else{score-=18;reasons.push(`Vol spike ${volSpike.toFixed(1)}x + DOWN`);}
@@ -419,16 +419,16 @@ function generateSignal(){
 
     // 4. Momentum (10-period)
     const mom=calcMomentum(closes);
-    if(mom>0.3){score+=12;reasons.push(`Momentum +${mom.toFixed(2)}%`);}
-    else if(mom<-0.3){score-=12;reasons.push(`Momentum ${mom.toFixed(2)}%`);}
+    if(mom>0.15){score+=12;reasons.push(`Momentum +${mom.toFixed(2)}%`);}
+    else if(mom<-0.15){score-=12;reasons.push(`Momentum ${mom.toFixed(2)}%`);}
 
     // 5. VWAP deviation
     if(candles1m.length>=10){
         const vwap=calcVWAP(candles1m.slice(-10));
         const currentPrice=closes[closes.length-1];
         const vwapDev=((currentPrice-vwap)/vwap)*100;
-        if(vwapDev<-0.15){score+=10;reasons.push(`Below VWAP (${vwapDev.toFixed(3)}%)`);}
-        else if(vwapDev>0.15){score-=10;reasons.push(`Above VWAP (+${vwapDev.toFixed(3)}%)`);}
+        if(vwapDev<-0.08){score+=10;reasons.push(`Below VWAP (${vwapDev.toFixed(3)}%)`);}
+        else if(vwapDev>0.08){score-=10;reasons.push(`Above VWAP (+${vwapDev.toFixed(3)}%)`);}
     }
 
     // 6. OBV trend
@@ -470,7 +470,7 @@ function generateSignal(){
     else if(bb.bandwidth>3&&bb.pctB>0.8){score-=8;reasons.push('פריצת בולינגר למעלה');}
 
     // 11. Orderbook imbalance
-    if(Math.abs(orderbookBias)>15){
+    if(Math.abs(orderbookBias)>8){
         const obScore=orderbookBias>0?12:-12;
         score+=obScore;
         reasons.push(`Orderbook ${orderbookBias>0?'bid':'ask'} heavy (${orderbookBias.toFixed(0)}%)`);
@@ -716,6 +716,7 @@ function connectWS(){
 
         updatePrice(candle.c);
         if(running&&candle.closed)tick();
+        else if(running&&tickCount>0&&Date.now()-lastTickTime>30000)tick();
     };
 
     ws.onclose=()=>{
@@ -746,8 +747,10 @@ function build5mCandles(){
 
 // ===== MAIN TICK =====
 let tickCount=0;
+let lastTickTime=0;
 async function tick(){
     tickCount++;
+    lastTickTime=Date.now();
 
     // Fetch microstructure data every 3rd tick
     if(tickCount%3===0){
@@ -759,11 +762,14 @@ async function tick(){
     updateSignalBar(signal);
 
     if(!ST.config.auto||!signal.dir)return;
-    if(signal.strength<ST.config.minSignal)return;
+    if(signal.strength<ST.config.minSignal){
+        if(signal.strength>25)log(`סיגנל ${signal.strength}% — מתחת לסף (${ST.config.minSignal}%)`,'warn');
+        return;
+    }
 
-    // Require at least 3 confirming reasons for a trade
-    if(signal.reasons.length<3){
-        log(`סיגנל חלש (${signal.reasons.length} סיבות) — צריך 3+`,'warn');
+    // Require at least 2 confirming reasons for a trade
+    if(signal.reasons.length<2){
+        log(`סיגנל חלש (${signal.reasons.length} סיבות) — צריך 2+`,'warn');
         return;
     }
 
@@ -987,8 +993,8 @@ function stopBot(){
 
 function saveConfig(){
     ST.config.maxBetPct=parseInt(document.getElementById('set-maxbet').value)||15;
-    ST.config.minSignal=parseInt(document.getElementById('set-minsignal').value)||65;
-    ST.config.cooldown=parseInt(document.getElementById('set-cooldown').value)||60;
+    ST.config.minSignal=parseInt(document.getElementById('set-minsignal').value)||40;
+    ST.config.cooldown=parseInt(document.getElementById('set-cooldown').value)||45;
     ST.config.rsiOB=parseInt(document.getElementById('set-rsi-ob').value)||72;
     ST.config.rsiOS=parseInt(document.getElementById('set-rsi-os').value)||28;
     ST.config.paper=document.getElementById('set-paper').checked;
