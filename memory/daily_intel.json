@@ -1,0 +1,181 @@
+{
+  "_schema": "daily_intel_v1",
+  "_description": "Current day's intelligence findings from all agents. Reset each session, archived to track_record.",
+  "session_date": "2026-05-03",
+  "market_snapshot": {
+    "btc": {"price": 78804, "change_24h": 0.6, "market_cap": 1578000000000},
+    "eth": {"price": 2315, "change_24h": -0.4, "market_cap": 280000000000},
+    "sol": {"price": 83.97, "change_24h": -0.24, "market_cap": 45000000000},
+    "link": {"price": 9.12, "change_24h": -0.49, "market_cap": 5960000000},
+    "ondo": {"price": 0.2686, "change_24h": 2.1, "market_cap": 1260000000},
+    "fear_greed_index": 45,
+    "fear_greed_label": "Fear",
+    "total_crypto_mcap": 2650000000000,
+    "btc_dominance_est": 59.5
+  },
+  "social_signals": [
+    {
+      "type": "mega_narrative",
+      "narrative": "RWA tokenization remains #1 crypto narrative. Now at $19.32B on-chain (+256% in 15 months). Tokenized US Treasuries crossed $11B. BlackRock BUIDL at $5.2B. Circle USYC at $2.2B. EU MiCA boosting European RWA issuance +34% Q1.",
+      "social_volume": "high",
+      "sentiment": "bullish",
+      "organic_score": 0.95,
+      "key_tokens": ["LINK", "ONDO", "CFG", "MKR"],
+      "confidence": "high"
+    },
+    {
+      "type": "mega_narrative",
+      "narrative": "AI tokens bifurcating: infrastructure with real revenue (Bittensor $43M Q1 revenue) thriving, while vaporware AI tokens getting wiped. Shift to real usage metrics.",
+      "social_volume": "high",
+      "sentiment": "selective_bullish",
+      "organic_score": 0.85,
+      "key_tokens": ["TAO", "RENDER", "FET"],
+      "confidence": "medium"
+    },
+    {
+      "type": "mega_narrative",
+      "narrative": "Decentralized derivatives dominated by Hyperliquid — 70% on-chain perp market share, $493B Q1 volume, $619B total Q1 trading volume.",
+      "social_volume": "high",
+      "sentiment": "bullish",
+      "organic_score": 0.9,
+      "key_tokens": ["HYPE", "DYDX", "GMX"],
+      "confidence": "high"
+    },
+    {
+      "type": "token_discovery",
+      "token": "LINK",
+      "chain": "ethereum",
+      "narrative": "LINK whale accumulation continues. 970K LINK ($8.95M) withdrawn from exchanges Apr 27 — largest single-day outflow since Dec 2025. Spot LINK ETF inflows $111M+. CCIP v1.5 mainnet launched. Standard Chartered target $15.",
+      "social_volume": "high",
+      "sentiment": "bullish",
+      "organic_score": 0.95,
+      "confidence": "high"
+    },
+    {
+      "type": "recovery_signal",
+      "narrative": "DeFi recovery post-KelpDAO: Aave-led coalition committed $300M+ to stabilize system. Yields normalizing, deposits returning faster than expected. DeFi TVL rebounding from $86B low.",
+      "social_volume": "medium",
+      "sentiment": "cautiously_bullish",
+      "organic_score": 0.8,
+      "confidence": "medium"
+    }
+  ],
+  "onchain_verified": [
+    {
+      "token": "LINK",
+      "chain": "ethereum",
+      "verification_score": 9,
+      "verdict": "STRONGLY VERIFIED",
+      "evidence": {
+        "whale_accumulation": "970K LINK ($8.95M) withdrawn from exchanges Apr 27, largest since Dec 2025",
+        "etf_inflows": "Spot LINK ETF surpassed $111M in cumulative inflows",
+        "ccip_adoption": "CCIP v1.5 mainnet live, weekly volume up 260% to $1.3B, $18B monthly",
+        "institutional": "Standard Chartered target $15 by late 2026",
+        "price_vs_entry": "Current $9.12 vs entry $9.41 — slightly below entry (-3.1%)"
+      }
+    },
+    {
+      "token": "ONDO",
+      "chain": "ethereum",
+      "verification_score": 7,
+      "verdict": "VERIFIED",
+      "evidence": {
+        "price": "$0.2686, +2.1% 24h",
+        "rwa_market": "Total RWA $19.32B, tokenized Treasuries $11B",
+        "tvl": "ATH territory",
+        "concern": "Token still -80%+ from highs despite fundamentals"
+      }
+    }
+  ],
+  "smart_wallet_moves": [
+    {
+      "type": "btc_whale_accumulation_continues",
+      "details": "Whales accumulated 270K BTC ($23B) in April — largest monthly total since 2013. Exchange reserves at 7-year low 2.21M BTC. Whale addresses 1000+ BTC now at 2,140 (up 58 since Dec 2025). LTH control 78.3% of supply (up from 74.1%).",
+      "significance": "critical"
+    },
+    {
+      "type": "link_whale_outflows",
+      "details": "970K LINK ($8.95M) withdrawn from exchanges Apr 27. Spot LINK ETF inflows $111M+. Continued accumulation pattern from April.",
+      "significance": "high"
+    },
+    {
+      "type": "eth_whale_buying",
+      "details": "ETH whales bought $322M as CLARITY Act advances toward markup. Institutional accumulation at $2,300 levels.",
+      "significance": "high"
+    }
+  ],
+  "hyperliquid_positions": [
+    {
+      "total_whale_positions_usd": null,
+      "platform_stats": {
+        "q1_2026_volume": 619000000000,
+        "perp_market_share": 0.70,
+        "q1_derivatives_volume": 493000000000
+      },
+      "whale_positioning": {
+        "direction": "net_long",
+        "btc_longs_usd": 257000000,
+        "btc_shorts_usd": 126000000,
+        "long_short_ratio": 2.04,
+        "note": "Shifted from net short to most aggressively net-long since early March"
+      }
+    }
+  ],
+  "defi_status": {
+    "tvl_peak_apr17": 99497000000,
+    "tvl_low_apr20": 86286000000,
+    "tvl_drop": 13211000000,
+    "kelpdao_hack_amount": 292000000,
+    "aave_tvl_drop": 8450000000,
+    "recovery": "Aave coalition committed $300M+ to stabilize. Deposits returning. Yields normalizing.",
+    "current_status": "recovering"
+  },
+  "aggregated_alpha": [
+    {
+      "rank": 1,
+      "token": "LINK",
+      "signal_type": "multi_signal_confluence",
+      "confluence_count": 4,
+      "signals": ["whale_accumulation_continuing", "ccip_v1.5_mainnet", "etf_inflows_111m", "standard_chartered_target_15"],
+      "action": "HOLD (existing position)",
+      "ev_score": 1.23,
+      "confidence": "medium-high",
+      "note": "Price $9.12 vs entry $9.41 — thesis intact, signals strengthening"
+    },
+    {
+      "rank": 2,
+      "token": "ONDO",
+      "signal_type": "narrative_catalyst",
+      "confluence_count": 2,
+      "signals": ["rwa_narrative_19b", "tvl_price_divergence"],
+      "action": "WATCH",
+      "ev_score": 1.14,
+      "confidence": "medium"
+    },
+    {
+      "rank": 3,
+      "token": "HYPE",
+      "signal_type": "market_dominance",
+      "confluence_count": 2,
+      "signals": ["70pct_perp_market_share", "619b_q1_volume"],
+      "action": "RESEARCH",
+      "ev_score": null,
+      "confidence": "low"
+    }
+  ],
+  "risk_warnings": [
+    "BTC -39% from ATH ($126K Oct 2025), struggling to break $80K resistance",
+    "F&G at 45 (Fear) — down from 70 last week, sentiment deteriorating",
+    "KelpDAO aftermath: DeFi recovering but cross-chain bridge risks persist",
+    "Macro uncertainty: Fed rates, inflation, equity correlation",
+    "UNCALIBRATED system — session 002, all sizes halved"
+  ],
+  "metadata": {
+    "agents_completed": ["direct_scan_all"],
+    "scan_start": "2026-05-03T00:00:00Z",
+    "scan_end": "2026-05-03T00:00:00Z",
+    "total_signals_raw": 15,
+    "total_signals_verified": 2,
+    "session_number": 2
+  }
+}

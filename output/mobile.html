@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d1117">
+<link rel="manifest" href="manifest.json">
+<title>CIS — Paper Trading</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--border:#30363d;--t1:#e6edf3;--t2:#8b949e;--t3:#484f58;--blue:#58a6ff;--green:#3fb950;--red:#f85149;--yellow:#d29922;--purple:#bc8cff}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;min-height:100dvh;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
+.mono{font-family:'SF Mono','Fira Code',monospace}
+
+/* Status Bar */
+.status{padding:8px 16px;padding-top:max(8px,env(safe-area-inset-top));background:var(--bg);display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--t3);border-bottom:1px solid var(--border)}
+.status .live{color:var(--green);display:flex;align-items:center;gap:4px}
+.status .live::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+
+/* Portfolio Header */
+.port-header{padding:20px 16px 16px;text-align:center}
+.port-label{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.port-value{font-size:42px;font-weight:700;font-family:'SF Mono',monospace;letter-spacing:-1px}
+.port-change{font-size:14px;font-weight:600;margin-top:4px;font-family:'SF Mono',monospace}
+.port-meta{display:flex;justify-content:center;gap:16px;margin-top:12px;font-size:11px;color:var(--t2)}
+.port-meta span{display:flex;align-items:center;gap:4px}
+
+/* Tab Nav */
+.nav{display:flex;border-bottom:1px solid var(--border);padding:0 8px;background:var(--bg2);position:sticky;top:0;z-index:50}
+.nav-btn{flex:1;padding:12px 8px;font-size:11px;font-weight:600;text-align:center;color:var(--t3);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;letter-spacing:.5px}
+.nav-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* Panels */
+.panel{display:none;padding:12px;animation:fadeIn .3s}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Market Cards */
+.mkt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.mkt-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:all .2s}
+.mkt-card.selected{border-color:var(--blue);box-shadow:0 0 12px rgba(88,166,255,.15)}
+.mkt-card .sym{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:2px}
+.mkt-card .prc{font-size:18px;font-weight:700;font-family:'SF Mono',monospace}
+.mkt-card .chg{font-size:11px;font-weight:600;font-family:'SF Mono',monospace;margin-top:2px}
+.up{color:var(--green)}.down{color:var(--red)}
+
+/* Trade Panel */
+.trade-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:12px}
+.trade-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.trade-title{font-size:16px;font-weight:700}
+.trade-price{font-size:14px;font-family:'SF Mono',monospace;color:var(--blue)}
+.trade-tabs{display:flex;gap:4px;margin-bottom:12px}
+.trade-tab{flex:1;padding:8px;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;text-transform:uppercase}
+.trade-tab.buy{background:rgba(63,185,80,.12);color:var(--green)}
+.trade-tab.buy.active{background:var(--green);color:#000}
+.trade-tab.sell{background:rgba(248,81,73,.12);color:var(--red)}
+.trade-tab.sell.active{background:var(--red);color:#fff}
+.input-group{margin-bottom:10px}
+.input-group label{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px}
+.input-group input{width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--t1);font-size:16px;font-family:'SF Mono',monospace;text-align:left;direction:ltr}
+.input-group input:focus{outline:none;border-color:var(--blue)}
+.amount-btns{display:flex;gap:4px;margin-bottom:12px}
+.amount-btn{flex:1;padding:6px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--t2);font-size:10px;font-weight:600;cursor:pointer;text-align:center}
+.amount-btn:hover{border-color:var(--blue);color:var(--blue)}
+.exec-btn{width:100%;padding:14px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px}
+.exec-btn.buy{background:var(--green);color:#000}
+.exec-btn.sell{background:var(--red);color:#fff}
+.exec-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Portfolio Holdings */
+.holding{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.holding-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--bg3);color:var(--blue)}
+.holding-info{flex:1}
+.holding-name{font-size:13px;font-weight:600}
+.holding-qty{font-size:11px;color:var(--t2);font-family:'SF Mono',monospace}
+.holding-right{text-align:left}
+.holding-val{font-size:14px;font-weight:600;font-family:'SF Mono',monospace}
+.holding-pnl{font-size:11px;font-family:'SF Mono',monospace}
+
+/* Signals */
+.sig-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;border-right:3px solid var(--border)}
+.sig-card.strong{border-right-color:var(--green)}
+.sig-card.medium{border-right-color:var(--yellow)}
+.sig-card .sig-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.sig-card .sig-desc{font-size:11px;color:var(--t2);line-height:1.4}
+.sig-card .sig-badge{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;padding:2px 6px;border-radius:4px;margin-top:6px}
+
+/* Trade History */
+.trade-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.trade-item:last-child{border:0}
+.trade-dir{font-size:9px;font-weight:700;padding:3px 6px;border-radius:4px;text-transform:uppercase}
+.trade-dir.buy{background:rgba(63,185,80,.15);color:var(--green)}
+.trade-dir.sell{background:rgba(248,81,73,.15);color:var(--red)}
+.trade-details{flex:1}
+.trade-details .td-top{font-size:12px;font-weight:600}
+.trade-details .td-bot{font-size:10px;color:var(--t3);font-family:'SF Mono',monospace}
+.trade-amount{font-size:12px;font-family:'SF Mono',monospace;text-align:left}
+
+/* Empty State */
+.empty{text-align:center;padding:40px 20px;color:var(--t3)}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:.5}
+.empty-text{font-size:13px;line-height:1.5}
+
+/* Toast */
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:10px;font-size:12px;font-weight:600;z-index:200;animation:slideDown .3s;max-width:90%}
+.toast-success{background:var(--green);color:#000}
+.toast-error{background:var(--red);color:#fff}
+@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* Disclaimer */
+.disclaimer{padding:12px;margin:8px 0;background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.2);border-radius:8px;font-size:10px;color:var(--yellow);text-align:center;line-height:1.5}
+
+@media(min-width:500px){.mkt-grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- STATUS BAR -->
+<div class="status">
+    <span>CIS v1.0 · PAPER TRADING</span>
+    <span class="live">LIVE</span>
+    <span id="clock"></span>
+</div>
+
+<!-- PORTFOLIO HEADER -->
+<div class="port-header">
+    <div class="port-label">Portfolio Value (Simulated)</div>
+    <div class="port-value" id="port-total">$100.00</div>
+    <div class="port-change" id="port-pnl">+$0.00 (0.00%)</div>
+    <div class="port-meta">
+        <span>&#128176; Cash: <strong id="port-cash">$100.00</strong></span>
+        <span>&#128200; Positions: <strong id="port-positions">0</strong></span>
+    </div>
+</div>
+
+<!-- NAVIGATION -->
+<div class="nav">
+    <button class="nav-btn active" onclick="showPanel('trade')">Trade</button>
+    <button class="nav-btn" onclick="showPanel('portfolio')">Portfolio</button>
+    <button class="nav-btn" onclick="showPanel('signals')">Signals</button>
+    <button class="nav-btn" onclick="showPanel('history')">History</button>
+</div>
+
+<!-- TRADE PANEL -->
+<div id="panel-trade" class="panel active">
+    <div class="mkt-grid" id="market-grid"></div>
+
+    <div class="trade-box">
+        <div class="trade-header">
+            <span class="trade-title" id="trade-symbol">BTC</span>
+            <span class="trade-price" id="trade-price">$78,804</span>
+        </div>
+        <div class="trade-tabs">
+            <button class="trade-tab buy active" onclick="setTradeDir('buy')">Buy</button>
+            <button class="trade-tab sell" onclick="setTradeDir('sell')">Sell</button>
+        </div>
+        <div class="input-group">
+            <label>Amount (USD)</label>
+            <input type="number" id="trade-amount" placeholder="0.00" step="0.01" min="1" dir="ltr">
+        </div>
+        <div class="amount-btns">
+            <button class="amount-btn" onclick="setAmount(10)">$10</button>
+            <button class="amount-btn" onclick="setAmount(25)">$25</button>
+            <button class="amount-btn" onclick="setAmount(50)">$50</button>
+            <button class="amount-btn" onclick="setAmount(100)">MAX</button>
+        </div>
+        <button class="exec-btn buy" id="exec-btn" onclick="executeTrade()">BUY BTC</button>
+    </div>
+
+    <div class="disclaimer">&#9888; This is a PAPER TRADING SIMULATOR. No real money is involved. For educational purposes only.</div>
+</div>
+
+<!-- PORTFOLIO PANEL -->
+<div id="panel-portfolio" class="panel">
+    <div id="holdings-list"></div>
+</div>
+
+<!-- SIGNALS PANEL -->
+<div id="panel-signals" class="panel">
+    <div class="sig-card strong">
+        <div class="sig-title">LINK — 4-Signal Confluence</div>
+        <div class="sig-desc">970K withdrawn Apr 27. CCIP v1.5 mainnet. ETF $111M. StanChart target $15. Thesis strengthening despite -3% from entry.</div>
+        <span class="sig-badge" style="background:rgba(63,185,80,.15);color:var(--green)">Strong · 4 Signals</span>
+    </div>
+    <div class="sig-card strong">
+        <div class="sig-title">BTC — Triple Whale Convergence</div>
+        <div class="sig-desc">270K BTC accumulated in April (largest since 2013). Exchange reserves 7yr low. Hyperliquid whales net-long 2:1. Structure mirrors Q4 2020.</div>
+        <span class="sig-badge" style="background:rgba(63,185,80,.15);color:var(--green)">Strong · Critical</span>
+    </div>
+    <div class="sig-card strong">
+        <div class="sig-title">RWA Narrative — $19.3B On-Chain</div>
+        <div class="sig-desc">Tokenized RWA +256% in 15 months. US Treasuries $11B. BlackRock BUIDL $5.2B. EU MiCA boosted issuance +34%.</div>
+        <span class="sig-badge" style="background:rgba(63,185,80,.15);color:var(--green)">Strong · Macro</span>
+    </div>
+    <div class="sig-card medium">
+        <div class="sig-title">ETH — $322M Whale Buying</div>
+        <div class="sig-desc">Institutional whales accumulating at $2,300. CLARITY Act advancing. Regulatory clarity catalyst.</div>
+        <span class="sig-badge" style="background:rgba(210,153,34,.15);color:var(--yellow)">Medium · Institutional</span>
+    </div>
+    <div class="sig-card medium">
+        <div class="sig-title">Hyperliquid — 70% Market Dominance</div>
+        <div class="sig-desc">$619B Q1 volume. Largest on-chain perp platform. Whales shifted aggressively net-long BTC since early March.</div>
+        <span class="sig-badge" style="background:rgba(210,153,34,.15);color:var(--yellow)">Medium · Research</span>
+    </div>
+    <div class="sig-card medium">
+        <div class="sig-title">TAO (Bittensor) — AI Revenue</div>
+        <div class="sig-desc">$43M Q1 actual revenue from AI services. Market bifurcating: real infra vs vaporware. One of few AI tokens with usage.</div>
+        <span class="sig-badge" style="background:rgba(210,153,34,.15);color:var(--yellow)">Medium · AI Infra</span>
+    </div>
+</div>
+
+<!-- HISTORY PANEL -->
+<div id="panel-history" class="panel">
+    <div id="history-list">
+        <div class="empty">
+            <div class="empty-icon">&#128203;</div>
+            <div class="empty-text">No trades yet.<br>Go to Trade tab to make your first paper trade.</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const COINS={
+    bitcoin:{sym:'BTC',price:78804,change:0.6},
+    ethereum:{sym:'ETH',price:2315,change:-0.4},
+    solana:{sym:'SOL',price:83.97,change:-0.24},
+    chainlink:{sym:'LINK',price:9.12,change:-0.49},
+    ondo:{sym:'ONDO',price:0.2686,change:2.1}
+};
+
+let state=JSON.parse(localStorage.getItem('cis_state'))||{
+    cash:100,
+    holdings:{},
+    trades:[],
+    initial:100
+};
+
+let selectedCoin='bitcoin';
+let tradeDir='buy';
+
+function save(){localStorage.setItem('cis_state',JSON.stringify(state));}
+
+function fmt(n,d=2){return n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+
+function renderMarket(){
+    const grid=document.getElementById('market-grid');
+    grid.innerHTML='';
+    for(const[id,c]of Object.entries(COINS)){
+        const sel=id===selectedCoin?'selected':'';
+        const cls=c.change>=0?'up':'down';
+        const sign=c.change>=0?'+':'';
+        grid.innerHTML+=`<div class="mkt-card ${sel}" onclick="selectCoin('${id}')"><div class="sym">${c.sym}</div><div class="prc">$${fmt(c.price,c.price<1?4:c.price<100?2:0)}</div><div class="chg ${cls}">${sign}${c.change.toFixed(2)}%</div></div>`;
+    }
+}
+
+function selectCoin(id){
+    selectedCoin=id;
+    const c=COINS[id];
+    document.getElementById('trade-symbol').textContent=c.sym;
+    document.getElementById('trade-price').textContent='$'+fmt(c.price,c.price<1?4:c.price<100?2:0);
+    updateExecBtn();
+    renderMarket();
+}
+
+function setTradeDir(dir){
+    tradeDir=dir;
+    document.querySelectorAll('.trade-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelector('.trade-tab.'+dir).classList.add('active');
+    updateExecBtn();
+}
+
+function setAmount(n){
+    const max=tradeDir==='buy'?state.cash:getHoldingValue(selectedCoin);
+    document.getElementById('trade-amount').value=n===100?max.toFixed(2):Math.min(n,max).toFixed(2);
+}
+
+function getHoldingValue(coinId){
+    const h=state.holdings[coinId];
+    if(!h)return 0;
+    return h.qty*COINS[coinId].price;
+}
+
+function updateExecBtn(){
+    const btn=document.getElementById('exec-btn');
+    const c=COINS[selectedCoin];
+    btn.textContent=`${tradeDir.toUpperCase()} ${c.sym}`;
+    btn.className=`exec-btn ${tradeDir}`;
+}
+
+function executeTrade(){
+    const amount=parseFloat(document.getElementById('trade-amount').value);
+    if(!amount||amount<=0)return toast('Enter amount','error');
+    const c=COINS[selectedCoin];
+
+    if(tradeDir==='buy'){
+        if(amount>state.cash)return toast('Not enough cash','error');
+        const qty=amount/c.price;
+        if(!state.holdings[selectedCoin])state.holdings[selectedCoin]={qty:0,avgCost:0,totalInvested:0};
+        const h=state.holdings[selectedCoin];
+        h.totalInvested+=amount;
+        h.qty+=qty;
+        h.avgCost=h.totalInvested/h.qty;
+        state.cash-=amount;
+        state.trades.unshift({dir:'buy',coin:selectedCoin,sym:c.sym,qty,price:c.price,amount,time:Date.now()});
+        toast(`Bought ${qty.toFixed(6)} ${c.sym}`,'success');
+    }else{
+        const h=state.holdings[selectedCoin];
+        if(!h||h.qty<=0)return toast('No holdings to sell','error');
+        const maxVal=h.qty*c.price;
+        const sellAmt=Math.min(amount,maxVal);
+        const sellQty=sellAmt/c.price;
+        const costBasis=sellQty*h.avgCost;
+        const pnl=sellAmt-costBasis;
+        h.qty-=sellQty;
+        h.totalInvested-=costBasis;
+        if(h.qty<0.000001){delete state.holdings[selectedCoin];}
+        state.cash+=sellAmt;
+        state.trades.unshift({dir:'sell',coin:selectedCoin,sym:c.sym,qty:sellQty,price:c.price,amount:sellAmt,pnl,time:Date.now()});
+        toast(`Sold ${sellQty.toFixed(6)} ${c.sym} (${pnl>=0?'+':''}$${fmt(pnl)})`,'success');
+    }
+
+    document.getElementById('trade-amount').value='';
+    save();
+    updatePortfolio();
+    renderHoldings();
+    renderHistory();
+}
+
+function updatePortfolio(){
+    let totalVal=state.cash;
+    let positions=0;
+    for(const[id,h]of Object.entries(state.holdings)){
+        if(h.qty>0){totalVal+=h.qty*COINS[id].price;positions++;}
+    }
+    const pnl=totalVal-state.initial;
+    const pnlPct=(pnl/state.initial)*100;
+
+    document.getElementById('port-total').textContent='$'+fmt(totalVal);
+    const pnlEl=document.getElementById('port-pnl');
+    pnlEl.textContent=`${pnl>=0?'+':''}$${fmt(pnl)} (${pnl>=0?'+':''}${pnlPct.toFixed(2)}%)`;
+    pnlEl.className='port-change '+(pnl>=0?'up':'down');
+    document.getElementById('port-cash').textContent='$'+fmt(state.cash);
+    document.getElementById('port-positions').textContent=positions;
+}
+
+function renderHoldings(){
+    const el=document.getElementById('holdings-list');
+    const entries=Object.entries(state.holdings).filter(([,h])=>h.qty>0);
+    if(!entries.length){el.innerHTML='<div class="empty"><div class="empty-icon">&#128188;</div><div class="empty-text">No holdings yet.<br>Start by buying a token in the Trade tab.</div></div>';return;}
+
+    el.innerHTML=entries.map(([id,h])=>{
+        const c=COINS[id];
+        const val=h.qty*c.price;
+        const pnl=val-h.totalInvested;
+        const pnlPct=(pnl/h.totalInvested)*100;
+        return`<div class="holding"><div class="holding-icon">${c.sym}</div><div class="holding-info"><div class="holding-name">${c.sym}</div><div class="holding-qty">${h.qty.toFixed(6)} · Avg $${fmt(h.avgCost,h.avgCost<1?4:2)}</div></div><div class="holding-right"><div class="holding-val">$${fmt(val)}</div><div class="holding-pnl ${pnl>=0?'up':'down'}">${pnl>=0?'+':''}$${fmt(pnl)} (${pnl>=0?'+':''}${pnlPct.toFixed(1)}%)</div></div></div>`;
+    }).join('');
+}
+
+function renderHistory(){
+    const el=document.getElementById('history-list');
+    if(!state.trades.length){el.innerHTML='<div class="empty"><div class="empty-icon">&#128203;</div><div class="empty-text">No trades yet.<br>Go to Trade tab to make your first paper trade.</div></div>';return;}
+
+    el.innerHTML=state.trades.slice(0,50).map(t=>{
+        const d=new Date(t.time);
+        const time=d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+        return`<div class="trade-item"><span class="trade-dir ${t.dir}">${t.dir}</span><div class="trade-details"><div class="td-top">${t.sym}</div><div class="td-bot">${t.qty.toFixed(6)} @ $${fmt(t.price,t.price<1?4:2)} · ${time}</div></div><div class="trade-amount">$${fmt(t.amount)}</div></div>`;
+    }).join('');
+}
+
+function showPanel(id){
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('panel-'+id).classList.add('active');
+    const btns=document.querySelectorAll('.nav-btn');
+    const map={trade:0,portfolio:1,signals:2,history:3};
+    if(map[id]!==undefined)btns[map[id]].classList.add('active');
+}
+
+function toast(msg,type){
+    const t=document.createElement('div');
+    t.className='toast toast-'+type;
+    t.textContent=msg;
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(),2500);
+}
+
+async function fetchPrices(){
+    try{
+        const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,chainlink,ondo&vs_currencies=usd&include_24hr_change=true');
+        const d=await r.json();
+        for(const[id,c]of Object.entries(COINS)){
+            if(d[id]){c.price=d[id].usd;c.change=d[id].usd_24h_change||0;}
+        }
+        renderMarket();
+        selectCoin(selectedCoin);
+        updatePortfolio();
+        renderHoldings();
+    }catch(e){}
+}
+
+function updateClock(){
+    document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+
+// Init
+renderMarket();
+selectCoin('bitcoin');
+updatePortfolio();
+renderHoldings();
+renderHistory();
+updateClock();
+setInterval(updateClock,30000);
+fetchPrices();
+setInterval(fetchPrices,60000);
+
+// Register SW
+if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+</script>
+</body>
+</html>

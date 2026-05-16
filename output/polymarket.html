@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0e17">
+<title>Polymarket BTC Sniper</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0e17;--bg2:#131a2a;--bg3:#1a2332;--border:#243049;--t1:#e6edf3;--t2:#8b949e;--t3:#484f58;--blue:#58a6ff;--green:#3fb950;--red:#f85149;--yellow:#d29922;--purple:#bc8cff;--cyan:#39d0d8}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--t1);min-height:100dvh;overflow-x:hidden}
+.mono{font-family:'SF Mono','Fira Code',monospace}
+
+.app{display:flex;flex-direction:column;min-height:100dvh}
+.main{flex:1;overflow-y:auto;padding:12px;padding-top:max(12px,env(safe-area-inset-top));padding-bottom:80px}
+
+/* Top Bar */
+.top{padding:10px 16px;padding-top:max(10px,env(safe-area-inset-top));background:var(--bg2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.top-brand{font-size:13px;font-weight:700;color:var(--cyan)}
+.top-price{font-family:'SF Mono',monospace;font-size:14px;font-weight:700}
+.top-change{font-size:11px;margin-right:8px}
+.ws-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:6px}
+.ws-dot.live{background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite}
+.ws-dot.off{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Cards */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.card-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);margin-bottom:8px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+.stat{background:var(--bg3);border-radius:8px;padding:8px 6px;text-align:center}
+.stat .sv{font-size:14px;font-weight:700;font-family:'SF Mono',monospace}
+.stat .sl{font-size:8px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+/* Signal Bar */
+.signal-bar{height:40px;border-radius:8px;overflow:hidden;position:relative;background:var(--bg3);margin-bottom:10px}
+.signal-fill{height:100%;transition:width .3s;position:absolute;top:0}
+.signal-fill.bull{background:linear-gradient(90deg,rgba(63,185,80,.2),rgba(63,185,80,.6));left:50%}
+.signal-fill.bear{background:linear-gradient(270deg,rgba(248,81,73,.2),rgba(248,81,73,.6));right:50%}
+.signal-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:2px;height:100%;background:var(--t3)}
+.signal-label{position:absolute;top:50%;transform:translateY(-50%);font-size:10px;font-weight:700;font-family:'SF Mono',monospace}
+.signal-label.left{right:8px}
+.signal-label.right{left:8px}
+.signal-pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;font-weight:800;font-family:'SF Mono',monospace;text-shadow:0 0 8px rgba(0,0,0,.8)}
+
+/* Indicators */
+.ind-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ind{background:var(--bg3);border-radius:8px;padding:10px;display:flex;justify-content:space-between;align-items:center}
+.ind-name{font-size:10px;color:var(--t2)}
+.ind-val{font-size:13px;font-weight:700;font-family:'SF Mono',monospace}
+
+/* Trades */
+.trade-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px}
+.trade-row:last-child{border:0}
+.trade-dir{font-weight:700;font-size:10px;padding:2px 6px;border-radius:4px}
+.trade-dir.up{background:rgba(63,185,80,.15);color:var(--green)}
+.trade-dir.down{background:rgba(248,81,73,.15);color:var(--red)}
+
+/* Bottom */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:var(--bg2);border-top:1px solid var(--border);display:flex;gap:8px;z-index:100}
+.btn{flex:1;padding:14px;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px}
+.btn-go{background:var(--cyan);color:#000}
+.btn-stop{background:var(--red);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Log */
+.log{max-height:200px;overflow-y:auto;font-size:10px;font-family:'SF Mono',monospace;line-height:1.8}
+.log-line{color:var(--t2);border-bottom:1px solid rgba(36,48,73,.5);padding:2px 0}
+.log-line.signal{color:var(--cyan)}
+.log-line.trade{color:var(--green)}
+.log-line.loss{color:var(--red)}
+.log-line.warn{color:var(--yellow)}
+
+/* Settings */
+.setting{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.setting:last-child{border:0}
+.setting label{font-size:11px;color:var(--t2)}
+.setting input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--t1);font-family:'SF Mono',monospace;font-size:12px;width:120px;text-align:left}
+
+.tabs{display:flex;gap:0;margin-bottom:10px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);overflow:hidden}
+.tab{flex:1;padding:10px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--t3);letter-spacing:.5px}
+.tab.active{background:var(--bg3);color:var(--cyan)}
+
+.screen{display:none}.screen.active{display:block}
+.disclaimer{font-size:8px;color:var(--t3);text-align:center;padding:8px;line-height:1.5;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="top">
+    <span class="top-brand">POLYMARKET SNIPER<span class="ws-dot off" id="ws-dot"></span></span>
+    <div>
+        <span class="top-change" id="top-change">0.00%</span>
+        <span class="top-price mono" id="top-price">$—</span>
+    </div>
+</div>
+
+<div class="main">
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('live')">Live</div>
+        <div class="tab" onclick="showTab('trades')">Trades</div>
+        <div class="tab" onclick="showTab('settings')">Settings</div>
+    </div>
+
+    <!-- LIVE TAB -->
+    <div id="tab-live" class="screen active">
+        <div class="stats">
+            <div class="stat"><div class="sv" id="s-balance">$10.00</div><div class="sl">Balance</div></div>
+            <div class="stat"><div class="sv" id="s-pnl">$0.00</div><div class="sl">P&L</div></div>
+            <div class="stat"><div class="sv" id="s-winrate">—</div><div class="sl">Win %</div></div>
+            <div class="stat"><div class="sv" id="s-trades">0</div><div class="sl">Trades</div></div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Signal Strength — BTC 5min Prediction</div>
+            <div class="signal-bar">
+                <div class="signal-fill bear" id="sig-bear" style="width:0"></div>
+                <div class="signal-fill bull" id="sig-bull" style="width:0"></div>
+                <div class="signal-center"></div>
+                <span class="signal-label left" style="color:var(--red)">BEAR</span>
+                <span class="signal-label right" style="color:var(--green)">BULL</span>
+                <span class="signal-pct" id="sig-pct">0%</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Real-Time Indicators</div>
+            <div class="ind-grid">
+                <div class="ind"><span class="ind-name">RSI (14)</span><span class="ind-val" id="ind-rsi">—</span></div>
+                <div class="ind"><span class="ind-name">EMA Cross</span><span class="ind-val" id="ind-ema">—</span></div>
+                <div class="ind"><span class="ind-name">Vol Spike</span><span class="ind-val" id="ind-vol">—</span></div>
+                <div class="ind"><span class="ind-name">Momentum</span><span class="ind-val" id="ind-mom">—</span></div>
+                <div class="ind"><span class="ind-name">VWAP Dev</span><span class="ind-val" id="ind-vwap">—</span></div>
+                <div class="ind"><span class="ind-name">OBV Trend</span><span class="ind-val" id="ind-obv">—</span></div>
+                <div class="ind"><span class="ind-name">Orderbook</span><span class="ind-val" id="ind-ob">—</span></div>
+                <div class="ind"><span class="ind-name">Funding</span><span class="ind-val" id="ind-fund">—</span></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Bot Log</div>
+            <div class="log" id="log-container"></div>
+        </div>
+    </div>
+
+    <!-- TRADES TAB -->
+    <div id="tab-trades" class="screen">
+        <div class="card">
+            <div class="card-title">Trade History</div>
+            <div id="trades-list"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Performance</div>
+            <div class="stats" style="grid-template-columns:1fr 1fr">
+                <div class="stat"><div class="sv" id="perf-best">$0</div><div class="sl">Best Trade</div></div>
+                <div class="stat"><div class="sv" id="perf-worst">$0</div><div class="sl">Worst Trade</div></div>
+                <div class="stat"><div class="sv" id="perf-streak">0</div><div class="sl">Win Streak</div></div>
+                <div class="stat"><div class="sv" id="perf-avg">$0</div><div class="sl">Avg Return</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div id="tab-settings" class="screen">
+        <div class="card">
+            <div class="card-title">Polymarket Connection</div>
+            <div class="setting"><label>Private Key (Polygon)</label><input type="password" id="set-pk" placeholder="0x..."></div>
+            <div class="setting"><label>CLOB API Key</label><input type="password" id="set-clob-key" placeholder="API key"></div>
+            <div class="setting"><label>CLOB Secret</label><input type="password" id="set-clob-secret" placeholder="Secret"></div>
+            <div class="setting"><label>CLOB Passphrase</label><input type="password" id="set-clob-pass" placeholder="Passphrase"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Strategy</div>
+            <div class="setting"><label>Starting Balance ($)</label><input type="number" id="set-balance" value="10"></div>
+            <div class="setting"><label>Max Bet Size (%)</label><input type="number" id="set-maxbet" value="15" min="1" max="50"></div>
+            <div class="setting"><label>Min Signal Strength (%)</label><input type="number" id="set-minsignal" value="65" min="55" max="90"></div>
+            <div class="setting"><label>Cooldown Between Bets (sec)</label><input type="number" id="set-cooldown" value="60" min="10" max="600"></div>
+            <div class="setting"><label>RSI Overbought</label><input type="number" id="set-rsi-ob" value="72" min="60" max="90"></div>
+            <div class="setting"><label>RSI Oversold</label><input type="number" id="set-rsi-os" value="28" min="10" max="40"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Mode</div>
+            <div class="setting"><label>Paper Trading (No Real $)</label><input type="checkbox" id="set-paper" checked></div>
+            <div class="setting"><label>Auto-Execute</label><input type="checkbox" id="set-auto" checked></div>
+        </div>
+        <button class="btn btn-go" onclick="saveConfig()" style="width:100%;margin-top:8px">Save Settings</button>
+        <div class="disclaimer">Keys stored locally only. Never sent to external servers.<br>Polymarket requires USDC on Polygon network.<br>No guarantee of profit. You may lose your entire balance.</div>
+    </div>
+</div>
+
+<div class="bottom-bar">
+    <button class="btn btn-go" id="btn-start" onclick="startBot()">Start Bot</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopBot()" disabled>Stop</button>
+</div>
+
+</div>
+
+<script>
+// ===== STATE =====
+const DEFAULT={
+    balance:10,initial:10,trades:[],logs:[],
+    config:{maxBetPct:15,minSignal:65,cooldown:60,rsiOB:72,rsiOS:28,paper:true,auto:true,pk:'',clobKey:'',clobSecret:'',clobPass:''},
+    stats:{wins:0,losses:0,streak:0,bestStreak:0}
+};
+let ST=JSON.parse(localStorage.getItem('pm_sniper'))||{...DEFAULT};
+if(!ST.config)ST.config=DEFAULT.config;
+if(!ST.stats)ST.stats=DEFAULT.stats;
+
+// ===== MARKET DATA =====
+let ws=null;
+let running=false;
+let candles1m=[];
+let candles5m=[];
+let lastTrade=0;
+let tickBuffer=[];
+let volumes=[];
+let vwapNumer=0,vwapDenom=0;
+
+// ===== TECHNICAL INDICATORS =====
+function calcRSI(closes,period=14){
+    if(closes.length<period+1)return 50;
+    let gains=0,losses=0;
+    for(let i=closes.length-period;i<closes.length;i++){
+        const diff=closes[i]-closes[i-1];
+        if(diff>0)gains+=diff;else losses-=diff;
+    }
+    if(losses===0)return 100;
+    const rs=gains/losses;
+    return 100-(100/(1+rs));
+}
+
+function calcEMA(data,period){
+    if(data.length<period)return data[data.length-1]||0;
+    const k=2/(period+1);
+    let ema=data.slice(0,period).reduce((a,b)=>a+b)/period;
+    for(let i=period;i<data.length;i++){
+        ema=data[i]*k+ema*(1-k);
+    }
+    return ema;
+}
+
+function calcMomentum(closes,period=10){
+    if(closes.length<period+1)return 0;
+    return((closes[closes.length-1]-closes[closes.length-1-period])/closes[closes.length-1-period])*100;
+}
+
+function calcOBV(closes,vols){
+    if(closes.length<2)return 0;
+    let obv=0;
+    for(let i=1;i<closes.length;i++){
+        if(closes[i]>closes[i-1])obv+=vols[i];
+        else if(closes[i]<closes[i-1])obv-=vols[i];
+    }
+    return obv;
+}
+
+function calcVWAP(candles){
+    let num=0,den=0;
+    for(const c of candles){
+        const tp=(c.h+c.l+c.c)/3;
+        num+=tp*c.v;
+        den+=c.v;
+    }
+    return den>0?num/den:0;
+}
+
+function volumeSpike(vols,threshold=2.0){
+    if(vols.length<20)return 1;
+    const avg=vols.slice(-20,-1).reduce((a,b)=>a+b)/(vols.length-1);
+    return avg>0?vols[vols.length-1]/avg:1;
+}
+
+// ===== ORDERBOOK & FUNDING =====
+let orderbookBias=0; // -100 to +100
+let fundingRate=0;
+let liquidations={longs:0,shorts:0};
+
+async function fetchOrderbook(){
+    try{
+        const r=await fetch('https://api.binance.com/api/v3/depth?symbol=BTCUSDT&limit=20');
+        const d=await r.json();
+        const bidVol=d.bids.reduce((s,b)=>s+parseFloat(b[1]),0);
+        const askVol=d.asks.reduce((s,a)=>s+parseFloat(a[1]),0);
+        const total=bidVol+askVol;
+        orderbookBias=total>0?((bidVol-askVol)/total)*100:0;
+
+        // Detect walls
+        const bigBid=d.bids.find(b=>parseFloat(b[1])>bidVol*0.3);
+        const bigAsk=d.asks.find(a=>parseFloat(a[1])>askVol*0.3);
+        if(bigBid)log(`Buy wall detected: ${parseFloat(bigBid[1]).toFixed(2)} BTC @ $${bigBid[0]}`,'signal');
+        if(bigAsk)log(`Sell wall detected: ${parseFloat(bigAsk[1]).toFixed(2)} BTC @ $${bigAsk[0]}`,'signal');
+    }catch(e){}
+}
+
+async function fetchFunding(){
+    try{
+        const r=await fetch('https://fapi.binance.com/fapi/v1/fundingRate?symbol=BTCUSDT&limit=1');
+        const d=await r.json();
+        if(d[0])fundingRate=parseFloat(d[0].fundingRate)*100;
+    }catch(e){}
+}
+
+async function fetchLiquidations(){
+    try{
+        const r=await fetch('https://fapi.binance.com/fapi/v1/allForceOrders?symbol=BTCUSDT&limit=50');
+        const d=await r.json();
+        const now=Date.now();
+        const recent=d.filter(l=>now-l.time<300000);
+        liquidations.longs=recent.filter(l=>l.side==='SELL').reduce((s,l)=>s+parseFloat(l.price)*parseFloat(l.origQty),0);
+        liquidations.shorts=recent.filter(l=>l.side==='BUY').reduce((s,l)=>s+parseFloat(l.price)*parseFloat(l.origQty),0);
+    }catch(e){}
+}
+
+// ===== SIGNAL GENERATOR =====
+function generateSignal(){
+    if(candles1m.length<20)return{dir:null,strength:0,reasons:[]};
+
+    const closes=candles1m.map(c=>c.c);
+    const vols=candles1m.map(c=>c.v);
+    const reasons=[];
+    let score=0; // positive=bull, negative=bear
+
+    // 1. RSI
+    const rsi=calcRSI(closes);
+    if(rsi<ST.config.rsiOS){score+=20;reasons.push(`RSI oversold (${rsi.toFixed(0)})`);}
+    else if(rsi>ST.config.rsiOB){score-=20;reasons.push(`RSI overbought (${rsi.toFixed(0)})`);}
+    else if(rsi<40){score+=8;}
+    else if(rsi>60){score-=8;}
+
+    // 2. EMA Cross (9/21)
+    const ema9=calcEMA(closes,9);
+    const ema21=calcEMA(closes,21);
+    const emaDiff=((ema9-ema21)/ema21)*100;
+    if(emaDiff>0.05){score+=15;reasons.push(`EMA9>EMA21 (+${emaDiff.toFixed(3)}%)`);}
+    else if(emaDiff<-0.05){score-=15;reasons.push(`EMA9<EMA21 (${emaDiff.toFixed(3)}%)`);}
+
+    // 3. Volume spike
+    const volSpike=volumeSpike(vols);
+    if(volSpike>2.5){
+        const lastChange=closes[closes.length-1]-closes[closes.length-2];
+        if(lastChange>0){score+=18;reasons.push(`Vol spike ${volSpike.toFixed(1)}x + UP`);}
+        else{score-=18;reasons.push(`Vol spike ${volSpike.toFixed(1)}x + DOWN`);}
+    }
+
+    // 4. Momentum (10-period)
+    const mom=calcMomentum(closes);
+    if(mom>0.3){score+=12;reasons.push(`Momentum +${mom.toFixed(2)}%`);}
+    else if(mom<-0.3){score-=12;reasons.push(`Momentum ${mom.toFixed(2)}%`);}
+
+    // 5. VWAP deviation
+    if(candles1m.length>=10){
+        const vwap=calcVWAP(candles1m.slice(-10));
+        const currentPrice=closes[closes.length-1];
+        const vwapDev=((currentPrice-vwap)/vwap)*100;
+        if(vwapDev<-0.15){score+=10;reasons.push(`Below VWAP (${vwapDev.toFixed(3)}%)`);}
+        else if(vwapDev>0.15){score-=10;reasons.push(`Above VWAP (+${vwapDev.toFixed(3)}%)`);}
+    }
+
+    // 6. OBV trend
+    if(closes.length>=10){
+        const recentOBV=calcOBV(closes.slice(-10),vols.slice(-10));
+        const prevOBV=calcOBV(closes.slice(-20,-10),vols.slice(-20,-10));
+        if(recentOBV>prevOBV*1.1){score+=8;reasons.push('OBV rising');}
+        else if(recentOBV<prevOBV*0.9){score-=8;reasons.push('OBV falling');}
+    }
+
+    // 7. Candle pattern: last 3 candles direction
+    if(closes.length>=4){
+        const last3=[closes[closes.length-3]-closes[closes.length-4],closes[closes.length-2]-closes[closes.length-3],closes[closes.length-1]-closes[closes.length-2]];
+        const allUp=last3.every(d=>d>0);
+        const allDown=last3.every(d=>d<0);
+        if(allUp){score+=10;reasons.push('3 green candles');}
+        if(allDown){score-=10;reasons.push('3 red candles');}
+    }
+
+    // 8. Price acceleration (2nd derivative)
+    if(closes.length>=5){
+        const d1=closes[closes.length-1]-closes[closes.length-2];
+        const d2=closes[closes.length-2]-closes[closes.length-3];
+        const accel=d1-d2;
+        if(accel>0&&d1>0){score+=7;reasons.push('Accelerating up');}
+        else if(accel<0&&d1<0){score-=7;reasons.push('Accelerating down');}
+    }
+
+    // 9. Orderbook imbalance
+    if(Math.abs(orderbookBias)>15){
+        const obScore=orderbookBias>0?12:-12;
+        score+=obScore;
+        reasons.push(`Orderbook ${orderbookBias>0?'bid':'ask'} heavy (${orderbookBias.toFixed(0)}%)`);
+    }
+
+    // 10. Funding rate (contrarian: high funding = crowded trade)
+    if(Math.abs(fundingRate)>0.02){
+        const frScore=fundingRate>0?-8:8;
+        score+=frScore;
+        reasons.push(`Funding ${fundingRate>0?'positive (short bias)':'negative (long bias)'}: ${fundingRate.toFixed(4)}%`);
+    }
+
+    // 11. Liquidation cascade detection
+    const liqTotal=liquidations.longs+liquidations.shorts;
+    if(liqTotal>500000){
+        if(liquidations.longs>liquidations.shorts*2){
+            score-=15;reasons.push(`Long liquidation cascade: $${(liquidations.longs/1000).toFixed(0)}K`);
+        }else if(liquidations.shorts>liquidations.longs*2){
+            score+=15;reasons.push(`Short squeeze: $${(liquidations.shorts/1000).toFixed(0)}K liquidated`);
+        }
+    }
+
+    // 12. Multi-timeframe: 5m trend confirmation
+    if(candles5m.length>=5){
+        const c5=candles5m.map(c=>c.c);
+        const trend5m=c5[c5.length-1]-c5[c5.length-5];
+        const lastClose=closes[closes.length-1]-closes[closes.length-2];
+        if(trend5m>0&&lastClose>0){score+=10;reasons.push('5m+1m aligned UP');}
+        else if(trend5m<0&&lastClose<0){score-=10;reasons.push('5m+1m aligned DOWN');}
+        else if((trend5m>0&&lastClose<0)||(trend5m<0&&lastClose>0)){
+            score*=0.7; // reduce conviction on divergence
+            reasons.push('Timeframe divergence — reduced conviction');
+        }
+    }
+
+    // Normalize to -100 to +100
+    const maxScore=120;
+    const normalized=Math.max(-100,Math.min(100,Math.round(score*100/maxScore)));
+    const strength=Math.abs(normalized);
+    const dir=normalized>0?'UP':'DOWN';
+
+    return{dir:normalized===0?null:dir,strength,reasons,raw:normalized};
+}
+
+// ===== TRADE EXECUTION =====
+async function placeBet(direction,amount){
+    const now=Date.now();
+    if(now-lastTrade<ST.config.cooldown*1000){
+        log(`Cooldown active (${Math.ceil((ST.config.cooldown*1000-(now-lastTrade))/1000)}s)`,'warn');
+        return;
+    }
+    if(amount>ST.balance){
+        log('Insufficient balance','warn');
+        return;
+    }
+
+    lastTrade=now;
+    const price=candles1m[candles1m.length-1]?.c||0;
+
+    if(ST.config.paper){
+        // Paper trade: resolve after 5 minutes based on price movement
+        log(`[PAPER] BET ${direction} — $${amount.toFixed(2)} @ BTC $${price.toFixed(0)}`,'trade');
+        ST.balance-=amount;
+
+        const trade={dir:direction,amount,entryPrice:price,time:now,resolved:false,paper:true};
+        ST.trades.unshift(trade);
+        save();
+        updateUI();
+
+        // Resolve after 5 min
+        setTimeout(()=>resolveTrade(trade),300000);
+    }else{
+        // Real Polymarket execution
+        const success=await polymarketBet(direction,amount);
+        if(success){
+            ST.balance-=amount;
+            ST.trades.unshift({dir:direction,amount,entryPrice:price,time:now,resolved:false,paper:false});
+            save();
+            log(`[LIVE] BET ${direction} — $${amount.toFixed(2)}`,'trade');
+        }
+    }
+}
+
+function resolveTrade(trade){
+    if(trade.resolved)return;
+    const currentPrice=candles1m[candles1m.length-1]?.c||trade.entryPrice;
+    const priceMoved=currentPrice-trade.entryPrice;
+    const won=(trade.dir==='UP'&&priceMoved>0)||(trade.dir==='DOWN'&&priceMoved<0);
+
+    trade.resolved=true;
+    trade.exitPrice=currentPrice;
+    trade.priceDelta=priceMoved;
+
+    // Polymarket-style payout: winning bet returns ~1.8x (minus spread)
+    if(won){
+        const payout=trade.amount*1.82;
+        ST.balance+=payout;
+        trade.pnl=payout-trade.amount;
+        ST.stats.wins++;
+        ST.stats.streak++;
+        if(ST.stats.streak>ST.stats.bestStreak)ST.stats.bestStreak=ST.stats.streak;
+        log(`WIN ${trade.dir} +$${trade.pnl.toFixed(2)} | BTC ${priceMoved>0?'+':''}${priceMoved.toFixed(0)}`,'trade');
+    }else{
+        trade.pnl=-trade.amount;
+        ST.stats.losses++;
+        ST.stats.streak=0;
+        log(`LOSS ${trade.dir} -$${trade.amount.toFixed(2)} | BTC ${priceMoved>0?'+':''}${priceMoved.toFixed(0)}`,'loss');
+    }
+
+    save();
+    updateUI();
+    updatePerformance();
+}
+
+// ===== POLYMARKET API =====
+async function polymarketBet(direction,amount){
+    if(!ST.config.clobKey||!ST.config.pk){
+        log('No Polymarket API keys configured','warn');
+        return false;
+    }
+    try{
+        // Find active BTC market
+        const marketsResp=await fetch('https://gamma-api.polymarket.com/markets?tag=crypto&active=true&closed=false');
+        const markets=await marketsResp.json();
+        const btcMarket=markets.find(m=>m.question&&m.question.includes('Bitcoin')&&m.question.includes('5'));
+        if(!btcMarket){log('No active BTC 5-min market found','warn');return false;}
+
+        // Get token IDs for YES/NO
+        const tokenId=direction==='UP'?btcMarket.tokens?.[0]?.token_id:btcMarket.tokens?.[1]?.token_id;
+        if(!tokenId){log('Token ID not found','warn');return false;}
+
+        // Place order via CLOB
+        const orderPayload={
+            tokenID:tokenId,
+            price:0.55,
+            size:amount/0.55,
+            side:'BUY',
+            feeRateBps:0
+        };
+
+        const resp=await fetch('https://clob.polymarket.com/order',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+                'POLY_API_KEY':ST.config.clobKey,
+                'POLY_API_SECRET':ST.config.clobSecret,
+                'POLY_PASSPHRASE':ST.config.clobPass
+            },
+            body:JSON.stringify(orderPayload)
+        });
+
+        const result=await resp.json();
+        if(result.orderID||result.success){
+            log(`Polymarket order placed: ${result.orderID||'OK'}`,'signal');
+            return true;
+        }else{
+            log(`Polymarket error: ${result.error||JSON.stringify(result)}`,'warn');
+            return false;
+        }
+    }catch(e){
+        log(`API error: ${e.message}`,'warn');
+        return false;
+    }
+}
+
+// ===== POSITION SIZING (Kelly + Anti-Tilt) =====
+function calcBetSize(strength){
+    const winProb=0.45+(strength/100)*0.25; // 45%-70% based on signal
+    const b=0.82; // net odds (payout ratio - 1)
+    const q=1-winProb;
+    const kelly=(winProb*b-q)/b;
+    let fraction=Math.max(0,Math.min(kelly*0.4,ST.config.maxBetPct/100)); // 40% Kelly
+
+    // Anti-tilt: reduce after losses, boost after wins
+    const recentTrades=ST.trades.filter(t=>t.resolved).slice(0,5);
+    const recentLosses=recentTrades.filter(t=>t.pnl<0).length;
+    if(recentLosses>=4)fraction*=0.3; // heavy tilt protection
+    else if(recentLosses>=3)fraction*=0.5;
+    else if(recentLosses>=2)fraction*=0.75;
+
+    // Winning streak boost (capped)
+    if(ST.stats.streak>=3)fraction*=Math.min(1.3,1+ST.stats.streak*0.05);
+
+    // Drawdown protection: if down >30% from peak, reduce
+    const peak=Math.max(ST.initial,ST.balance,...ST.trades.filter(t=>t.resolved).map(t=>t.amount));
+    const dd=(peak-ST.balance)/peak;
+    if(dd>0.3)fraction*=0.4;
+    else if(dd>0.2)fraction*=0.6;
+
+    const bet=ST.balance*fraction;
+    return Math.max(0.5,Math.min(bet,ST.balance*0.90));
+}
+
+// ===== WEBSOCKET =====
+async function preloadCandles(){
+    try{
+        log('Loading historical candles...','signal');
+        const r=await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=100');
+        const d=await r.json();
+        candles1m=d.map(k=>({t:k[0],o:parseFloat(k[1]),h:parseFloat(k[2]),l:parseFloat(k[3]),c:parseFloat(k[4]),v:parseFloat(k[5]),closed:true}));
+        build5mCandles();
+        updatePrice(candles1m[candles1m.length-1].c);
+        log(`Loaded ${candles1m.length} candles — indicators ready`,'signal');
+    }catch(e){log('Preload failed — waiting for live data','warn');}
+}
+
+function connectWS(){
+    if(ws)ws.close();
+    ws=new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@kline_1m');
+
+    ws.onopen=()=>{
+        document.getElementById('ws-dot').className='ws-dot live';
+        log('WebSocket connected — live BTC feed','signal');
+    };
+
+    ws.onmessage=(e)=>{
+        const d=JSON.parse(e.data);
+        if(!d.k)return;
+        const k=d.k;
+        const candle={t:k.t,o:parseFloat(k.o),h:parseFloat(k.h),l:parseFloat(k.l),c:parseFloat(k.c),v:parseFloat(k.v),closed:k.x};
+
+        // Update current candle or push new
+        if(candles1m.length>0&&candles1m[candles1m.length-1].t===candle.t){
+            candles1m[candles1m.length-1]=candle;
+        }else{
+            candles1m.push(candle);
+            if(candles1m.length>200)candles1m.shift();
+        }
+
+        // Build 5m candles
+        if(candle.closed){
+            build5mCandles();
+        }
+
+        updatePrice(candle.c);
+        if(running&&candle.closed)tick();
+    };
+
+    ws.onclose=()=>{
+        document.getElementById('ws-dot').className='ws-dot off';
+        if(running)setTimeout(connectWS,3000);
+    };
+
+    ws.onerror=()=>{ws.close();};
+}
+
+function build5mCandles(){
+    if(candles1m.length<5)return;
+    const closed=candles1m.filter(c=>c.closed);
+    candles5m=[];
+    for(let i=0;i<closed.length;i+=5){
+        const group=closed.slice(i,i+5);
+        if(group.length<5)break;
+        candles5m.push({
+            t:group[0].t,
+            o:group[0].o,
+            h:Math.max(...group.map(g=>g.h)),
+            l:Math.min(...group.map(g=>g.l)),
+            c:group[group.length-1].c,
+            v:group.reduce((a,g)=>a+g.v,0)
+        });
+    }
+}
+
+// ===== MAIN TICK =====
+let tickCount=0;
+async function tick(){
+    tickCount++;
+
+    // Fetch microstructure data every 3rd tick
+    if(tickCount%3===0){
+        await Promise.all([fetchOrderbook(),fetchFunding(),fetchLiquidations()]);
+    }
+
+    const signal=generateSignal();
+    updateIndicators(signal);
+    updateSignalBar(signal);
+
+    if(!ST.config.auto||!signal.dir)return;
+    if(signal.strength<ST.config.minSignal)return;
+
+    // Require at least 3 confirming reasons for a trade
+    if(signal.reasons.length<3){
+        log(`Weak signal (${signal.reasons.length} reasons) — need 3+`,'warn');
+        return;
+    }
+
+    const betSize=calcBetSize(signal.strength);
+    if(betSize<0.5)return;
+
+    log(`SIGNAL: ${signal.dir} ${signal.strength}% — ${signal.reasons.slice(0,4).join(' | ')}`,'signal');
+    placeBet(signal.dir,betSize);
+}
+
+// ===== UI =====
+function updatePrice(price){
+    document.getElementById('top-price').textContent='$'+price.toLocaleString('en-US',{maximumFractionDigits:0});
+    if(candles1m.length>=2){
+        const first=candles1m[0].o;
+        const change=((price-first)/first*100);
+        const el=document.getElementById('top-change');
+        el.textContent=(change>=0?'+':'')+change.toFixed(2)+'%';
+        el.style.color=change>=0?'var(--green)':'var(--red)';
+    }
+}
+
+function updateIndicators(signal){
+    const closes=candles1m.map(c=>c.c);
+    const vols=candles1m.map(c=>c.v);
+
+    const rsi=calcRSI(closes);
+    const ema9=calcEMA(closes,9);
+    const ema21=calcEMA(closes,21);
+    const emaCross=ema9>ema21?'BULL':'BEAR';
+    const volSp=volumeSpike(vols);
+    const mom=calcMomentum(closes);
+    const vwap=candles1m.length>=10?calcVWAP(candles1m.slice(-10)):0;
+    const vwapDev=vwap>0?((closes[closes.length-1]-vwap)/vwap*100):0;
+    const obv=calcOBV(closes.slice(-20),vols.slice(-20));
+
+    setInd('ind-rsi',rsi.toFixed(0),rsi<30?'--green':rsi>70?'--red':'--t1');
+    setInd('ind-ema',emaCross,emaCross==='BULL'?'--green':'--red');
+    setInd('ind-vol',volSp.toFixed(1)+'x',volSp>2?'--yellow':'--t1');
+    setInd('ind-mom',(mom>=0?'+':'')+mom.toFixed(2)+'%',mom>0?'--green':'--red');
+    setInd('ind-vwap',(vwapDev>=0?'+':'')+vwapDev.toFixed(3)+'%',vwapDev<-0.1?'--green':vwapDev>0.1?'--red':'--t1');
+    setInd('ind-obv',obv>0?'+'+fmt(obv):fmt(obv),obv>0?'--green':'--red');
+    setInd('ind-ob',(orderbookBias>=0?'+':'')+orderbookBias.toFixed(0)+'%',orderbookBias>15?'--green':orderbookBias<-15?'--red':'--t1');
+    setInd('ind-fund',fundingRate.toFixed(4)+'%',fundingRate>0.02?'--red':fundingRate<-0.02?'--green':'--t1');
+}
+
+function setInd(id,val,color){
+    const el=document.getElementById(id);
+    el.textContent=val;
+    el.style.color=`var(${color})`;
+}
+
+function updateSignalBar(signal){
+    const bull=document.getElementById('sig-bull');
+    const bear=document.getElementById('sig-bear');
+    const pct=document.getElementById('sig-pct');
+
+    if(signal.dir==='UP'){
+        bull.style.width=signal.strength/2+'%';
+        bear.style.width='0';
+        pct.textContent='+'+signal.strength+'%';
+        pct.style.color='var(--green)';
+    }else if(signal.dir==='DOWN'){
+        bear.style.width=signal.strength/2+'%';
+        bull.style.width='0';
+        pct.textContent='-'+signal.strength+'%';
+        pct.style.color='var(--red)';
+    }else{
+        bull.style.width='0';bear.style.width='0';
+        pct.textContent='0%';pct.style.color='var(--t3)';
+    }
+}
+
+function updateUI(){
+    document.getElementById('s-balance').textContent='$'+ST.balance.toFixed(2);
+    const pnl=ST.balance-ST.initial;
+    const pnlEl=document.getElementById('s-pnl');
+    pnlEl.textContent=(pnl>=0?'+':'')+('$'+pnl.toFixed(2));
+    pnlEl.style.color=pnl>=0?'var(--green)':'var(--red)';
+    const total=ST.stats.wins+ST.stats.losses;
+    document.getElementById('s-winrate').textContent=total>0?(ST.stats.wins/total*100).toFixed(0)+'%':'—';
+    document.getElementById('s-trades').textContent=total;
+}
+
+function updatePerformance(){
+    const resolved=ST.trades.filter(t=>t.resolved);
+    if(!resolved.length)return;
+    const pnls=resolved.map(t=>t.pnl);
+    document.getElementById('perf-best').textContent='$'+Math.max(...pnls).toFixed(2);
+    document.getElementById('perf-worst').textContent='$'+Math.min(...pnls).toFixed(2);
+    document.getElementById('perf-streak').textContent=ST.stats.bestStreak;
+    document.getElementById('perf-avg').textContent='$'+(pnls.reduce((a,b)=>a+b)/pnls.length).toFixed(2);
+}
+
+function renderTrades(){
+    const el=document.getElementById('trades-list');
+    const resolved=ST.trades.filter(t=>t.resolved);
+    if(!resolved.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--t3);font-size:11px">No resolved trades yet.</div>';return;}
+    el.innerHTML=resolved.slice(0,50).map(t=>{
+        const time=new Date(t.time).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+        const won=t.pnl>0;
+        return`<div class="trade-row"><span class="trade-dir ${t.dir==='UP'?'up':'down'}">${t.dir}</span><span class="mono" style="font-size:11px">$${t.amount.toFixed(2)}</span><span class="mono" style="font-size:11px;color:var(${won?'--green':'--red'})">${won?'+':''}$${t.pnl.toFixed(2)}</span><span style="font-size:9px;color:var(--t3)">${time}</span></div>`;
+    }).join('');
+}
+
+function log(msg,type=''){
+    ST.logs.unshift({msg,type,time:Date.now()});
+    if(ST.logs.length>200)ST.logs.pop();
+    const el=document.getElementById('log-container');
+    const time=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    el.innerHTML=ST.logs.slice(0,50).map(l=>{
+        const t=new Date(l.time).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        return`<div class="log-line ${l.type}">${t} ${l.msg}</div>`;
+    }).join('');
+    save();
+}
+
+function fmt(n){
+    if(Math.abs(n)>1e9)return(n/1e9).toFixed(1)+'B';
+    if(Math.abs(n)>1e6)return(n/1e6).toFixed(1)+'M';
+    if(Math.abs(n)>1e3)return(n/1e3).toFixed(1)+'K';
+    return n.toFixed(0);
+}
+
+// ===== NAVIGATION =====
+function showTab(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById('tab-'+id).classList.add('active');
+    const tabs=document.querySelectorAll('.tab');
+    const map={live:0,trades:1,settings:2};
+    if(map[id]!==undefined)tabs[map[id]].classList.add('active');
+    if(id==='trades')renderTrades();
+}
+
+// ===== CONTROLS =====
+async function startBot(){
+    running=true;
+    document.getElementById('btn-start').disabled=true;
+    document.getElementById('btn-stop').disabled=false;
+
+    log('Bot starting...','signal');
+    await preloadCandles();
+    await Promise.all([fetchOrderbook(),fetchFunding(),fetchLiquidations()]);
+    connectWS();
+
+    log(`Ready: ${candles1m.length} candles | OB bias: ${orderbookBias.toFixed(0)}% | Funding: ${fundingRate.toFixed(4)}%`,'signal');
+
+    // Fallback tick every 60s
+    window._tickInterval=setInterval(()=>{
+        if(running&&candles1m.length>20)tick();
+    },60000);
+}
+
+function stopBot(){
+    running=false;
+    if(ws)ws.close();
+    if(window._tickInterval)clearInterval(window._tickInterval);
+    document.getElementById('btn-start').disabled=false;
+    document.getElementById('btn-stop').disabled=true;
+    document.getElementById('ws-dot').className='ws-dot off';
+    log('Bot stopped','warn');
+}
+
+function saveConfig(){
+    ST.config.maxBetPct=parseInt(document.getElementById('set-maxbet').value)||15;
+    ST.config.minSignal=parseInt(document.getElementById('set-minsignal').value)||65;
+    ST.config.cooldown=parseInt(document.getElementById('set-cooldown').value)||60;
+    ST.config.rsiOB=parseInt(document.getElementById('set-rsi-ob').value)||72;
+    ST.config.rsiOS=parseInt(document.getElementById('set-rsi-os').value)||28;
+    ST.config.paper=document.getElementById('set-paper').checked;
+    ST.config.auto=document.getElementById('set-auto').checked;
+    ST.config.pk=document.getElementById('set-pk').value;
+    ST.config.clobKey=document.getElementById('set-clob-key').value;
+    ST.config.clobSecret=document.getElementById('set-clob-secret').value;
+    ST.config.clobPass=document.getElementById('set-clob-pass').value;
+
+    const newBal=parseFloat(document.getElementById('set-balance').value);
+    if(newBal&&newBal!==ST.initial&&ST.trades.filter(t=>!t.resolved).length===0){
+        ST.initial=newBal;ST.balance=newBal;
+    }
+
+    save();
+    log('Settings saved','signal');
+    updateUI();
+}
+
+function loadConfig(){
+    document.getElementById('set-maxbet').value=ST.config.maxBetPct;
+    document.getElementById('set-minsignal').value=ST.config.minSignal;
+    document.getElementById('set-cooldown').value=ST.config.cooldown;
+    document.getElementById('set-rsi-ob').value=ST.config.rsiOB;
+    document.getElementById('set-rsi-os').value=ST.config.rsiOS;
+    document.getElementById('set-paper').checked=ST.config.paper;
+    document.getElementById('set-auto').checked=ST.config.auto;
+    document.getElementById('set-pk').value=ST.config.pk||'';
+    document.getElementById('set-clob-key').value=ST.config.clobKey||'';
+    document.getElementById('set-clob-secret').value=ST.config.clobSecret||'';
+    document.getElementById('set-clob-pass').value=ST.config.clobPass||'';
+    document.getElementById('set-balance').value=ST.initial;
+}
+
+function save(){localStorage.setItem('pm_sniper',JSON.stringify(ST));}
+
+// ===== INIT =====
+loadConfig();
+updateUI();
+log('Polymarket Sniper ready. Press START to connect.','signal');
+</script>
+</body>
+</html>
