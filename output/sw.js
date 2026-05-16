@@ -1,7 +1,11 @@
-const CACHE='cis-v2';
-const ASSETS=['./mobile.html','./manifest.json'];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
+const CACHE='cis-v4';
+const ASSETS=['./index.html','./trader.html','./polymarket.html','./manifest.json'];
+self.addEventListener('install',e=>{
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
+});
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));
 self.addEventListener('fetch',e=>{
-  if(e.request.url.includes('coingecko'))return;
+  if(e.request.url.includes('binance')||e.request.url.includes('coingecko')||e.request.url.includes('polymarket')||e.request.url.includes('alternative.me'))return;
   e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
 });
