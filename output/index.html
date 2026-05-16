@@ -9,37 +9,38 @@
 <link rel="manifest" href="manifest.json">
 <title>מערכת מסחר חכמה</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0e17;color:#e6edf3;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-top:max(24px,env(safe-area-inset-top))}
-.logo{width:80px;height:80px;margin-bottom:24px}
-.logo svg{width:100%;height:100%}
-h1{font-size:20px;font-weight:700;margin-bottom:4px;color:#39d0d8}
-.sub{font-size:12px;color:#8b949e;margin-bottom:32px}
-.cards{display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px}
-.card{display:block;background:#131a2a;border:1px solid #243049;border-radius:16px;padding:20px;text-decoration:none;color:inherit;transition:all .2s}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0e17;color:#e6edf3;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;padding-top:max(28px,env(safe-area-inset-top));-webkit-font-smoothing:antialiased}
+.logo{width:90px;height:90px;margin-bottom:28px}
+.logo svg{width:100%;height:100%;filter:drop-shadow(0 4px 20px rgba(57,208,216,.2))}
+h1{font-size:22px;font-weight:800;margin-bottom:6px;color:#39d0d8;letter-spacing:-0.3px}
+.sub{font-size:13px;color:#8b949e;margin-bottom:36px}
+.cards{display:flex;flex-direction:column;gap:14px;width:100%;max-width:400px}
+.card{display:block;background:#131a2a;border:1px solid #1e2d42;border-radius:18px;padding:22px;text-decoration:none;color:inherit;transition:all .15s}
 .card:active{transform:scale(.97);background:#1a2332}
-.card-icon{font-size:32px;margin-bottom:8px}
-.card-title{font-size:16px;font-weight:700;margin-bottom:4px}
-.card-desc{font-size:11px;color:#8b949e;line-height:1.5}
-.card-badge{display:inline-block;font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;margin-top:8px}
-.badge-green{background:rgba(63,185,80,.12);color:#3fb950}
-.badge-cyan{background:rgba(57,208,216,.12);color:#39d0d8}
-.badge-purple{background:rgba(188,140,255,.12);color:#bc8cff}
-.footer{margin-top:32px;font-size:9px;color:#484f58;text-align:center;line-height:1.6}
+.card-icon{font-size:36px;margin-bottom:10px}
+.card-title{font-size:17px;font-weight:800;margin-bottom:6px;letter-spacing:-0.2px}
+.card-desc{font-size:12px;color:#8b949e;line-height:1.6}
+.card-badge{display:inline-block;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;margin-top:10px}
+.badge-green{background:rgba(63,185,80,.1);color:#3fb950}
+.badge-cyan{background:rgba(57,208,216,.1);color:#39d0d8}
+.badge-purple{background:rgba(188,140,255,.1);color:#bc8cff}
+.card-main{border-color:rgba(57,208,216,.3);background:linear-gradient(135deg,rgba(57,208,216,.04),#131a2a)}
+.footer{margin-top:36px;font-size:10px;color:#484f58;text-align:center;line-height:1.7;background:#131a2a;padding:14px 20px;border-radius:14px;border:1px solid #1e2d42}
 </style>
 </head>
 <body>
 <div class="logo">
-<svg viewBox="0 0 80 80"><rect width="80" height="80" rx="20" fill="#131a2a"/><polygon points="40,12 68,28 68,56 40,72 12,56 12,28" fill="none" stroke="#39d0d8" stroke-width="3"/><text x="40" y="48" text-anchor="middle" fill="#39d0d8" font-size="20" font-family="monospace" font-weight="bold">CIS</text></svg>
+<svg viewBox="0 0 80 80"><rect width="80" height="80" rx="20" fill="#131a2a"/><polygon points="40,12 68,28 68,56 40,72 12,56 12,28" fill="none" stroke="#39d0d8" stroke-width="2.5"/><text x="40" y="48" text-anchor="middle" fill="#39d0d8" font-size="20" font-family="monospace" font-weight="bold">CIS</text></svg>
 </div>
 <h1>מערכת מסחר חכמה</h1>
 <p class="sub">מסחר אוטונומי עם סוכני בינה מלאכותית</p>
 
 <div class="cards">
-    <a href="polymarket.html" class="card">
+    <a href="polymarket.html" class="card card-main">
         <div class="card-icon">&#9889;</div>
         <div class="card-title">צלף ביטקוין — Polymarket</div>
-        <div class="card-desc">שוקי עליה/ירידה של ביטקוין ב-5 דקות. נתונים בזמן אמת. 12 אינדיקטורים. ביצוע אוטומטי.</div>
+        <div class="card-desc">שוקי עליה/ירידה של ביטקוין ב-5 דקות. נתונים בזמן אמת. 14 אינדיקטורים. ביצוע אוטומטי.</div>
         <span class="card-badge badge-cyan">מומלץ — התחל מכאן</span>
     </a>
 
