@@ -132,8 +132,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
             <div class="stat"><div class="sv" id="s-trades">0</div><div class="sl">עסקאות</div></div>
         </div>
 
+        <!-- BOT STATUS - what's happening NOW -->
+        <div class="card" id="brain-card" style="border-color:var(--border)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                <div class="card-title" style="margin:0">מצב הבוט</div>
+                <span id="brain-status" style="font-size:10px;padding:4px 10px;border-radius:6px;font-weight:700;background:var(--bg3);color:var(--t3)">ממתין</span>
+            </div>
+            <div id="brain-text" style="font-size:13px;font-weight:600;color:var(--t2);min-height:20px">לחץ "הפעל בוט" כדי להתחיל</div>
+            <div id="brain-next" style="font-size:10px;color:var(--t3);margin-top:6px"></div>
+        </div>
+
+        <!-- SIGNAL BAR -->
         <div class="card">
-            <div class="card-title">עוצמת סיגנל — תחזית ביטקוין 5 דקות</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                <div class="card-title" style="margin:0">עוצמת סיגנל</div>
+                <span id="sig-direction" style="font-size:11px;font-weight:800;padding:3px 8px;border-radius:5px;background:var(--bg3);color:var(--t3)">ניטרלי</span>
+            </div>
             <div class="signal-bar">
                 <div class="signal-fill bear" id="sig-bear" style="width:0"></div>
                 <div class="signal-fill bull" id="sig-bull" style="width:0"></div>
@@ -142,26 +156,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
                 <span class="signal-label right" style="color:var(--green)">עליה</span>
                 <span class="signal-pct" id="sig-pct">0%</span>
             </div>
+            <div id="sig-threshold" style="font-size:9px;color:var(--t3);margin-top:6px;text-align:center"></div>
         </div>
 
-        <div class="card">
-            <div class="card-title">אינדיקטורים בזמן אמת</div>
-            <div class="ind-grid">
-                <div class="ind"><span class="ind-name">חוזק יחסי</span><span class="ind-val" id="ind-rsi">—</span></div>
-                <div class="ind"><span class="ind-name">חציית ממוצעים</span><span class="ind-val" id="ind-ema">—</span></div>
-                <div class="ind"><span class="ind-name">זינוק נפח</span><span class="ind-val" id="ind-vol">—</span></div>
-                <div class="ind"><span class="ind-name">מומנטום</span><span class="ind-val" id="ind-mom">—</span></div>
-                <div class="ind"><span class="ind-name">סטיית מחיר</span><span class="ind-val" id="ind-vwap">—</span></div>
-                <div class="ind"><span class="ind-name">מגמת נפח</span><span class="ind-val" id="ind-obv">—</span></div>
-                <div class="ind"><span class="ind-name">MACD</span><span class="ind-val" id="ind-macd">—</span></div>
-                <div class="ind"><span class="ind-name">בולינגר</span><span class="ind-val" id="ind-bb">—</span></div>
-                <div class="ind"><span class="ind-name">ספר פקודות</span><span class="ind-val" id="ind-ob">—</span></div>
-                <div class="ind"><span class="ind-name">מימון</span><span class="ind-val" id="ind-fund">—</span></div>
-                <div class="ind"><span class="ind-name">פחד/חמדנות</span><span class="ind-val" id="ind-fg">—</span></div>
-                <div class="ind"><span class="ind-name">זמן פעיל</span><span class="ind-val" id="ind-uptime">0:00</span></div>
-            </div>
+        <!-- LIVE REASONS -->
+        <div class="card" id="reasons-card">
+            <div class="card-title">למה? — סיבות הסיגנל</div>
+            <div id="reasons-list" style="font-size:11px;line-height:2;color:var(--t2)">הבוט טרם נותח. ממתין לנתונים...</div>
         </div>
 
+        <!-- ACTIVE TRADE -->
         <div class="card" id="active-trade-card" style="display:none;border-color:var(--cyan);background:linear-gradient(135deg,rgba(57,208,216,.05),var(--bg2))">
             <div class="card-title" style="color:var(--cyan)">עסקה פעילה</div>
             <div style="display:flex;justify-content:space-between;align-items:center">
@@ -169,24 +173,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
                 <div style="text-align:left"><span id="at-timer" class="mono" style="font-size:24px;font-weight:800;color:var(--cyan)">5:00</span><div style="font-size:9px;color:var(--t3);margin-top:2px">נותר לסגירה</div></div>
             </div>
             <div style="margin-top:12px;height:4px;background:var(--bg3);border-radius:3px;overflow:hidden"><div id="at-progress" style="height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));width:100%;transition:width 1s linear;border-radius:3px"></div></div>
+            <div id="at-live-pnl" style="margin-top:8px;font-size:12px;font-weight:700;text-align:center"></div>
         </div>
 
+        <!-- INDICATORS -->
+        <div class="card">
+            <div class="card-title">אינדיקטורים (14)</div>
+            <div class="ind-grid">
+                <div class="ind"><span class="ind-name">RSI</span><span class="ind-val" id="ind-rsi">—</span></div>
+                <div class="ind"><span class="ind-name">EMA 9/21</span><span class="ind-val" id="ind-ema">—</span></div>
+                <div class="ind"><span class="ind-name">נפח</span><span class="ind-val" id="ind-vol">—</span></div>
+                <div class="ind"><span class="ind-name">מומנטום</span><span class="ind-val" id="ind-mom">—</span></div>
+                <div class="ind"><span class="ind-name">VWAP</span><span class="ind-val" id="ind-vwap">—</span></div>
+                <div class="ind"><span class="ind-name">OBV</span><span class="ind-val" id="ind-obv">—</span></div>
+                <div class="ind"><span class="ind-name">MACD</span><span class="ind-val" id="ind-macd">—</span></div>
+                <div class="ind"><span class="ind-name">Bollinger</span><span class="ind-val" id="ind-bb">—</span></div>
+                <div class="ind"><span class="ind-name">Orderbook</span><span class="ind-val" id="ind-ob">—</span></div>
+                <div class="ind"><span class="ind-name">Funding</span><span class="ind-val" id="ind-fund">—</span></div>
+                <div class="ind"><span class="ind-name">F&G</span><span class="ind-val" id="ind-fg">—</span></div>
+                <div class="ind"><span class="ind-name">Uptime</span><span class="ind-val" id="ind-uptime">0:00</span></div>
+            </div>
+        </div>
+
+        <!-- TODAY STATS -->
         <div class="card">
             <div class="card-title">ביצועים היום</div>
             <div class="stats" style="grid-template-columns:1fr 1fr 1fr">
                 <div class="stat"><div class="sv" id="today-pnl">$0</div><div class="sl">רווח היום</div></div>
-                <div class="stat"><div class="sv" id="today-trades">0</div><div class="sl">עסקאות היום</div></div>
-                <div class="stat"><div class="sv" id="today-winrate">—</div><div class="sl">% ניצחון היום</div></div>
+                <div class="stat"><div class="sv" id="today-trades">0</div><div class="sl">עסקאות</div></div>
+                <div class="stat"><div class="sv" id="today-winrate">—</div><div class="sl">% ניצחון</div></div>
             </div>
         </div>
 
+        <!-- PNL CHART -->
         <div class="card">
             <div class="card-title">גרף רווח/הפסד</div>
             <canvas id="pnl-chart" width="340" height="100" style="width:100%;height:100px;border-radius:8px;background:var(--bg3)"></canvas>
         </div>
 
+        <!-- LIVE LOG -->
         <div class="card">
-            <div class="card-title">יומן פעילות</div>
+            <div class="card-title">יומן חי</div>
             <div class="log" id="log-container"></div>
         </div>
     </div>
@@ -916,6 +943,7 @@ function connectWS(){
 
     ws.onopen=()=>{
         document.getElementById('ws-dot').className='ws-dot live';
+        setBrain('מחובר — מקבל נתוני BTC בזמן אמת','מחובר','green');
         log('חיבור WebSocket הצליח — נתוני BTC חיים','signal');
     };
 
@@ -939,6 +967,14 @@ function connectWS(){
         }
 
         updatePrice(candle.c);
+
+        // Show next tick countdown
+        if(running&&lastTickTime>0){
+            const sinceLastTick=Math.floor((Date.now()-lastTickTime)/1000);
+            const nextIn=Math.max(0,30-sinceLastTick);
+            document.getElementById('brain-next').textContent=candle.closed?'':'בדיקה הבאה בעוד '+nextIn+' שניות';
+        }
+
         if(running&&candle.closed)tick();
         else if(running&&tickCount>0&&Date.now()-lastTickTime>30000)tick();
     };
@@ -972,34 +1008,76 @@ function build5mCandles(){
 // ===== MAIN TICK =====
 let tickCount=0;
 let lastTickTime=0;
+
+function setBrain(text,status,color){
+    document.getElementById('brain-text').textContent=text;
+    const st=document.getElementById('brain-status');
+    st.textContent=status;
+    st.style.background=color==='green'?'rgba(63,185,80,.15)':color==='cyan'?'rgba(57,208,216,.15)':color==='red'?'rgba(248,81,73,.15)':color==='yellow'?'rgba(210,153,34,.15)':'var(--bg3)';
+    st.style.color=color==='green'?'var(--green)':color==='cyan'?'var(--cyan)':color==='red'?'var(--red)':color==='yellow'?'var(--yellow)':'var(--t3)';
+}
+
+function showReasons(reasons,dir,strength){
+    const el=document.getElementById('reasons-list');
+    if(!reasons.length){el.innerHTML='<div style="color:var(--t3)">אין סיגנלים פעילים כרגע</div>';return;}
+    const arrow=dir==='UP'?'▲':'▼';
+    const color=dir==='UP'?'var(--green)':'var(--red)';
+    el.innerHTML=reasons.map(r=>`<div style="padding:3px 0;border-bottom:1px solid var(--border)"><span style="color:${color};font-weight:700">${arrow}</span> ${r}</div>`).join('');
+    const dirEl=document.getElementById('sig-direction');
+    dirEl.textContent=dir==='UP'?'עליה '+strength+'%':'ירידה '+strength+'%';
+    dirEl.style.background=dir==='UP'?'rgba(63,185,80,.15)':'rgba(248,81,73,.15)';
+    dirEl.style.color=color;
+    document.getElementById('sig-threshold').textContent=strength>=ST.config.minSignal?'סף עבר — מוכן לירות!':'צריך '+ST.config.minSignal+'% לביצוע (עכשיו '+strength+'%)';
+}
+
 async function tick(){
     tickCount++;
     lastTickTime=Date.now();
 
+    setBrain('מנתח 14 אינדיקטורים...','מנתח','cyan');
+
     // Fetch microstructure data every 3rd tick
     if(tickCount%3===0){
+        setBrain('שואב נתוני שוק (ספר פקודות, מימון, חיסולים)...','שואב','cyan');
         await Promise.all([fetchOrderbook(),fetchFunding(),fetchLiquidations()]);
     }
 
     const signal=generateSignal();
     updateIndicators(signal);
     updateSignalBar(signal);
+    showReasons(signal.reasons,signal.dir,signal.strength);
 
-    if(!ST.config.auto||!signal.dir)return;
+    if(!ST.config.auto){
+        setBrain('מצב אוטומטי כבוי — רק צופה','כבוי','yellow');
+        return;
+    }
+    if(!signal.dir){
+        setBrain('אין כיוון ברור — ממתין','צופה','');
+        return;
+    }
     if(signal.strength<ST.config.minSignal){
-        if(signal.strength>25)log(`סיגנל ${signal.strength}% — מתחת לסף (${ST.config.minSignal}%)`,'warn');
+        setBrain(`סיגנל ${signal.strength}% — חלש מדי (צריך ${ST.config.minSignal}%)`,'ממתין','yellow');
+        return;
+    }
+    if(signal.reasons.length<2){
+        setBrain(`${signal.reasons.length} סיבות בלבד — צריך 2+ לאישור`,'ממתין','yellow');
         return;
     }
 
-    // Require at least 2 confirming reasons for a trade
-    if(signal.reasons.length<2){
-        log(`סיגנל חלש (${signal.reasons.length} סיבות) — צריך 2+`,'warn');
+    const now=Date.now();
+    if(now-lastTrade<ST.config.cooldown*1000){
+        const wait=Math.ceil((ST.config.cooldown*1000-(now-lastTrade))/1000);
+        setBrain(`ממתין ${wait} שניות לפני ההימור הבא`,'קולדאון','yellow');
         return;
     }
 
     const betSize=calcBetSize(signal.strength);
-    if(betSize<0.5)return;
+    if(betSize<0.5){
+        setBrain('גודל הימור קטן מדי — ממתין','ממתין','');
+        return;
+    }
 
+    setBrain(`יורה! ${signal.dir==='UP'?'עליה':'ירידה'} $${betSize.toFixed(2)}`,'מבצע!','green');
     log(`סיגנל: ${signal.dir==='UP'?'עליה':'ירידה'} ${signal.strength}% — ${signal.reasons.slice(0,4).join(' | ')}`,'signal');
     placeBet(signal.dir,betSize);
 }
@@ -1178,6 +1256,14 @@ function updateActiveTrade(){
     const mm=Math.floor(remain/60);const ss=Math.floor(remain%60);
     document.getElementById('at-timer').textContent=`${mm}:${String(ss).padStart(2,'0')}`;
     document.getElementById('at-progress').style.width=(remain/300*100)+'%';
+    const curPrice=candles1m.length?candles1m[candles1m.length-1].c:0;
+    if(curPrice&&active.entryPrice){
+        const diff=curPrice-active.entryPrice;
+        const winning=(active.dir==='UP'&&diff>0)||(active.dir==='DOWN'&&diff<0);
+        const pnlEl=document.getElementById('at-live-pnl');
+        pnlEl.textContent=`BTC ${diff>0?'+':''}${diff.toFixed(1)} — ${winning?'מנצח':'מפסיד'} כרגע`;
+        pnlEl.style.color=winning?'var(--green)':'var(--red)';
+    }
 }
 
 // ===== CONTROLS =====
@@ -1187,9 +1273,14 @@ async function startBot(){
     document.getElementById('btn-start').disabled=true;
     document.getElementById('btn-stop').disabled=false;
 
+    setBrain('טוען היסטוריית נרות (100 דקות אחרונות)...','מתחיל','cyan');
     log('הבוט מתחיל...','signal');
     await preloadCandles();
+
+    setBrain('שואב נתוני מיקרו-מבנה (ספר פקודות, מימון, חיסולים, פחד/חמדנות)...','שואב','cyan');
     await Promise.all([fetchOrderbook(),fetchFunding(),fetchLiquidations(),fetchFearGreed()]);
+
+    setBrain('מתחבר לנתוני BTC בזמן אמת...','מתחבר','cyan');
     connectWS();
 
     log(`מוכן: ${candles1m.length} נרות | ספר פקודות: ${orderbookBias.toFixed(0)}% | מימון: ${fundingRate.toFixed(4)}%`,'signal');
@@ -1197,10 +1288,10 @@ async function startBot(){
     uptimeInterval=setInterval(()=>{updateUptime();updateActiveTrade();},1000);
     setInterval(fetchFearGreed,300000);
 
-    // Fallback tick every 60s
+    // Fallback tick every 45s
     window._tickInterval=setInterval(()=>{
         if(running&&candles1m.length>20)tick();
-    },60000);
+    },45000);
 }
 
 function stopBot(){
