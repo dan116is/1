@@ -237,6 +237,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
             <input type="checkbox" id="take-profit" checked>
         </div>
         <div class="toggle">
+            <div><div class="toggle-label">DCA Mode</div><div class="toggle-desc">Split entries into 3 buys over 3 cycles instead of all-in</div></div>
+            <input type="checkbox" id="dca-mode">
+        </div>
+        <div class="toggle">
             <div><div class="toggle-label">Notifications</div><div class="toggle-desc">Push alerts on trades and signals</div></div>
             <input type="checkbox" id="notifs" checked>
         </div>
@@ -308,7 +312,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 // ===== STATE =====
 const DEFAULT_STATE={
     cash:100,initial:100,holdings:{},trades:[],logs:[],
-    settings:{autoTrade:true,stopLoss:true,trailingStop:true,takeProfit:true,takeProfitPct:30,notifs:true,maxPos:25,evThreshold:1.2,stopLossPct:15,interval:5,apiKey:'',apiSecret:'',realTrading:false},
+    settings:{autoTrade:true,stopLoss:true,trailingStop:true,takeProfit:true,takeProfitPct:30,dcaMode:false,notifs:true,maxPos:25,evThreshold:1.2,stopLossPct:15,interval:5,apiKey:'',apiSecret:'',realTrading:false},
     agentCycle:0
 };
 let S=JSON.parse(localStorage.getItem('cis_trader'))||{...DEFAULT_STATE};
@@ -316,6 +320,7 @@ if(!S.settings)S.settings=DEFAULT_STATE.settings;
 if(!S.logs)S.logs=[];
 if(!S.cooldowns)S.cooldowns={};
 if(!S.peakValue)S.peakValue=S.initial;
+if(!S.dcaPending)S.dcaPending=[];
 
 // ===== MARKET DATA =====
 const COINS={
@@ -424,12 +429,14 @@ async function runAgentCycle(){
     S.agentCycle++;
     const dot=document.getElementById('dot-scanner');
     dot.className='agent-dot scanning';
-    document.getElementById('status-scanner').textContent='Scanning markets + F&G...';
+    document.getElementById('status-scanner').textContent='Scanning markets + F&G + trending...';
 
-    await Promise.all([fetchFearGreed(),fetchVolumes()]);
+    await Promise.all([fetchFearGreed(),fetchVolumes(),fetchTrending()]);
+    calculateCorrelations();
 
+    const assetCount=Object.keys(COINS).length;
     dot.className='agent-dot active';
-    document.getElementById('status-scanner').textContent='Monitoring 5 assets';
+    document.getElementById('status-scanner').textContent=`Monitoring ${assetCount} assets`;
     analyzeSignals();
 }
 
@@ -451,6 +458,7 @@ function analyzeSignals(){
             document.getElementById('status-executor').textContent='No trades — below threshold';
             addLog(`Cycle #${S.agentCycle}: ${active.length} signals, EVs: [${SIGNALS.filter(s=>s.evLive).map(s=>s.coin?.slice(0,4)+':'+s.evLive+'x').join(', ')}]`);
         }
+        processDCA();
         checkStopLosses();
     },1500);
 }
@@ -475,7 +483,14 @@ function executeSignals(signals){
             const amount=calculatePositionSize(sig);
             if(amount<1)continue;
 
-            executeBuy(sig.coin,amount,sig.id);
+            if(S.settings.dcaMode){
+                const chunk=amount/3;
+                executeBuy(sig.coin,chunk,sig.id+'_dca1');
+                S.dcaPending.push({coin:sig.coin,amount:chunk,step:2,nextTime:Date.now()+S.settings.interval*60*1000});
+                addLog(`DCA scheduled: ${COINS[sig.coin]?.sym} — 3 buys of $${fmt(chunk)}`,'info');
+            }else{
+                executeBuy(sig.coin,amount,sig.id);
+            }
             executed++;
         }
 
@@ -595,6 +610,27 @@ async function executeRealTrade(coinId,side,amount){
     }
 }
 
+// ===== DCA (Dollar Cost Average) =====
+function processDCA(){
+    if(!S.dcaPending||!S.dcaPending.length)return;
+    const now=Date.now();
+    const toExecute=S.dcaPending.filter(d=>now>=d.nextTime);
+    for(const dca of toExecute){
+        const c=COINS[dca.coin];
+        if(!c){S.dcaPending=S.dcaPending.filter(d=>d!==dca);continue;}
+        if(dca.amount>S.cash){addLog(`DCA skip ${c.sym}: insufficient cash`,'alert');S.dcaPending=S.dcaPending.filter(d=>d!==dca);continue;}
+        addLog(`DCA ${dca.step}/3: Buying $${fmt(dca.amount)} of ${c.sym}`,'trade');
+        executeBuy(dca.coin,dca.amount,`dca_${dca.step}`);
+        dca.step++;
+        if(dca.step>3){
+            S.dcaPending=S.dcaPending.filter(d=>d!==dca);
+        }else{
+            dca.nextTime=now+S.settings.interval*60*1000;
+        }
+    }
+    save();
+}
+
 // ===== TRAILING STOP =====
 function updateTrailingStops(){
     for(const[id,h]of Object.entries(S.holdings)){
@@ -650,6 +686,63 @@ async function executePartialSell(coinId,fraction,reason){
     notify('Partial Profit Taken',`${mode} Sold 50% ${c.sym} | ${pnlStr}`);
     toast(`${mode} Took profit ${c.sym} — ${pnlStr}`,'success');
     updateAll();
+}
+
+// ===== TRENDING DISCOVERY =====
+async function fetchTrending(){
+    try{
+        const r=await fetch('https://api.coingecko.com/api/v3/search/trending');
+        const d=await r.json();
+        if(d.coins&&d.coins.length>0){
+            const trending=d.coins.slice(0,5).map(c=>({
+                id:c.item.id,
+                sym:c.item.symbol.toUpperCase(),
+                name:c.item.name,
+                rank:c.item.market_cap_rank,
+                price:c.item.data?.price||0,
+                change24h:c.item.data?.price_change_percentage_24h?.usd||0
+            }));
+            const newFinds=trending.filter(t=>!COINS[t.id]&&t.rank&&t.rank<200);
+            if(newFinds.length>0){
+                for(const nf of newFinds){
+                    COINS[nf.id]={sym:nf.sym,name:nf.name,price:nf.price,change:nf.change24h,signals:['trending_coingecko'],evScore:1.0};
+                    SIGNALS.push({id:`trending_${nf.id}`,coin:nf.id,title:`${nf.sym} — Trending on CoinGecko`,desc:`Rank #${nf.rank}. 24h: ${nf.change24h>0?'+':''}${nf.change24h.toFixed(1)}%. Detected via trending scan.`,strength:'medium',ev:1.0,action:'RESEARCH',size:0});
+                }
+                addLog(`Trending scan: discovered ${newFinds.map(n=>n.sym).join(', ')}`,'alert');
+            }
+        }
+    }catch(e){}
+}
+
+// ===== CORRELATION MONITOR =====
+function calculateCorrelations(){
+    const priceChanges={};
+    for(const[id,c]of Object.entries(COINS)){
+        if(c.change!==undefined)priceChanges[id]=c.change;
+    }
+    const ids=Object.keys(priceChanges);
+    if(ids.length<2)return;
+
+    let allMovingSame=true;
+    const dir=priceChanges[ids[0]]>0?1:-1;
+    for(let i=1;i<ids.length;i++){
+        if((priceChanges[ids[i]]>0?1:-1)!==dir){allMovingSame=false;break;}
+    }
+
+    if(allMovingSame&&Math.abs(priceChanges[ids[0]])>3){
+        addLog(`HIGH CORRELATION: All assets moving ${dir>0?'UP':'DOWN'} together (>${Math.abs(priceChanges[ids[0]]).toFixed(1)}%). Macro-driven.`,'alert');
+    }
+
+    // Detect divergence opportunities
+    const sorted=ids.sort((a,b)=>priceChanges[b]-priceChanges[a]);
+    const spread=priceChanges[sorted[0]]-priceChanges[sorted[sorted.length-1]];
+    if(spread>8){
+        const leader=COINS[sorted[0]];
+        const laggard=COINS[sorted[sorted.length-1]];
+        if(leader&&laggard){
+            addLog(`DIVERGENCE: ${leader.sym} +${priceChanges[sorted[0]].toFixed(1)}% vs ${laggard.sym} ${priceChanges[sorted[sorted.length-1]].toFixed(1)}% (spread ${spread.toFixed(1)}%)`,'alert');
+        }
+    }
 }
 
 // ===== ENHANCED SCANNER =====
@@ -811,6 +904,7 @@ function saveSettings(){
     S.settings.trailingStop=document.getElementById('trailing-stop').checked;
     S.settings.takeProfit=document.getElementById('take-profit').checked;
     S.settings.takeProfitPct=parseInt(document.getElementById('set-takeprofit-pct').value)||30;
+    S.settings.dcaMode=document.getElementById('dca-mode').checked;
     S.settings.realTrading=document.getElementById('real-trading').checked;
     S.settings.notifs=document.getElementById('notifs').checked;
     S.settings.maxPos=parseInt(document.getElementById('set-maxpos').value)||25;
@@ -847,6 +941,7 @@ function loadSettings(){
     document.getElementById('trailing-stop').checked=S.settings.trailingStop!==false;
     document.getElementById('take-profit').checked=S.settings.takeProfit!==false;
     document.getElementById('set-takeprofit-pct').value=S.settings.takeProfitPct||30;
+    document.getElementById('dca-mode').checked=S.settings.dcaMode||false;
     document.getElementById('real-trading').checked=S.settings.realTrading||false;
     document.getElementById('notifs').checked=S.settings.notifs;
     document.getElementById('set-capital').value=S.initial;
