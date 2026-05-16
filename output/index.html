@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0e17">
+<link rel="manifest" href="manifest.json">
+<title>CIS Trading Suite</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0e17;color:#e6edf3;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-top:max(24px,env(safe-area-inset-top))}
+.logo{width:80px;height:80px;margin-bottom:24px}
+.logo svg{width:100%;height:100%}
+h1{font-size:20px;font-weight:700;margin-bottom:4px;color:#39d0d8}
+.sub{font-size:12px;color:#8b949e;margin-bottom:32px}
+.cards{display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px}
+.card{display:block;background:#131a2a;border:1px solid #243049;border-radius:16px;padding:20px;text-decoration:none;color:inherit;transition:all .2s}
+.card:active{transform:scale(.97);background:#1a2332}
+.card-icon{font-size:32px;margin-bottom:8px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.card-desc{font-size:11px;color:#8b949e;line-height:1.5}
+.card-badge{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-top:8px}
+.badge-green{background:rgba(63,185,80,.12);color:#3fb950}
+.badge-cyan{background:rgba(57,208,216,.12);color:#39d0d8}
+.badge-purple{background:rgba(188,140,255,.12);color:#bc8cff}
+.footer{margin-top:32px;font-size:9px;color:#484f58;text-align:center;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="logo">
+<svg viewBox="0 0 80 80"><rect width="80" height="80" rx="20" fill="#131a2a"/><polygon points="40,12 68,28 68,56 40,72 12,56 12,28" fill="none" stroke="#39d0d8" stroke-width="3"/><text x="40" y="48" text-anchor="middle" fill="#39d0d8" font-size="20" font-family="monospace" font-weight="bold">CIS</text></svg>
+</div>
+<h1>CIS Trading Suite</h1>
+<p class="sub">Autonomous AI Trading System</p>
+
+<div class="cards">
+    <a href="polymarket.html" class="card">
+        <div class="card-icon">&#9889;</div>
+        <div class="card-title">Polymarket Sniper</div>
+        <div class="card-desc">BTC UP/DOWN 5-min markets. WebSocket real-time. 12 indicators. Auto-execute with Kelly sizing.</div>
+        <span class="card-badge badge-cyan">RECOMMENDED — START HERE</span>
+    </a>
+
+    <a href="trader.html" class="card">
+        <div class="card-icon">&#128200;</div>
+        <div class="card-title">Spot Trader</div>
+        <div class="card-desc">Multi-asset spot trading. 5 AI agents. Dynamic EV. Trailing stops. Binance execution.</div>
+        <span class="card-badge badge-green">SPOT + BINANCE</span>
+    </a>
+
+    <a href="app.html" class="card">
+        <div class="card-icon">&#128202;</div>
+        <div class="card-title">Intelligence Dashboard</div>
+        <div class="card-desc">Market overview, briefings, signal analysis, architecture view.</div>
+        <span class="card-badge badge-purple">RESEARCH</span>
+    </a>
+</div>
+
+<div class="footer">
+    CIS v2.0 — AI-Powered Trading Suite<br>
+    No guarantees. Crypto is volatile. Trade at your own risk.<br>
+    Add to Home Screen for full-screen app experience.
+</div>
+
+<script>
+if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+</script>
+</body>
+</html>
