@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a0e17">
 <link rel="manifest" href="manifest.json">
-<title>CIS Autonomous Trader</title>
+<title>סוחר מטבעות חכם</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0e17;--bg2:#131a2a;--bg3:#1a2332;--border:#243049;--t1:#e6edf3;--t2:#8b949e;--t3:#484f58;--blue:#58a6ff;--green:#3fb950;--red:#f85149;--yellow:#d29922;--purple:#bc8cff}
@@ -132,7 +132,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 
 <!-- TOP BAR -->
 <div class="top">
-    <span class="top-brand">CIS TRADER</span>
+    <span class="top-brand">סוחר חכם</span>
     <div class="top-status">
         <span class="status-dot" id="agent-status-dot"></span>
         <span class="top-val" id="top-btc">BTC $78,804</span>
@@ -145,37 +145,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 <!-- ===== DASHBOARD SCREEN ===== -->
 <div id="screen-dash" class="screen active">
     <div class="port-big">
-        <div class="label">Portfolio Total</div>
+        <div class="label">סך תיק השקעות</div>
         <div class="val" id="dash-total">$100.00</div>
         <div class="pnl" id="dash-pnl">+$0.00 (0.00%)</div>
     </div>
 
     <div class="stats">
-        <div class="stat"><div class="sv" id="stat-trades">0</div><div class="sl">Trades</div></div>
-        <div class="stat"><div class="sv" id="stat-winrate">—</div><div class="sl">Win Rate</div></div>
-        <div class="stat"><div class="sv" id="stat-fg">45</div><div class="sl">F&G</div></div>
+        <div class="stat"><div class="sv" id="stat-trades">0</div><div class="sl">עסקאות</div></div>
+        <div class="stat"><div class="sv" id="stat-winrate">—</div><div class="sl">% ניצחון</div></div>
+        <div class="stat"><div class="sv" id="stat-fg">45</div><div class="sl">פחד/חמדנות</div></div>
     </div>
 
     <div class="card">
-        <div class="card-title">Risk Metrics</div>
+        <div class="card-title">מדדי סיכון</div>
         <div class="stats">
-            <div class="stat"><div class="sv" id="stat-drawdown">0%</div><div class="sl">Max DD</div></div>
-            <div class="stat"><div class="sv" id="stat-exposure">0%</div><div class="sl">Exposure</div></div>
-            <div class="stat"><div class="sv" id="stat-risk-score">LOW</div><div class="sl">Risk</div></div>
+            <div class="stat"><div class="sv" id="stat-drawdown">0%</div><div class="sl">ירידה מקס</div></div>
+            <div class="stat"><div class="sv" id="stat-exposure">0%</div><div class="sl">חשיפה</div></div>
+            <div class="stat"><div class="sv" id="stat-risk-score">LOW</div><div class="sl">סיכון</div></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title">Autonomous Agents</div>
-        <div class="agent-row"><div class="agent-dot active" id="dot-scanner"></div><div class="agent-info"><div class="agent-name">Market Scanner</div><div class="agent-status" id="status-scanner">Monitoring 5 assets</div></div></div>
-        <div class="agent-row"><div class="agent-dot active" id="dot-signals"></div><div class="agent-info"><div class="agent-name">Signal Detector</div><div class="agent-status" id="status-signals">4 active signals</div></div></div>
-        <div class="agent-row"><div class="agent-dot active" id="dot-ev"></div><div class="agent-info"><div class="agent-name">EV Calculator</div><div class="agent-status" id="status-ev">Threshold: 1.2x</div></div></div>
-        <div class="agent-row"><div class="agent-dot" id="dot-executor"></div><div class="agent-info"><div class="agent-name">Trade Executor</div><div class="agent-status" id="status-executor">Waiting for signal</div></div></div>
-        <div class="agent-row"><div class="agent-dot active" id="dot-risk"></div><div class="agent-info"><div class="agent-name">Risk Manager</div><div class="agent-status" id="status-risk">Stop losses active</div></div></div>
+        <div class="card-title">סוכנים אוטונומיים</div>
+        <div class="agent-row"><div class="agent-dot active" id="dot-scanner"></div><div class="agent-info"><div class="agent-name">סורק שוק</div><div class="agent-status" id="status-scanner">עוקב אחרי 5 נכסים</div></div></div>
+        <div class="agent-row"><div class="agent-dot active" id="dot-signals"></div><div class="agent-info"><div class="agent-name">גלאי סיגנלים</div><div class="agent-status" id="status-signals">4 סיגנלים פעילים</div></div></div>
+        <div class="agent-row"><div class="agent-dot active" id="dot-ev"></div><div class="agent-info"><div class="agent-name">מחשב תוחלת</div><div class="agent-status" id="status-ev">סף: 1.2x</div></div></div>
+        <div class="agent-row"><div class="agent-dot" id="dot-executor"></div><div class="agent-info"><div class="agent-name">מבצע עסקאות</div><div class="agent-status" id="status-executor">ממתין לסיגנל</div></div></div>
+        <div class="agent-row"><div class="agent-dot active" id="dot-risk"></div><div class="agent-info"><div class="agent-name">מנהל סיכונים</div><div class="agent-status" id="status-risk">סטופ לוס פעיל</div></div></div>
     </div>
 
     <div class="card">
-        <div class="card-title">Agent Activity Log</div>
+        <div class="card-title">יומן פעילות סוכנים</div>
         <div id="activity-log"></div>
     </div>
 </div>
@@ -183,27 +183,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 <!-- ===== PORTFOLIO SCREEN ===== -->
 <div id="screen-port" class="screen">
     <div class="port-big">
-        <div class="label">Portfolio Value</div>
+        <div class="label">שווי תיק</div>
         <div class="val" id="port-total2">$100.00</div>
         <div class="pnl" id="port-pnl2">+$0.00 (0.00%)</div>
     </div>
 
     <div class="card">
-        <div class="card-title">Cash Available</div>
+        <div class="card-title">מזומן זמין</div>
         <div style="font-size:24px;font-weight:700;font-family:'SF Mono',monospace" id="port-cash2">$100.00</div>
     </div>
 
     <div class="card">
-        <div class="card-title">Holdings</div>
+        <div class="card-title">אחזקות</div>
         <div id="holdings-container">
-            <div style="text-align:center;padding:20px;color:var(--t3);font-size:12px">No positions yet. Agents will execute when conditions are met.</div>
+            <div style="text-align:center;padding:20px;color:var(--t3);font-size:12px">אין פוזיציות. הסוכנים יבצעו כשהתנאים יתמלאו.</div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title">Trade History</div>
+        <div class="card-title">היסטוריית עסקאות</div>
         <div id="trade-history">
-            <div style="text-align:center;padding:20px;color:var(--t3);font-size:12px">No trades executed yet.</div>
+            <div style="text-align:center;padding:20px;color:var(--t3);font-size:12px">לא בוצעו עסקאות עדיין.</div>
         </div>
     </div>
 </div>
@@ -211,7 +211,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 <!-- ===== SIGNALS SCREEN ===== -->
 <div id="screen-signals" class="screen">
     <div class="card">
-        <div class="card-title">Active Signals (Auto-Execute When EV > 1.2x)</div>
+        <div class="card-title">סיגנלים פעילים (ביצוע אוטומטי כשתוחלת > 1.2x)</div>
     </div>
     <div id="signals-container"></div>
 </div>
@@ -219,91 +219,91 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 <!-- ===== SETTINGS SCREEN ===== -->
 <div id="screen-settings" class="screen">
     <div class="card">
-        <div class="card-title">Trading Mode</div>
+        <div class="card-title">מצב מסחר</div>
         <div class="toggle">
-            <div><div class="toggle-label">Auto-Execute Trades</div><div class="toggle-desc">Agents buy/sell automatically when EV threshold met</div></div>
+            <div><div class="toggle-label">ביצוע אוטומטי</div><div class="toggle-desc">הסוכנים קונים/מוכרים אוטומטית כשהתוחלת מספיק גבוהה</div></div>
             <input type="checkbox" id="auto-trade" checked>
         </div>
         <div class="toggle">
-            <div><div class="toggle-label">Stop Loss Active</div><div class="toggle-desc">Auto-sell when price drops below stop level</div></div>
+            <div><div class="toggle-label">סטופ לוס</div><div class="toggle-desc">מכירה אוטומטית כשהמחיר יורד מתחת לרמת ההגנה</div></div>
             <input type="checkbox" id="stop-loss" checked>
         </div>
         <div class="toggle">
-            <div><div class="toggle-label">Trailing Stop</div><div class="toggle-desc">Stop loss moves up as price rises — locks in profits</div></div>
+            <div><div class="toggle-label">סטופ נגרר</div><div class="toggle-desc">רמת ההגנה עולה ככל שהמחיר עולה — נועל רווחים</div></div>
             <input type="checkbox" id="trailing-stop" checked>
         </div>
         <div class="toggle">
-            <div><div class="toggle-label">Take Profit (50%)</div><div class="toggle-desc">Auto-sell half position when target % reached</div></div>
+            <div><div class="toggle-label">לקיחת רווח (50%)</div><div class="toggle-desc">מכירת חצי פוזיציה אוטומטית כשהיעד מושג</div></div>
             <input type="checkbox" id="take-profit" checked>
         </div>
         <div class="toggle">
-            <div><div class="toggle-label">DCA Mode</div><div class="toggle-desc">Split entries into 3 buys over 3 cycles instead of all-in</div></div>
+            <div><div class="toggle-label">פיזור כניסות</div><div class="toggle-desc">מפצל קנייה ל-3 חלקים על פני 3 סבבים במקום הכל בבת אחת</div></div>
             <input type="checkbox" id="dca-mode">
         </div>
         <div class="toggle">
-            <div><div class="toggle-label">Notifications</div><div class="toggle-desc">Push alerts on trades and signals</div></div>
+            <div><div class="toggle-label">התראות</div><div class="toggle-desc">התראות על עסקאות וסיגנלים</div></div>
             <input type="checkbox" id="notifs" checked>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title">Risk Parameters</div>
+        <div class="card-title">פרמטרי סיכון</div>
         <div class="setting-group">
-            <label>Take Profit Target (%)</label>
+            <label>יעד לקיחת רווח (%)</label>
             <input type="number" id="set-takeprofit-pct" value="30" min="5" max="200" step="5">
         </div>
         <div class="setting-group">
-            <label>Initial Capital ($)</label>
+            <label>הון התחלתי ($)</label>
             <input type="number" id="set-capital" value="100" min="1">
         </div>
         <div class="setting-group">
-            <label>Max Position Size (%)</label>
+            <label>גודל פוזיציה מקסימלי (%)</label>
             <input type="number" id="set-maxpos" value="25" min="5" max="100">
         </div>
         <div class="setting-group">
-            <label>Min EV Threshold (x)</label>
+            <label>סף תוחלת מינימלי (x)</label>
             <input type="number" id="set-ev" value="1.2" min="1" max="3" step="0.05">
         </div>
         <div class="setting-group">
-            <label>Stop Loss (%)</label>
+            <label>סטופ לוס (%)</label>
             <input type="number" id="set-stoploss" value="15" min="5" max="50">
         </div>
         <div class="setting-group">
-            <label>Scan Interval (minutes)</label>
+            <label>מרווח סריקה (דקות)</label>
             <input type="number" id="set-interval" value="5" min="1" max="60">
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title">Binance API (Optional — Real Trading)</div>
-        <div class="warn-box">&#9888; Only add API keys if you want REAL trades. Without keys, the system uses paper trading with simulated execution.</div>
+        <div class="card-title">חיבור בינאנס (אופציונלי — מסחר אמיתי)</div>
+        <div class="warn-box">&#9888; הכנס מפתחות API רק אם אתה רוצה עסקאות אמיתיות. בלי מפתחות, המערכת עובדת בסימולציה.</div>
         <div class="toggle">
-            <div><div class="toggle-label">Real Trading</div><div class="toggle-desc">Execute real orders on Binance (requires API keys)</div></div>
+            <div><div class="toggle-label">מסחר אמיתי</div><div class="toggle-desc">ביצוע פקודות אמיתיות בבינאנס (דורש מפתחות API)</div></div>
             <input type="checkbox" id="real-trading">
         </div>
         <div class="setting-group">
-            <label>API Key</label>
-            <input type="password" id="api-key" placeholder="Enter Binance API key">
+            <label>מפתח API</label>
+            <input type="password" id="api-key" placeholder="הכנס מפתח API של בינאנס">
         </div>
         <div class="setting-group">
-            <label>API Secret</label>
-            <input type="password" id="api-secret" placeholder="Enter Binance API secret">
+            <label>סיסמת API</label>
+            <input type="password" id="api-secret" placeholder="הכנס סיסמת API של בינאנס">
         </div>
-        <button class="big-btn blue" onclick="saveSettings()">Save Settings</button>
-        <button class="big-btn red" onclick="resetAll()" style="margin-top:8px">Reset All Data</button>
+        <button class="big-btn blue" onclick="saveSettings()">שמור הגדרות</button>
+        <button class="big-btn red" onclick="resetAll()" style="margin-top:8px">אפס את כל הנתונים</button>
     </div>
 
-    <div class="disclaimer">CIS Autonomous Trader v1.0<br>No guarantees of profit. Crypto is volatile. Trade at your own risk.<br>API keys stored locally on device only — never sent to external servers.</div>
+    <div class="disclaimer">סוחר מטבעות חכם v2.0<br>אין הבטחות לרווח. קריפטו תנודתי. מסחר על אחריותך.<br>מפתחות API נשמרים בטלפון בלבד — לא נשלחים לשום שרת.</div>
 </div>
 
 </div><!-- /main -->
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
-    <button class="active" onclick="showScreen('dash')"><span class="ico">&#9670;</span>Dashboard</button>
-    <button onclick="showScreen('port')"><span class="ico">&#128188;</span>Portfolio</button>
-    <button onclick="showScreen('signals')"><span class="ico">&#128225;</span>Signals</button>
-    <button onclick="showScreen('settings')"><span class="ico">&#9881;</span>Settings</button>
+    <button class="active" onclick="showScreen('dash')"><span class="ico">&#9670;</span>ראשי</button>
+    <button onclick="showScreen('port')"><span class="ico">&#128188;</span>תיק</button>
+    <button onclick="showScreen('signals')"><span class="ico">&#128225;</span>סיגנלים</button>
+    <button onclick="showScreen('settings')"><span class="ico">&#9881;</span>הגדרות</button>
 </div>
 
 </div><!-- /app -->

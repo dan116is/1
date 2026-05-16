@@ -143,6 +143,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
         </div>
 
         <div class="card">
+            <div class="card-title">גרף רווח/הפסד</div>
+            <canvas id="pnl-chart" width="340" height="100" style="width:100%;height:100px;border-radius:8px;background:var(--bg3)"></canvas>
+        </div>
+
+        <div class="card">
             <div class="card-title">יומן פעילות</div>
             <div class="log" id="log-container"></div>
         </div>
@@ -491,16 +496,19 @@ function resolveTrade(trade){
         ST.stats.streak++;
         if(ST.stats.streak>ST.stats.bestStreak)ST.stats.bestStreak=ST.stats.streak;
         log(`ניצחון ${trade.dir==='UP'?'עליה':'ירידה'} +$${trade.pnl.toFixed(2)} | BTC ${priceMoved>0?'+':''}${priceMoved.toFixed(0)}`,'trade');
+        vibrate([100,50,100]);
     }else{
         trade.pnl=-trade.amount;
         ST.stats.losses++;
         ST.stats.streak=0;
         log(`הפסד ${trade.dir==='UP'?'עליה':'ירידה'} -$${trade.amount.toFixed(2)} | BTC ${priceMoved>0?'+':''}${priceMoved.toFixed(0)}`,'loss');
+        vibrate([200]);
     }
 
     save();
     updateUI();
     updatePerformance();
+    drawPnlChart();
 }
 
 // ===== POLYMARKET API =====
@@ -876,6 +884,60 @@ function loadConfig(){
 }
 
 function save(){localStorage.setItem('pm_sniper',JSON.stringify(ST));}
+
+function vibrate(pattern){try{navigator.vibrate(pattern);}catch(e){}}
+
+function drawPnlChart(){
+    const canvas=document.getElementById('pnl-chart');
+    if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    const W=canvas.width=canvas.offsetWidth*2;
+    const H=canvas.height=200;
+    ctx.clearRect(0,0,W,H);
+
+    const resolved=ST.trades.filter(t=>t.resolved).reverse();
+    if(resolved.length<2)return;
+
+    const points=[ST.initial];
+    let bal=ST.initial;
+    for(const t of resolved){bal+=t.pnl;points.push(bal);}
+
+    const minV=Math.min(...points)*0.98;
+    const maxV=Math.max(...points)*1.02;
+    const range=maxV-minV||1;
+
+    // Grid line at initial balance
+    const initY=H-((ST.initial-minV)/range)*H;
+    ctx.strokeStyle='rgba(139,148,158,0.2)';
+    ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(0,initY);ctx.lineTo(W,initY);ctx.stroke();
+    ctx.setLineDash([]);
+
+    // P&L line
+    ctx.beginPath();
+    for(let i=0;i<points.length;i++){
+        const x=(i/(points.length-1))*W;
+        const y=H-((points[i]-minV)/range)*H;
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    }
+    const lastVal=points[points.length-1];
+    ctx.strokeStyle=lastVal>=ST.initial?'#3fb950':'#f85149';
+    ctx.lineWidth=2;
+    ctx.stroke();
+
+    // Fill under
+    const lastX=W;
+    const lastY=H-((lastVal-minV)/range)*H;
+    ctx.lineTo(lastX,H);ctx.lineTo(0,H);ctx.closePath();
+    ctx.fillStyle=lastVal>=ST.initial?'rgba(63,185,80,0.08)':'rgba(248,81,73,0.08)';
+    ctx.fill();
+
+    // Dot on last point
+    ctx.beginPath();
+    ctx.arc(lastX,lastY,4,0,Math.PI*2);
+    ctx.fillStyle=lastVal>=ST.initial?'#3fb950':'#f85149';
+    ctx.fill();
+}
 
 // ===== INIT =====
 loadConfig();
