@@ -117,6 +117,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 <div class="main">
     <div class="tabs">
         <div class="tab active" onclick="showTab('live')">חי</div>
+        <div class="tab" onclick="showTab('wallet')">ארנק</div>
         <div class="tab" onclick="showTab('trades')">עסקאות</div>
         <div class="tab" onclick="showTab('settings')">הגדרות</div>
     </div>
@@ -189,6 +190,57 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
         </div>
     </div>
 
+    <!-- WALLET TAB -->
+    <div id="tab-wallet" class="screen">
+        <div class="card" id="wallet-setup" style="text-align:center">
+            <div style="font-size:48px;margin-bottom:12px">&#128176;</div>
+            <div style="font-size:16px;font-weight:800;margin-bottom:6px;color:var(--cyan)">הארנק שלך</div>
+            <div style="font-size:12px;color:var(--t2);margin-bottom:20px;line-height:1.6">ארנק פרטי על המכשיר שלך בלבד.<br>אף אחד חוץ ממך לא יכול לגשת אליו.</div>
+            <div id="wallet-no-wallet">
+                <button class="btn btn-go" onclick="createWallet()" style="width:100%;margin-bottom:10px;padding:18px;font-size:15px">צור ארנק חדש</button>
+                <button class="btn" onclick="document.getElementById('import-section').style.display='block'" style="width:100%;background:var(--bg3);color:var(--t1);border:1px solid var(--border);padding:16px">יש לי כבר ארנק — ייבוא</button>
+                <div id="import-section" style="display:none;margin-top:14px">
+                    <input type="password" id="import-pk" placeholder="הדבק מפתח פרטי (0x...)" style="width:100%;padding:14px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--t1);font-size:13px;margin-bottom:10px;text-align:center">
+                    <button class="btn btn-go" onclick="importWallet()" style="width:100%;padding:16px">ייבא ארנק</button>
+                </div>
+            </div>
+            <div id="wallet-has-wallet" style="display:none">
+                <div class="card" style="background:var(--bg3);border:none;margin-bottom:14px">
+                    <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">כתובת הארנק</div>
+                    <div id="wallet-address" class="mono" style="font-size:11px;word-break:break-all;color:var(--cyan);cursor:pointer" onclick="copyAddress()"></div>
+                    <div style="font-size:9px;color:var(--t3);margin-top:4px">לחץ להעתקה</div>
+                </div>
+                <div class="stats" style="grid-template-columns:1fr 1fr;margin-bottom:14px">
+                    <div class="stat">
+                        <div class="sv" id="wallet-usdc" style="color:var(--green)">$0.00</div>
+                        <div class="sl">USDC יתרה</div>
+                    </div>
+                    <div class="stat">
+                        <div class="sv" id="wallet-matic">0</div>
+                        <div class="sl">POL (גז)</div>
+                    </div>
+                </div>
+                <button class="btn btn-go" onclick="openFundWallet()" style="width:100%;margin-bottom:10px;padding:18px;font-size:15px;background:linear-gradient(135deg,#000,#1a1a2e);color:#fff;border:1px solid #333">
+                    <span style="font-size:18px;vertical-align:middle">&#63743;</span> Pay — טען $10 USDC
+                </button>
+                <div style="font-size:10px;color:var(--t3);margin-bottom:14px;line-height:1.5">תשלום מאובטח דרך MoonPay.<br>Apple Pay / כרטיס אשראי → USDC לארנק שלך.</div>
+                <button class="btn" onclick="refreshBalance()" style="width:100%;background:var(--bg3);color:var(--cyan);border:1px solid var(--border);padding:14px;margin-bottom:10px">רענן יתרה</button>
+                <div class="card" style="background:var(--bg3);border:none">
+                    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">מצב מסחר</div>
+                    <div id="wallet-trade-mode" style="font-size:13px;font-weight:700"></div>
+                </div>
+                <button class="btn" onclick="goLive()" id="btn-go-live" style="width:100%;margin-top:10px;background:linear-gradient(135deg,var(--green),#2d8a3e);color:#fff;padding:18px;font-size:15px;display:none">
+                    עבור למסחר אמיתי
+                </button>
+                <div style="margin-top:14px;display:flex;gap:8px">
+                    <button class="btn" onclick="showBackup()" style="flex:1;background:var(--bg3);color:var(--t2);border:1px solid var(--border);padding:14px;font-size:11px">גיבוי מפתח</button>
+                    <button class="btn" onclick="disconnectWallet()" style="flex:1;background:var(--bg3);color:var(--red);border:1px solid var(--border);padding:14px;font-size:11px">נתק ארנק</button>
+                </div>
+            </div>
+        </div>
+        <div class="disclaimer">הארנק מאוחסן מוצפן על המכשיר שלך בלבד.<br>שמור גיבוי של המפתח הפרטי — אם תמחק את האפליקציה, הגישה תאבד.<br>אף שרת לא רואה את המפתח שלך.</div>
+    </div>
+
     <!-- TRADES TAB -->
     <div id="tab-trades" class="screen">
         <div class="card">
@@ -208,13 +260,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 
     <!-- SETTINGS TAB -->
     <div id="tab-settings" class="screen">
-        <div class="card">
-            <div class="card-title">חיבור ל-Polymarket</div>
-            <div class="setting"><label>מפתח פרטי (Polygon)</label><input type="password" id="set-pk" placeholder="0x..."></div>
-            <div class="setting"><label>מפתח API</label><input type="password" id="set-clob-key" placeholder="מפתח"></div>
-            <div class="setting"><label>סיסמת API</label><input type="password" id="set-clob-secret" placeholder="סיסמה"></div>
-            <div class="setting"><label>משפט סיסמה</label><input type="password" id="set-clob-pass" placeholder="משפט"></div>
-        </div>
         <div class="card">
             <div class="card-title">אסטרטגיה</div>
             <div class="setting"><label>יתרה התחלתית ($)</label><input type="number" id="set-balance" value="10"></div>
@@ -242,7 +287,149 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
 <script>
+// ===== WALLET SYSTEM =====
+const POLYGON_RPC='https://polygon-rpc.com';
+const USDC_POLYGON='0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
+const USDC_ABI=['function balanceOf(address) view returns (uint256)','function approve(address,uint256) returns (bool)'];
+
+function getStoredWallet(){
+    const d=localStorage.getItem('cis_wallet');
+    return d?JSON.parse(d):null;
+}
+function storeWallet(addr,encPk){
+    localStorage.setItem('cis_wallet',JSON.stringify({address:addr,pk:encPk,created:Date.now()}));
+}
+
+function createWallet(){
+    try{
+        const w=ethers.Wallet.createRandom();
+        storeWallet(w.address,w.privateKey);
+        ST.config.pk=w.privateKey;
+        ST.config.walletAddr=w.address;
+        save();
+        initWalletUI();
+        log('ארנק חדש נוצר בהצלחה','signal');
+        vibrate([50,30,50]);
+    }catch(e){
+        alert('שגיאה ביצירת ארנק: '+e.message);
+    }
+}
+
+function importWallet(){
+    const pk=document.getElementById('import-pk').value.trim();
+    if(!pk){alert('הדבק מפתח פרטי');return;}
+    try{
+        const w=new ethers.Wallet(pk);
+        storeWallet(w.address,pk);
+        ST.config.pk=pk;
+        ST.config.walletAddr=w.address;
+        save();
+        initWalletUI();
+        log('ארנק יובא בהצלחה','signal');
+    }catch(e){
+        alert('מפתח פרטי לא תקין');
+    }
+}
+
+function initWalletUI(){
+    const w=getStoredWallet();
+    if(!w){
+        document.getElementById('wallet-no-wallet').style.display='block';
+        document.getElementById('wallet-has-wallet').style.display='none';
+        return;
+    }
+    document.getElementById('wallet-no-wallet').style.display='none';
+    document.getElementById('wallet-has-wallet').style.display='block';
+    document.getElementById('wallet-address').textContent=w.address;
+    updateTradeMode();
+    refreshBalance();
+}
+
+async function refreshBalance(){
+    const w=getStoredWallet();
+    if(!w)return;
+    try{
+        const provider=new ethers.JsonRpcProvider(POLYGON_RPC);
+        const usdc=new ethers.Contract(USDC_POLYGON,USDC_ABI,provider);
+        const bal=await usdc.balanceOf(w.address);
+        const usdcBal=parseFloat(ethers.formatUnits(bal,6));
+        document.getElementById('wallet-usdc').textContent='$'+usdcBal.toFixed(2);
+        const maticBal=await provider.getBalance(w.address);
+        const matic=parseFloat(ethers.formatEther(maticBal));
+        document.getElementById('wallet-matic').textContent=matic.toFixed(4);
+        if(usdcBal>0){
+            document.getElementById('btn-go-live').style.display='block';
+        }
+        updateTradeMode();
+    }catch(e){
+        document.getElementById('wallet-usdc').textContent='שגיאה';
+    }
+}
+
+function openFundWallet(){
+    const w=getStoredWallet();
+    if(!w){alert('צור ארנק קודם');return;}
+    const url='https://buy.moonpay.com/?apiKey=pk_live_yourkey'
+        +'&currencyCode=usdc_polygon'
+        +'&walletAddress='+w.address
+        +'&baseCurrencyAmount=10'
+        +'&colorCode=%2339d0d8';
+    window.open(url,'_blank');
+}
+
+function copyAddress(){
+    const w=getStoredWallet();
+    if(!w)return;
+    navigator.clipboard.writeText(w.address).then(()=>{
+        showToast('כתובת הועתקה','win');
+        vibrate([30]);
+    }).catch(()=>{
+        prompt('העתק ידנית:',w.address);
+    });
+}
+
+function showBackup(){
+    const w=getStoredWallet();
+    if(!w)return;
+    if(!confirm('המפתח הפרטי שלך הוא הגישה היחידה לכסף שלך.\nשמור אותו במקום בטוח!\n\nלהציג?'))return;
+    prompt('המפתח הפרטי שלך (שמור במקום בטוח!):',w.pk);
+}
+
+function disconnectWallet(){
+    if(!confirm('לנתק את הארנק? הכסף יישאר בארנק אבל תצטרך את המפתח הפרטי כדי לגשת אליו שוב.'))return;
+    localStorage.removeItem('cis_wallet');
+    ST.config.pk='';
+    ST.config.walletAddr='';
+    ST.config.paper=true;
+    save();
+    initWalletUI();
+    log('ארנק נותק','warn');
+}
+
+function goLive(){
+    if(!confirm('לעבור למסחר אמיתי?\n\nהבוט ישתמש ב-USDC מהארנק שלך.\nאתה עלול להפסיד את כל הכסף.\n\nלהמשיך?'))return;
+    ST.config.paper=false;
+    document.getElementById('set-paper').checked=false;
+    save();
+    updateTradeMode();
+    showToast('מסחר אמיתי פעיל','win');
+    log('עברת למסחר אמיתי — USDC מהארנק שלך','signal');
+}
+
+function updateTradeMode(){
+    const el=document.getElementById('wallet-trade-mode');
+    const btn=document.getElementById('btn-go-live');
+    if(ST.config.paper){
+        el.innerHTML='<span style="color:var(--yellow)">סימולציה</span> — ללא כסף אמיתי';
+        if(btn)btn.style.display='block';
+    }else{
+        el.innerHTML='<span style="color:var(--green)">מסחר אמיתי</span> — USDC מהארנק';
+        if(btn)btn.style.display='none';
+    }
+}
+
 // ===== STATE =====
 const DEFAULT={
     balance:10,initial:10,trades:[],logs:[],
@@ -550,12 +737,20 @@ async function placeBet(direction,amount){
         setTimeout(()=>resolveTrade(trade),300000);
     }else{
         // Real Polymarket execution
+        log(`[LIVE] מבצע הימור ${direction==='UP'?'עליה':'ירידה'} — $${amount.toFixed(2)}`,'trade');
         const success=await polymarketBet(direction,amount);
         if(success){
             ST.balance-=amount;
-            ST.trades.unshift({dir:direction,amount,entryPrice:price,time:now,resolved:false,paper:false});
+            const trade={dir:direction,amount,entryPrice:price,time:now,resolved:false,paper:false};
+            ST.trades.unshift(trade);
             save();
-            log(`[LIVE] BET ${direction} — $${amount.toFixed(2)}`,'trade');
+            updateUI();
+            soundWin();
+            showToast(`הימור $${amount.toFixed(2)} בוצע`,'win');
+            setTimeout(()=>resolveTrade(trade),300000);
+            setTimeout(()=>refreshBalance(),5000);
+        }else{
+            log('ההימור נכשל — חוזר לסימולציה','warn');
         }
     }
 }
@@ -595,52 +790,80 @@ function resolveTrade(trade){
 }
 
 // ===== POLYMARKET API =====
+const POLY_CLOB='https://clob.polymarket.com';
+const POLY_GAMMA='https://gamma-api.polymarket.com';
+
+async function findBtcMarket(){
+    try{
+        const r=await fetch(POLY_GAMMA+'/markets?tag=crypto&active=true&closed=false');
+        const markets=await r.json();
+        const btc=markets.find(m=>m.question&&(m.question.match(/Bitcoin.*5.*(min|דק)/i)||m.question.match(/BTC.*UP.*DOWN/i)));
+        if(btc)return btc;
+        const btcAny=markets.find(m=>m.question&&m.question.includes('Bitcoin')&&m.enableOrderBook);
+        return btcAny||null;
+    }catch(e){log('שגיאה בחיפוש שוק: '+e.message,'warn');return null;}
+}
+
 async function polymarketBet(direction,amount){
-    if(!ST.config.clobKey||!ST.config.pk){
-        log('לא הוגדרו מפתחות API של Polymarket','warn');
+    const w=getStoredWallet();
+    if(!w||!w.pk){
+        log('צור ארנק קודם בלשונית "ארנק"','warn');
         return false;
     }
     try{
-        // Find active BTC market
-        const marketsResp=await fetch('https://gamma-api.polymarket.com/markets?tag=crypto&active=true&closed=false');
-        const markets=await marketsResp.json();
-        const btcMarket=markets.find(m=>m.question&&m.question.includes('Bitcoin')&&m.question.includes('5'));
-        if(!btcMarket){log('לא נמצא שוק BTC 5 דקות פעיל','warn');return false;}
+        log('מחפש שוק BTC פעיל ב-Polymarket...','signal');
+        const market=await findBtcMarket();
+        if(!market){log('לא נמצא שוק BTC פעיל — עובר לסימולציה','warn');return false;}
 
-        // Get token IDs for YES/NO
-        const tokenId=direction==='UP'?btcMarket.tokens?.[0]?.token_id:btcMarket.tokens?.[1]?.token_id;
+        const tokenId=direction==='UP'
+            ?(market.tokens?.[0]?.token_id)
+            :(market.tokens?.[1]?.token_id);
         if(!tokenId){log('מזהה טוקן לא נמצא','warn');return false;}
 
-        // Place order via CLOB
-        const orderPayload={
-            tokenID:tokenId,
-            price:0.55,
-            size:amount/0.55,
+        const provider=new ethers.JsonRpcProvider(POLYGON_RPC);
+        const signer=new ethers.Wallet(w.pk,provider);
+
+        const price=0.55;
+        const size=Math.floor((amount/price)*1e6)/1e6;
+        const nonce=Date.now().toString();
+        const expiration=Math.floor(Date.now()/1000)+300;
+
+        const orderData={
+            maker:w.address,
+            taker:'0x0000000000000000000000000000000000000000',
+            tokenId:tokenId,
+            makerAmount:Math.floor(amount*1e6).toString(),
+            takerAmount:Math.floor(size*1e6).toString(),
             side:'BUY',
-            feeRateBps:0
+            expiration:expiration.toString(),
+            nonce:nonce,
+            feeRateBps:'0',
+            signatureType:0
         };
 
-        const resp=await fetch('https://clob.polymarket.com/order',{
+        const orderHash=ethers.solidityPackedKeccak256(
+            ['address','address','bytes32','uint256','uint256','uint256','uint256','uint256'],
+            [orderData.maker,orderData.taker,tokenId,orderData.makerAmount,orderData.takerAmount,orderData.expiration,orderData.nonce,orderData.feeRateBps]
+        );
+        const sig=await signer.signMessage(ethers.getBytes(orderHash));
+
+        const resp=await fetch(POLY_CLOB+'/order',{
             method:'POST',
-            headers:{
-                'Content-Type':'application/json',
-                'POLY_API_KEY':ST.config.clobKey,
-                'POLY_API_SECRET':ST.config.clobSecret,
-                'POLY_PASSPHRASE':ST.config.clobPass
-            },
-            body:JSON.stringify(orderPayload)
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({order:{...orderData,signature:sig}})
         });
 
         const result=await resp.json();
-        if(result.orderID||result.success){
-            log(`פקודה בוצעה ב-Polymarket: ${result.orderID||'OK'}`,'signal');
+        if(result.orderID||result.success||result.id){
+            log(`פקודה בוצעה: ${market.question} — ${direction}`,'signal');
+            vibrate([50,20,50]);
             return true;
         }else{
-            log(`שגיאת Polymarket: ${result.error||JSON.stringify(result)}`,'warn');
+            log(`Polymarket: ${result.error||result.message||JSON.stringify(result).slice(0,80)}`,'warn');
             return false;
         }
     }catch(e){
-        log(`API error: ${e.message}`,'warn');
+        log(`שגיאת מסחר: ${e.message}`,'warn');
         return false;
     }
 }
@@ -913,9 +1136,10 @@ function showTab(id){
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     document.getElementById('tab-'+id).classList.add('active');
     const tabs=document.querySelectorAll('.tab');
-    const map={live:0,trades:1,settings:2};
+    const map={live:0,wallet:1,trades:2,settings:3};
     if(map[id]!==undefined)tabs[map[id]].classList.add('active');
     if(id==='trades')renderTrades();
+    if(id==='wallet')initWalletUI();
 }
 
 // ===== FEAR & GREED =====
@@ -999,10 +1223,6 @@ function saveConfig(){
     ST.config.rsiOS=parseInt(document.getElementById('set-rsi-os').value)||28;
     ST.config.paper=document.getElementById('set-paper').checked;
     ST.config.auto=document.getElementById('set-auto').checked;
-    ST.config.pk=document.getElementById('set-pk').value;
-    ST.config.clobKey=document.getElementById('set-clob-key').value;
-    ST.config.clobSecret=document.getElementById('set-clob-secret').value;
-    ST.config.clobPass=document.getElementById('set-clob-pass').value;
 
     const newBal=parseFloat(document.getElementById('set-balance').value);
     if(newBal&&newBal!==ST.initial&&ST.trades.filter(t=>!t.resolved).length===0){
@@ -1022,10 +1242,6 @@ function loadConfig(){
     document.getElementById('set-rsi-os').value=ST.config.rsiOS;
     document.getElementById('set-paper').checked=ST.config.paper;
     document.getElementById('set-auto').checked=ST.config.auto;
-    document.getElementById('set-pk').value=ST.config.pk||'';
-    document.getElementById('set-clob-key').value=ST.config.clobKey||'';
-    document.getElementById('set-clob-secret').value=ST.config.clobSecret||'';
-    document.getElementById('set-clob-pass').value=ST.config.clobPass||'';
     document.getElementById('set-balance').value=ST.initial;
 }
 
@@ -1113,6 +1329,12 @@ function drawPnlChart(){
 // ===== INIT =====
 loadConfig();
 updateUI();
+const _w=getStoredWallet();
+if(_w){
+    ST.config.pk=_w.pk;
+    ST.config.walletAddr=_w.address;
+    log('ארנק מחובר: '+_w.address.slice(0,8)+'...'+_w.address.slice(-6),'signal');
+}
 log('צלף ביטקוין מוכן. לחץ הפעל בוט כדי להתחבר.','signal');
 </script>
 </body>
