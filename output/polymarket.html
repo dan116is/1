@@ -137,6 +137,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
                 <div class="ind"><span class="ind-name">Momentum</span><span class="ind-val" id="ind-mom">—</span></div>
                 <div class="ind"><span class="ind-name">VWAP Dev</span><span class="ind-val" id="ind-vwap">—</span></div>
                 <div class="ind"><span class="ind-name">OBV Trend</span><span class="ind-val" id="ind-obv">—</span></div>
+                <div class="ind"><span class="ind-name">Orderbook</span><span class="ind-val" id="ind-ob">—</span></div>
+                <div class="ind"><span class="ind-name">Funding</span><span class="ind-val" id="ind-fund">—</span></div>
             </div>
         </div>
 
@@ -273,6 +275,47 @@ function volumeSpike(vols,threshold=2.0){
     return avg>0?vols[vols.length-1]/avg:1;
 }
 
+// ===== ORDERBOOK & FUNDING =====
+let orderbookBias=0; // -100 to +100
+let fundingRate=0;
+let liquidations={longs:0,shorts:0};
+
+async function fetchOrderbook(){
+    try{
+        const r=await fetch('https://api.binance.com/api/v3/depth?symbol=BTCUSDT&limit=20');
+        const d=await r.json();
+        const bidVol=d.bids.reduce((s,b)=>s+parseFloat(b[1]),0);
+        const askVol=d.asks.reduce((s,a)=>s+parseFloat(a[1]),0);
+        const total=bidVol+askVol;
+        orderbookBias=total>0?((bidVol-askVol)/total)*100:0;
+
+        // Detect walls
+        const bigBid=d.bids.find(b=>parseFloat(b[1])>bidVol*0.3);
+        const bigAsk=d.asks.find(a=>parseFloat(a[1])>askVol*0.3);
+        if(bigBid)log(`Buy wall detected: ${parseFloat(bigBid[1]).toFixed(2)} BTC @ $${bigBid[0]}`,'signal');
+        if(bigAsk)log(`Sell wall detected: ${parseFloat(bigAsk[1]).toFixed(2)} BTC @ $${bigAsk[0]}`,'signal');
+    }catch(e){}
+}
+
+async function fetchFunding(){
+    try{
+        const r=await fetch('https://fapi.binance.com/fapi/v1/fundingRate?symbol=BTCUSDT&limit=1');
+        const d=await r.json();
+        if(d[0])fundingRate=parseFloat(d[0].fundingRate)*100;
+    }catch(e){}
+}
+
+async function fetchLiquidations(){
+    try{
+        const r=await fetch('https://fapi.binance.com/fapi/v1/allForceOrders?symbol=BTCUSDT&limit=50');
+        const d=await r.json();
+        const now=Date.now();
+        const recent=d.filter(l=>now-l.time<300000);
+        liquidations.longs=recent.filter(l=>l.side==='SELL').reduce((s,l)=>s+parseFloat(l.price)*parseFloat(l.origQty),0);
+        liquidations.shorts=recent.filter(l=>l.side==='BUY').reduce((s,l)=>s+parseFloat(l.price)*parseFloat(l.origQty),0);
+    }catch(e){}
+}
+
 // ===== SIGNAL GENERATOR =====
 function generateSignal(){
     if(candles1m.length<20)return{dir:null,strength:0,reasons:[]};
@@ -344,9 +387,46 @@ function generateSignal(){
         else if(accel<0&&d1<0){score-=7;reasons.push('Accelerating down');}
     }
 
+    // 9. Orderbook imbalance
+    if(Math.abs(orderbookBias)>15){
+        const obScore=orderbookBias>0?12:-12;
+        score+=obScore;
+        reasons.push(`Orderbook ${orderbookBias>0?'bid':'ask'} heavy (${orderbookBias.toFixed(0)}%)`);
+    }
+
+    // 10. Funding rate (contrarian: high funding = crowded trade)
+    if(Math.abs(fundingRate)>0.02){
+        const frScore=fundingRate>0?-8:8;
+        score+=frScore;
+        reasons.push(`Funding ${fundingRate>0?'positive (short bias)':'negative (long bias)'}: ${fundingRate.toFixed(4)}%`);
+    }
+
+    // 11. Liquidation cascade detection
+    const liqTotal=liquidations.longs+liquidations.shorts;
+    if(liqTotal>500000){
+        if(liquidations.longs>liquidations.shorts*2){
+            score-=15;reasons.push(`Long liquidation cascade: $${(liquidations.longs/1000).toFixed(0)}K`);
+        }else if(liquidations.shorts>liquidations.longs*2){
+            score+=15;reasons.push(`Short squeeze: $${(liquidations.shorts/1000).toFixed(0)}K liquidated`);
+        }
+    }
+
+    // 12. Multi-timeframe: 5m trend confirmation
+    if(candles5m.length>=5){
+        const c5=candles5m.map(c=>c.c);
+        const trend5m=c5[c5.length-1]-c5[c5.length-5];
+        const lastClose=closes[closes.length-1]-closes[closes.length-2];
+        if(trend5m>0&&lastClose>0){score+=10;reasons.push('5m+1m aligned UP');}
+        else if(trend5m<0&&lastClose<0){score-=10;reasons.push('5m+1m aligned DOWN');}
+        else if((trend5m>0&&lastClose<0)||(trend5m<0&&lastClose>0)){
+            score*=0.7; // reduce conviction on divergence
+            reasons.push('Timeframe divergence — reduced conviction');
+        }
+    }
+
     // Normalize to -100 to +100
-    const maxScore=100;
-    const normalized=Math.max(-maxScore,Math.min(maxScore,score));
+    const maxScore=120;
+    const normalized=Math.max(-100,Math.min(100,Math.round(score*100/maxScore)));
     const strength=Math.abs(normalized);
     const dir=normalized>0?'UP':'DOWN';
 
@@ -474,18 +554,47 @@ async function polymarketBet(direction,amount){
     }
 }
 
-// ===== POSITION SIZING (Kelly) =====
+// ===== POSITION SIZING (Kelly + Anti-Tilt) =====
 function calcBetSize(strength){
     const winProb=0.45+(strength/100)*0.25; // 45%-70% based on signal
     const b=0.82; // net odds (payout ratio - 1)
     const q=1-winProb;
     const kelly=(winProb*b-q)/b;
-    const fraction=Math.max(0,Math.min(kelly*0.4,ST.config.maxBetPct/100)); // 40% Kelly
+    let fraction=Math.max(0,Math.min(kelly*0.4,ST.config.maxBetPct/100)); // 40% Kelly
+
+    // Anti-tilt: reduce after losses, boost after wins
+    const recentTrades=ST.trades.filter(t=>t.resolved).slice(0,5);
+    const recentLosses=recentTrades.filter(t=>t.pnl<0).length;
+    if(recentLosses>=4)fraction*=0.3; // heavy tilt protection
+    else if(recentLosses>=3)fraction*=0.5;
+    else if(recentLosses>=2)fraction*=0.75;
+
+    // Winning streak boost (capped)
+    if(ST.stats.streak>=3)fraction*=Math.min(1.3,1+ST.stats.streak*0.05);
+
+    // Drawdown protection: if down >30% from peak, reduce
+    const peak=Math.max(ST.initial,ST.balance,...ST.trades.filter(t=>t.resolved).map(t=>t.amount));
+    const dd=(peak-ST.balance)/peak;
+    if(dd>0.3)fraction*=0.4;
+    else if(dd>0.2)fraction*=0.6;
+
     const bet=ST.balance*fraction;
-    return Math.max(0.5,Math.min(bet,ST.balance*0.95));
+    return Math.max(0.5,Math.min(bet,ST.balance*0.90));
 }
 
 // ===== WEBSOCKET =====
+async function preloadCandles(){
+    try{
+        log('Loading historical candles...','signal');
+        const r=await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=100');
+        const d=await r.json();
+        candles1m=d.map(k=>({t:k[0],o:parseFloat(k[1]),h:parseFloat(k[2]),l:parseFloat(k[3]),c:parseFloat(k[4]),v:parseFloat(k[5]),closed:true}));
+        build5mCandles();
+        updatePrice(candles1m[candles1m.length-1].c);
+        log(`Loaded ${candles1m.length} candles — indicators ready`,'signal');
+    }catch(e){log('Preload failed — waiting for live data','warn');}
+}
+
 function connectWS(){
     if(ws)ws.close();
     ws=new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@kline_1m');
@@ -545,7 +654,15 @@ function build5mCandles(){
 }
 
 // ===== MAIN TICK =====
-function tick(){
+let tickCount=0;
+async function tick(){
+    tickCount++;
+
+    // Fetch microstructure data every 3rd tick
+    if(tickCount%3===0){
+        await Promise.all([fetchOrderbook(),fetchFunding(),fetchLiquidations()]);
+    }
+
     const signal=generateSignal();
     updateIndicators(signal);
     updateSignalBar(signal);
@@ -553,10 +670,16 @@ function tick(){
     if(!ST.config.auto||!signal.dir)return;
     if(signal.strength<ST.config.minSignal)return;
 
+    // Require at least 3 confirming reasons for a trade
+    if(signal.reasons.length<3){
+        log(`Weak signal (${signal.reasons.length} reasons) — need 3+`,'warn');
+        return;
+    }
+
     const betSize=calcBetSize(signal.strength);
     if(betSize<0.5)return;
 
-    log(`Signal: ${signal.dir} ${signal.strength}% — ${signal.reasons.slice(0,3).join(', ')}`,'signal');
+    log(`SIGNAL: ${signal.dir} ${signal.strength}% — ${signal.reasons.slice(0,4).join(' | ')}`,'signal');
     placeBet(signal.dir,betSize);
 }
 
@@ -592,6 +715,8 @@ function updateIndicators(signal){
     setInd('ind-mom',(mom>=0?'+':'')+mom.toFixed(2)+'%',mom>0?'--green':'--red');
     setInd('ind-vwap',(vwapDev>=0?'+':'')+vwapDev.toFixed(3)+'%',vwapDev<-0.1?'--green':vwapDev>0.1?'--red':'--t1');
     setInd('ind-obv',obv>0?'+'+fmt(obv):fmt(obv),obv>0?'--green':'--red');
+    setInd('ind-ob',(orderbookBias>=0?'+':'')+orderbookBias.toFixed(0)+'%',orderbookBias>15?'--green':orderbookBias<-15?'--red':'--t1');
+    setInd('ind-fund',fundingRate.toFixed(4)+'%',fundingRate>0.02?'--red':fundingRate<-0.02?'--green':'--t1');
 }
 
 function setInd(id,val,color){
@@ -684,14 +809,19 @@ function showTab(id){
 }
 
 // ===== CONTROLS =====
-function startBot(){
+async function startBot(){
     running=true;
     document.getElementById('btn-start').disabled=true;
     document.getElementById('btn-stop').disabled=false;
-    connectWS();
-    log('Bot started — connecting to Binance WebSocket...','signal');
 
-    // Also start a fallback interval for when WS ticks are slow
+    log('Bot starting...','signal');
+    await preloadCandles();
+    await Promise.all([fetchOrderbook(),fetchFunding(),fetchLiquidations()]);
+    connectWS();
+
+    log(`Ready: ${candles1m.length} candles | OB bias: ${orderbookBias.toFixed(0)}% | Funding: ${fundingRate.toFixed(4)}%`,'signal');
+
+    // Fallback tick every 60s
     window._tickInterval=setInterval(()=>{
         if(running&&candles1m.length>20)tick();
     },60000);
