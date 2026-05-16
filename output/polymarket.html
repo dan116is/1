@@ -6,7 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a0e17">
-<title>צלף ביטקוין</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%230a0e17'/><polygon points='90,28 152,62 152,118 90,152 28,118 28,62' fill='none' stroke='%2339d0d8' stroke-width='6'/><text x='90' y='104' text-anchor='middle' fill='%2339d0d8' font-size='40' font-family='monospace' font-weight='bold'>CIS</text></svg>">
+<title>מערכת מסחר חכמה</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0a0e17;--bg2:#131a2a;--bg3:#1a2332;--border:#1e2d42;--t1:#e6edf3;--t2:#8b949e;--t3:#484f58;--blue:#58a6ff;--green:#3fb950;--red:#f85149;--yellow:#d29922;--purple:#bc8cff;--cyan:#39d0d8;--radius:16px}
@@ -25,9 +27,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 .ws-dot.live{background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
 .ws-dot.off{background:var(--red)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.back-link{color:var(--t2);text-decoration:none;font-size:22px;padding:8px 12px;border-radius:10px;display:flex;align-items:center;transition:background .2s}
-.back-link:active{background:var(--bg3)}
-
 /* Cards */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;transition:transform .15s}
 .card-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);margin-bottom:12px}
@@ -106,8 +105,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 <div class="toast" id="toast"></div>
 
 <div class="top">
-    <a href="index.html" class="back-link">&#8594;</a>
-    <span class="top-brand">צלף ביטקוין<span class="ws-dot off" id="ws-dot"></span></span>
+    <div style="display:flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 32 32" width="28" height="28" style="flex-shrink:0"><rect width="32" height="32" rx="8" fill="var(--bg3)"/><polygon points="16,5 27,11 27,23 16,29 5,23 5,11" fill="none" stroke="var(--cyan)" stroke-width="1.5"/><text x="16" y="20" text-anchor="middle" fill="var(--cyan)" font-size="8" font-family="monospace" font-weight="bold">CIS</text></svg>
+        <span class="top-brand">מערכת מסחר<span class="ws-dot off" id="ws-dot"></span></span>
+    </div>
     <div style="display:flex;align-items:center;gap:6px">
         <span class="top-change" id="top-change">0.00%</span>
         <span class="top-price mono" id="top-price">$—</span>
@@ -1335,7 +1336,8 @@ if(_w){
     ST.config.walletAddr=_w.address;
     log('ארנק מחובר: '+_w.address.slice(0,8)+'...'+_w.address.slice(-6),'signal');
 }
-log('צלף ביטקוין מוכן. לחץ הפעל בוט כדי להתחבר.','signal');
+log('מערכת מסחר מוכנה. לחץ הפעל בוט כדי להתחיל.','signal');
+if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 </script>
 </body>
 </html>

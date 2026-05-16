@@ -1,8 +1,8 @@
 {
-  "name": "CIS Trading Suite",
-  "short_name": "CIS",
-  "description": "Autonomous crypto trading with AI agents — Spot + Polymarket",
-  "start_url": "./index.html",
+  "name": "מערכת מסחר חכמה",
+  "short_name": "מסחר",
+  "description": "בוט מסחר אוטונומי — Polymarket ביטקוין",
+  "start_url": "./polymarket.html",
   "display": "standalone",
   "background_color": "#0a0e17",
   "theme_color": "#0a0e17",
