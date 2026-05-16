@@ -220,6 +220,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
             <input type="checkbox" id="stop-loss" checked>
         </div>
         <div class="toggle">
+            <div><div class="toggle-label">Trailing Stop</div><div class="toggle-desc">Stop loss moves up as price rises — locks in profits</div></div>
+            <input type="checkbox" id="trailing-stop" checked>
+        </div>
+        <div class="toggle">
+            <div><div class="toggle-label">Take Profit (50%)</div><div class="toggle-desc">Auto-sell half position when target % reached</div></div>
+            <input type="checkbox" id="take-profit" checked>
+        </div>
+        <div class="toggle">
             <div><div class="toggle-label">Notifications</div><div class="toggle-desc">Push alerts on trades and signals</div></div>
             <input type="checkbox" id="notifs" checked>
         </div>
@@ -227,6 +235,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 
     <div class="card">
         <div class="card-title">Risk Parameters</div>
+        <div class="setting-group">
+            <label>Take Profit Target (%)</label>
+            <input type="number" id="set-takeprofit-pct" value="30" min="5" max="200" step="5">
+        </div>
         <div class="setting-group">
             <label>Initial Capital ($)</label>
             <input type="number" id="set-capital" value="100" min="1">
@@ -252,6 +264,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
     <div class="card">
         <div class="card-title">Binance API (Optional — Real Trading)</div>
         <div class="warn-box">&#9888; Only add API keys if you want REAL trades. Without keys, the system uses paper trading with simulated execution.</div>
+        <div class="toggle">
+            <div><div class="toggle-label">Real Trading</div><div class="toggle-desc">Execute real orders on Binance (requires API keys)</div></div>
+            <input type="checkbox" id="real-trading">
+        </div>
         <div class="setting-group">
             <label>API Key</label>
             <input type="password" id="api-key" placeholder="Enter Binance API key">
@@ -283,7 +299,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 // ===== STATE =====
 const DEFAULT_STATE={
     cash:100,initial:100,holdings:{},trades:[],logs:[],
-    settings:{autoTrade:true,stopLoss:true,notifs:true,maxPos:25,evThreshold:1.2,stopLossPct:15,interval:5,apiKey:'',apiSecret:''},
+    settings:{autoTrade:true,stopLoss:true,trailingStop:true,takeProfit:true,takeProfitPct:30,notifs:true,maxPos:25,evThreshold:1.2,stopLossPct:15,interval:5,apiKey:'',apiSecret:'',realTrading:false},
     agentCycle:0
 };
 let S=JSON.parse(localStorage.getItem('cis_trader'))||{...DEFAULT_STATE};
@@ -329,17 +345,17 @@ function getWinRate(){
 }
 
 // ===== AUTONOMOUS AGENT ENGINE =====
-function runAgentCycle(){
+async function runAgentCycle(){
     S.agentCycle++;
     const dot=document.getElementById('dot-scanner');
     dot.className='agent-dot scanning';
-    document.getElementById('status-scanner').textContent='Scanning...';
+    document.getElementById('status-scanner').textContent='Scanning markets + F&G...';
 
-    setTimeout(()=>{
-        dot.className='agent-dot active';
-        document.getElementById('status-scanner').textContent='Monitoring 5 assets';
-        analyzeSignals();
-    },2000);
+    await Promise.all([fetchFearGreed(),fetchVolumes()]);
+
+    dot.className='agent-dot active';
+    document.getElementById('status-scanner').textContent='Monitoring 5 assets';
+    analyzeSignals();
 }
 
 function analyzeSignals(){
@@ -388,44 +404,60 @@ function executeSignals(signals){
     },1000);
 }
 
-function executeBuy(coinId,amount,signalId){
+async function executeBuy(coinId,amount,signalId){
     const c=COINS[coinId];
     if(!c||amount>S.cash)return;
 
+    // Execute on Binance if real trading enabled
+    if(S.settings.realTrading&&S.settings.apiKey){
+        const success=await executeRealTrade(coinId,'BUY',amount);
+        if(!success){addLog(`Paper fallback: Binance failed, recording locally`,'alert');}
+    }
+
     const qty=amount/c.price;
-    if(!S.holdings[coinId])S.holdings[coinId]={qty:0,avgCost:0,totalInvested:0,stopLoss:c.price*(1-S.settings.stopLossPct/100)};
+    if(!S.holdings[coinId])S.holdings[coinId]={qty:0,avgCost:0,totalInvested:0,stopLoss:c.price*(1-S.settings.stopLossPct/100),highPrice:c.price};
     const h=S.holdings[coinId];
     h.totalInvested+=amount;
     h.qty+=qty;
     h.avgCost=h.totalInvested/h.qty;
     h.stopLoss=c.price*(1-S.settings.stopLossPct/100);
+    h.highPrice=Math.max(h.highPrice||0,c.price);
     S.cash-=amount;
 
-    S.trades.unshift({dir:'buy',coin:coinId,sym:c.sym,qty,price:c.price,amount,signal:signalId,time:Date.now()});
+    S.trades.unshift({dir:'buy',coin:coinId,sym:c.sym,qty,price:c.price,amount,signal:signalId,time:Date.now(),mode:S.settings.realTrading?'LIVE':'PAPER'});
     save();
 
-    addLog(`BUY ${c.sym}: ${qty.toFixed(6)} @ $${fmt(c.price,c.price<1?4:0)} ($${fmt(amount)}) | Signal: ${signalId}`,'trade');
-    notify('Trade Executed',`Bought $${fmt(amount)} of ${c.sym} @ $${fmt(c.price,0)}`);
-    toast(`Bought ${c.sym} — $${fmt(amount)}`,'success');
+    const mode=S.settings.realTrading?'[LIVE]':'[PAPER]';
+    addLog(`${mode} BUY ${c.sym}: ${qty.toFixed(6)} @ $${fmt(c.price,c.price<1?4:0)} ($${fmt(amount)}) | Signal: ${signalId}`,'trade');
+    notify('Trade Executed',`${mode} Bought $${fmt(amount)} of ${c.sym} @ $${fmt(c.price,0)}`);
+    toast(`${mode} Bought ${c.sym} — $${fmt(amount)}`,'success');
 }
 
-function executeSell(coinId,reason){
+async function executeSell(coinId,reason){
     const h=S.holdings[coinId];
     const c=COINS[coinId];
     if(!h||!c||h.qty<=0)return;
+
+    // Execute on Binance if real trading enabled
+    if(S.settings.realTrading&&S.settings.apiKey){
+        const amount=h.qty*c.price;
+        const success=await executeRealTrade(coinId,'SELL',amount);
+        if(!success){addLog(`Paper fallback: Binance sell failed`,'alert');}
+    }
 
     const amount=h.qty*c.price;
     const pnl=amount-h.totalInvested;
     S.cash+=amount;
 
-    S.trades.unshift({dir:'sell',coin:coinId,sym:c.sym,qty:h.qty,price:c.price,amount,pnl,reason,time:Date.now()});
+    S.trades.unshift({dir:'sell',coin:coinId,sym:c.sym,qty:h.qty,price:c.price,amount,pnl,reason,time:Date.now(),mode:S.settings.realTrading?'LIVE':'PAPER'});
     delete S.holdings[coinId];
     save();
 
+    const mode=S.settings.realTrading?'[LIVE]':'[PAPER]';
     const pnlStr=pnl>=0?`+$${fmt(pnl)}`:`-$${fmt(Math.abs(pnl))}`;
-    addLog(`SELL ${c.sym}: $${fmt(amount)} | P&L: ${pnlStr} | Reason: ${reason}`,pnl>=0?'trade':'sell');
-    notify('Position Closed',`Sold ${c.sym} | ${pnlStr} | ${reason}`);
-    toast(`Sold ${c.sym} — ${pnlStr}`,pnl>=0?'success':'error');
+    addLog(`${mode} SELL ${c.sym}: $${fmt(amount)} | P&L: ${pnlStr} | ${reason}`,pnl>=0?'trade':'sell');
+    notify('Position Closed',`${mode} Sold ${c.sym} | ${pnlStr} | ${reason}`);
+    toast(`${mode} Sold ${c.sym} — ${pnlStr}`,pnl>=0?'success':'error');
     updateAll();
 }
 
@@ -442,6 +474,137 @@ function checkStopLosses(){
     }
 }
 
+// ===== BINANCE API EXECUTION =====
+async function binanceOrder(symbol,side,quoteAmount){
+    if(!S.settings.apiKey||!S.settings.apiSecret){return{success:false,error:'No API keys'};}
+    try{
+        const timestamp=Date.now();
+        const params=`symbol=${symbol}&side=${side}&type=MARKET&quoteOrderQty=${quoteAmount.toFixed(2)}&timestamp=${timestamp}&recvWindow=5000`;
+        const signature=await hmacSha256(S.settings.apiSecret,params);
+        const url=`https://api.binance.com/api/v3/order?${params}&signature=${signature}`;
+        const r=await fetch(url,{method:'POST',headers:{'X-MBX-APIKEY':S.settings.apiKey}});
+        const d=await r.json();
+        if(d.orderId)return{success:true,data:d};
+        return{success:false,error:d.msg||'Unknown error'};
+    }catch(e){return{success:false,error:e.message};}
+}
+
+async function hmacSha256(key,message){
+    const enc=new TextEncoder();
+    const keyData=await crypto.subtle.importKey('raw',enc.encode(key),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+    const sig=await crypto.subtle.sign('HMAC',keyData,enc.encode(message));
+    return Array.from(new Uint8Array(sig)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+const BINANCE_SYMBOLS={bitcoin:'BTCUSDT',ethereum:'ETHUSDT',solana:'SOLUSDT',chainlink:'LINKUSDT',ondo:'ONDOUSDT'};
+
+async function executeRealTrade(coinId,side,amount){
+    const symbol=BINANCE_SYMBOLS[coinId];
+    if(!symbol){addLog(`No Binance symbol for ${coinId}`,'alert');return false;}
+    addLog(`Sending ${side} order to Binance: ${symbol} $${fmt(amount)}`,'info');
+    const result=await binanceOrder(symbol,side,amount);
+    if(result.success){
+        addLog(`Binance ${side} FILLED: ${symbol} | Order #${result.data.orderId}`,'trade');
+        return true;
+    }else{
+        addLog(`Binance ERROR: ${result.error}`,'alert');
+        toast(`Binance: ${result.error}`,'error');
+        return false;
+    }
+}
+
+// ===== TRAILING STOP =====
+function updateTrailingStops(){
+    for(const[id,h]of Object.entries(S.holdings)){
+        if(!h||h.qty<=0||!S.settings.trailingStop)continue;
+        const c=COINS[id];if(!c)continue;
+        const trailLevel=c.price*(1-S.settings.stopLossPct/100);
+        if(trailLevel>h.stopLoss){
+            h.stopLoss=trailLevel;
+            save();
+        }
+    }
+}
+
+// ===== TAKE PROFIT =====
+function checkTakeProfit(){
+    for(const[id,h]of Object.entries(S.holdings)){
+        if(!h||h.qty<=0||h.tookProfit)continue;
+        const c=COINS[id];if(!c)continue;
+        const pnlPct=((c.price-h.avgCost)/h.avgCost)*100;
+        if(S.settings.takeProfit&&pnlPct>=S.settings.takeProfitPct){
+            addLog(`TAKE PROFIT: ${c.sym} up ${pnlPct.toFixed(1)}% — selling 50%`,'trade');
+            executePartialSell(id,0.5,`Take Profit (${pnlPct.toFixed(1)}%)`);
+        }
+    }
+}
+
+async function executePartialSell(coinId,fraction,reason){
+    const h=S.holdings[coinId];
+    const c=COINS[coinId];
+    if(!h||!c||h.qty<=0)return;
+
+    const sellQty=h.qty*fraction;
+    const amount=sellQty*c.price;
+    const investedPortion=h.totalInvested*fraction;
+    const pnl=amount-investedPortion;
+
+    if(S.settings.realTrading&&S.settings.apiKey){
+        const success=await executeRealTrade(coinId,'SELL',amount);
+        if(!success){addLog(`Paper fallback: Binance partial sell failed`,'alert');}
+    }
+
+    h.qty-=sellQty;
+    h.totalInvested-=investedPortion;
+    h.tookProfit=true;
+    S.cash+=amount;
+
+    S.trades.unshift({dir:'sell',coin:coinId,sym:c.sym,qty:sellQty,price:c.price,amount,pnl,reason,time:Date.now(),mode:S.settings.realTrading?'LIVE':'PAPER',partial:true});
+    save();
+
+    const mode=S.settings.realTrading?'[LIVE]':'[PAPER]';
+    const pnlStr=pnl>=0?`+$${fmt(pnl)}`:`-$${fmt(Math.abs(pnl))}`;
+    addLog(`${mode} PARTIAL SELL ${c.sym}: 50% ($${fmt(amount)}) | P&L: ${pnlStr} | ${reason}`,pnl>=0?'trade':'sell');
+    notify('Partial Profit Taken',`${mode} Sold 50% ${c.sym} | ${pnlStr}`);
+    toast(`${mode} Took profit ${c.sym} — ${pnlStr}`,'success');
+    updateAll();
+}
+
+// ===== ENHANCED SCANNER =====
+async function fetchFearGreed(){
+    try{
+        const r=await fetch('https://api.alternative.me/fng/?limit=1');
+        const d=await r.json();
+        if(d.data&&d.data[0]){
+            const fg=parseInt(d.data[0].value);
+            document.getElementById('stat-fg').textContent=fg;
+            document.getElementById('stat-fg').style.color=fg<25?'var(--red)':fg<45?'var(--yellow)':fg<55?'var(--t1)':fg<75?'var(--green)':'var(--blue)';
+            if(fg<20){addLog(`EXTREME FEAR: F&G=${fg}. Possible buying opportunity.`,'alert');}
+            if(fg>80){addLog(`EXTREME GREED: F&G=${fg}. Consider taking profits.`,'alert');}
+            return fg;
+        }
+    }catch(e){}
+    return null;
+}
+
+async function fetchVolumes(){
+    try{
+        const r=await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana,chainlink,ondo&order=market_cap_desc');
+        const d=await r.json();
+        for(const coin of d){
+            const id=coin.id;
+            if(COINS[id]){
+                COINS[id].volume24h=coin.total_volume;
+                COINS[id].mcap=coin.market_cap;
+                COINS[id].high24h=coin.high_24h;
+                COINS[id].low24h=coin.low_24h;
+                COINS[id].ath=coin.ath;
+                COINS[id].athChange=coin.ath_change_percentage;
+            }
+        }
+    }catch(e){}
+}
+
 // ===== PRICE FETCHER =====
 async function fetchPrices(){
     try{
@@ -449,14 +612,15 @@ async function fetchPrices(){
         const d=await r.json();
         for(const[id,c]of Object.entries(COINS)){
             if(d[id]){
-                const oldPrice=c.price;
                 c.price=d[id].usd;
                 c.change=d[id].usd_24h_change||0;
             }
         }
         document.getElementById('top-btc').textContent='BTC $'+COINS.bitcoin.price.toLocaleString('en-US',{maximumFractionDigits:0});
+        updateTrailingStops();
         updateAll();
         checkStopLosses();
+        checkTakeProfit();
     }catch(e){}
 }
 
@@ -476,7 +640,6 @@ function updateAll(){
     document.getElementById('port-cash2').textContent='$'+fmt(S.cash);
     document.getElementById('stat-trades').textContent=S.trades.length;
     document.getElementById('stat-winrate').textContent=getWinRate()||'—';
-    document.getElementById('stat-fg').textContent='45';
 
     const posCount=Object.values(S.holdings).filter(h=>h&&h.qty>0).length;
     document.getElementById('agent-status-dot').className='status-dot '+(S.settings.autoTrade?'on':'off');
@@ -542,6 +705,10 @@ function showScreen(id){
 function saveSettings(){
     S.settings.autoTrade=document.getElementById('auto-trade').checked;
     S.settings.stopLoss=document.getElementById('stop-loss').checked;
+    S.settings.trailingStop=document.getElementById('trailing-stop').checked;
+    S.settings.takeProfit=document.getElementById('take-profit').checked;
+    S.settings.takeProfitPct=parseInt(document.getElementById('set-takeprofit-pct').value)||30;
+    S.settings.realTrading=document.getElementById('real-trading').checked;
     S.settings.notifs=document.getElementById('notifs').checked;
     S.settings.maxPos=parseInt(document.getElementById('set-maxpos').value)||25;
     S.settings.evThreshold=parseFloat(document.getElementById('set-ev').value)||1.2;
@@ -574,6 +741,10 @@ function resetAll(){
 function loadSettings(){
     document.getElementById('auto-trade').checked=S.settings.autoTrade;
     document.getElementById('stop-loss').checked=S.settings.stopLoss;
+    document.getElementById('trailing-stop').checked=S.settings.trailingStop!==false;
+    document.getElementById('take-profit').checked=S.settings.takeProfit!==false;
+    document.getElementById('set-takeprofit-pct').value=S.settings.takeProfitPct||30;
+    document.getElementById('real-trading').checked=S.settings.realTrading||false;
     document.getElementById('notifs').checked=S.settings.notifs;
     document.getElementById('set-capital').value=S.initial;
     document.getElementById('set-maxpos').value=S.settings.maxPos;
@@ -585,23 +756,25 @@ function loadSettings(){
 }
 
 // ===== INIT =====
-function init(){
+async function init(){
     loadSettings();
     updateAll();
     renderSignals();
     renderLogs();
-    fetchPrices();
 
-    // Request notification permission
+    fetchPrices();
+    fetchFearGreed();
+    fetchVolumes();
+
     if('Notification'in window&&Notification.permission==='default'){Notification.requestPermission();}
 
-    // Start agent cycle
-    addLog('System initialized. Agents starting...','info');
+    const mode=S.settings.realTrading?'LIVE':'PAPER';
+    addLog(`System initialized [${mode}]. Agents starting...`,'info');
     setTimeout(()=>runAgentCycle(),3000);
     setInterval(()=>runAgentCycle(),S.settings.interval*60*1000);
     setInterval(fetchPrices,60000);
+    setInterval(fetchFearGreed,300000);
 
-    // Register service worker
     if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 }
 
