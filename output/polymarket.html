@@ -87,10 +87,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 
 .screen{display:none}.screen.active{display:block}
 .disclaimer{font-size:8px;color:var(--t3);text-align:center;padding:8px;line-height:1.5;margin-top:8px}
+
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-100px);padding:12px 24px;border-radius:12px;font-size:14px;font-weight:800;font-family:'SF Mono',monospace;z-index:9999;opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.win{background:rgba(63,185,80,.15);border:1px solid var(--green);color:var(--green);box-shadow:0 8px 32px rgba(63,185,80,.2)}
+.toast.lose{background:rgba(248,81,73,.15);border:1px solid var(--red);color:var(--red);box-shadow:0 8px 32px rgba(248,81,73,.2)}
 </style>
 </head>
 <body>
 <div class="app">
+<div class="toast" id="toast"></div>
 
 <div class="top">
     <a href="index.html" style="color:var(--t2);text-decoration:none;font-size:18px;padding:4px 8px">&#8594;</a>
@@ -548,13 +554,13 @@ function resolveTrade(trade){
         ST.stats.streak++;
         if(ST.stats.streak>ST.stats.bestStreak)ST.stats.bestStreak=ST.stats.streak;
         log(`ניצחון ${trade.dir==='UP'?'עליה':'ירידה'} +$${trade.pnl.toFixed(2)} | BTC ${priceMoved>0?'+':''}${priceMoved.toFixed(0)}`,'trade');
-        vibrate([100,50,100]);
+        vibrate([100,50,100]);soundWin();showToast(`+$${trade.pnl.toFixed(2)} ✓`,'win');
     }else{
         trade.pnl=-trade.amount;
         ST.stats.losses++;
         ST.stats.streak=0;
         log(`הפסד ${trade.dir==='UP'?'עליה':'ירידה'} -$${trade.amount.toFixed(2)} | BTC ${priceMoved>0?'+':''}${priceMoved.toFixed(0)}`,'loss');
-        vibrate([200]);
+        vibrate([200]);soundLoss();showToast(`-$${trade.amount.toFixed(2)} ✗`,'lose');
     }
 
     save();
@@ -951,6 +957,26 @@ function loadConfig(){
 function save(){localStorage.setItem('pm_sniper',JSON.stringify(ST));}
 
 function vibrate(pattern){try{navigator.vibrate(pattern);}catch(e){}}
+
+let audioCtx;
+function beep(freq,dur,type='sine'){
+    if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=audioCtx.createOscillator();
+    const gain=audioCtx.createGain();
+    osc.connect(gain);gain.connect(audioCtx.destination);
+    osc.type=type;osc.frequency.value=freq;
+    gain.gain.setValueAtTime(0.15,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+dur);
+    osc.start();osc.stop(audioCtx.currentTime+dur);
+}
+function soundWin(){beep(880,0.1);setTimeout(()=>beep(1174,0.15),120);}
+function soundLoss(){beep(330,0.2,'square');}
+function showToast(text,type){
+    const el=document.getElementById('toast');
+    el.textContent=text;el.className='toast '+type;
+    requestAnimationFrame(()=>el.classList.add('show'));
+    setTimeout(()=>el.classList.remove('show'),2500);
+}
 
 function drawPnlChart(){
     const canvas=document.getElementById('pnl-chart');
