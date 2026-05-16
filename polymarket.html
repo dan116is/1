@@ -87,10 +87,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 
 .screen{display:none}.screen.active{display:block}
 .disclaimer{font-size:8px;color:var(--t3);text-align:center;padding:8px;line-height:1.5;margin-top:8px}
+
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-100px);padding:12px 24px;border-radius:12px;font-size:14px;font-weight:800;font-family:'SF Mono',monospace;z-index:9999;opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.win{background:rgba(63,185,80,.15);border:1px solid var(--green);color:var(--green);box-shadow:0 8px 32px rgba(63,185,80,.2)}
+.toast.lose{background:rgba(248,81,73,.15);border:1px solid var(--red);color:var(--red);box-shadow:0 8px 32px rgba(248,81,73,.2)}
 </style>
 </head>
 <body>
 <div class="app">
+<div class="toast" id="toast"></div>
 
 <div class="top">
     <a href="index.html" style="color:var(--t2);text-decoration:none;font-size:18px;padding:4px 8px">&#8594;</a>
@@ -142,7 +148,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
                 <div class="ind"><span class="ind-name">בולינגר</span><span class="ind-val" id="ind-bb">—</span></div>
                 <div class="ind"><span class="ind-name">ספר פקודות</span><span class="ind-val" id="ind-ob">—</span></div>
                 <div class="ind"><span class="ind-name">מימון</span><span class="ind-val" id="ind-fund">—</span></div>
+                <div class="ind"><span class="ind-name">פחד/חמדנות</span><span class="ind-val" id="ind-fg">—</span></div>
+                <div class="ind"><span class="ind-name">זמן פעיל</span><span class="ind-val" id="ind-uptime">0:00</span></div>
             </div>
+        </div>
+
+        <div class="card" id="active-trade-card" style="display:none;border-color:var(--cyan)">
+            <div class="card-title">עסקה פעילה</div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <div><span id="at-dir" style="font-size:16px;font-weight:800"></span><span id="at-amount" style="font-size:12px;color:var(--t2);margin-right:8px"></span></div>
+                <div style="text-align:left"><span id="at-timer" class="mono" style="font-size:20px;font-weight:700;color:var(--cyan)">5:00</span><div style="font-size:8px;color:var(--t3)">נותר</div></div>
+            </div>
+            <div style="margin-top:8px;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden"><div id="at-progress" style="height:100%;background:var(--cyan);width:100%;transition:width 1s linear"></div></div>
         </div>
 
         <div class="card">
@@ -481,8 +498,14 @@ function generateSignal(){
         }
     }
 
+    // 13. Fear & Greed contrarian signal
+    if(fgIndex<20&&score>0){score+=12;reasons.push('פחד קיצוני — חמדני בזמן פחד');}
+    if(fgIndex>80&&score<0){score+=12;reasons.push('חמדנות קיצונית — שורט בזמן אופוריה');}
+    if(fgIndex<20&&score<0){score*=0.8;reasons.push('פחד+שורט — הפחתת ביטחון');}
+    if(fgIndex>80&&score>0){score*=0.8;reasons.push('חמדנות+לונג — הפחתת ביטחון');}
+
     // Normalize to -100 to +100
-    const maxScore=150;
+    const maxScore=160;
     const normalized=Math.max(-100,Math.min(100,Math.round(score*100/maxScore)));
     const strength=Math.abs(normalized);
     const dir=normalized>0?'UP':'DOWN';
@@ -548,13 +571,13 @@ function resolveTrade(trade){
         ST.stats.streak++;
         if(ST.stats.streak>ST.stats.bestStreak)ST.stats.bestStreak=ST.stats.streak;
         log(`ניצחון ${trade.dir==='UP'?'עליה':'ירידה'} +$${trade.pnl.toFixed(2)} | BTC ${priceMoved>0?'+':''}${priceMoved.toFixed(0)}`,'trade');
-        vibrate([100,50,100]);
+        vibrate([100,50,100]);soundWin();showToast(`+$${trade.pnl.toFixed(2)} ✓`,'win');
     }else{
         trade.pnl=-trade.amount;
         ST.stats.losses++;
         ST.stats.streak=0;
         log(`הפסד ${trade.dir==='UP'?'עליה':'ירידה'} -$${trade.amount.toFixed(2)} | BTC ${priceMoved>0?'+':''}${priceMoved.toFixed(0)}`,'loss');
-        vibrate([200]);
+        vibrate([200]);soundLoss();showToast(`-$${trade.amount.toFixed(2)} ✗`,'lose');
     }
 
     save();
@@ -881,18 +904,59 @@ function showTab(id){
     if(id==='trades')renderTrades();
 }
 
+// ===== FEAR & GREED =====
+let fgIndex=50;
+async function fetchFearGreed(){
+    try{
+        const r=await fetch('https://api.alternative.me/fng/?limit=1');
+        const d=await r.json();
+        fgIndex=parseInt(d.data[0].value);
+        const el=document.getElementById('ind-fg');
+        el.textContent=fgIndex;
+        el.style.color=fgIndex<25?'var(--red)':fgIndex>75?'var(--green)':'var(--yellow)';
+    }catch(e){}
+}
+
+// ===== UPTIME & ACTIVE TRADE =====
+let botStartTime=0;
+let uptimeInterval=null;
+function updateUptime(){
+    if(!botStartTime)return;
+    const s=Math.floor((Date.now()-botStartTime)/1000);
+    const m=Math.floor(s/60);const h=Math.floor(m/60);
+    document.getElementById('ind-uptime').textContent=h>0?`${h}:${String(m%60).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`:`${m}:${String(s%60).padStart(2,'0')}`;
+}
+function updateActiveTrade(){
+    const active=ST.trades.find(t=>!t.resolved);
+    const card=document.getElementById('active-trade-card');
+    if(!active){card.style.display='none';return;}
+    card.style.display='block';
+    document.getElementById('at-dir').textContent=active.dir==='UP'?'עליה ▲':'ירידה ▼';
+    document.getElementById('at-dir').style.color=active.dir==='UP'?'var(--green)':'var(--red)';
+    document.getElementById('at-amount').textContent=' $'+active.amount.toFixed(2);
+    const elapsed=(Date.now()-active.time)/1000;
+    const remain=Math.max(0,300-elapsed);
+    const mm=Math.floor(remain/60);const ss=Math.floor(remain%60);
+    document.getElementById('at-timer').textContent=`${mm}:${String(ss).padStart(2,'0')}`;
+    document.getElementById('at-progress').style.width=(remain/300*100)+'%';
+}
+
 // ===== CONTROLS =====
 async function startBot(){
     running=true;
+    botStartTime=Date.now();
     document.getElementById('btn-start').disabled=true;
     document.getElementById('btn-stop').disabled=false;
 
     log('הבוט מתחיל...','signal');
     await preloadCandles();
-    await Promise.all([fetchOrderbook(),fetchFunding(),fetchLiquidations()]);
+    await Promise.all([fetchOrderbook(),fetchFunding(),fetchLiquidations(),fetchFearGreed()]);
     connectWS();
 
     log(`מוכן: ${candles1m.length} נרות | ספר פקודות: ${orderbookBias.toFixed(0)}% | מימון: ${fundingRate.toFixed(4)}%`,'signal');
+
+    uptimeInterval=setInterval(()=>{updateUptime();updateActiveTrade();},1000);
+    setInterval(fetchFearGreed,300000);
 
     // Fallback tick every 60s
     window._tickInterval=setInterval(()=>{
@@ -902,11 +966,14 @@ async function startBot(){
 
 function stopBot(){
     running=false;
+    botStartTime=0;
     if(ws)ws.close();
     if(window._tickInterval)clearInterval(window._tickInterval);
+    if(uptimeInterval)clearInterval(uptimeInterval);
     document.getElementById('btn-start').disabled=false;
     document.getElementById('btn-stop').disabled=true;
     document.getElementById('ws-dot').className='ws-dot off';
+    document.getElementById('active-trade-card').style.display='none';
     log('הבוט נעצר','warn');
 }
 
@@ -951,6 +1018,26 @@ function loadConfig(){
 function save(){localStorage.setItem('pm_sniper',JSON.stringify(ST));}
 
 function vibrate(pattern){try{navigator.vibrate(pattern);}catch(e){}}
+
+let audioCtx;
+function beep(freq,dur,type='sine'){
+    if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=audioCtx.createOscillator();
+    const gain=audioCtx.createGain();
+    osc.connect(gain);gain.connect(audioCtx.destination);
+    osc.type=type;osc.frequency.value=freq;
+    gain.gain.setValueAtTime(0.15,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+dur);
+    osc.start();osc.stop(audioCtx.currentTime+dur);
+}
+function soundWin(){beep(880,0.1);setTimeout(()=>beep(1174,0.15),120);}
+function soundLoss(){beep(330,0.2,'square');}
+function showToast(text,type){
+    const el=document.getElementById('toast');
+    el.textContent=text;el.className='toast '+type;
+    requestAnimationFrame(()=>el.classList.add('show'));
+    setTimeout(()=>el.classList.remove('show'),2500);
+}
 
 function drawPnlChart(){
     const canvas=document.getElementById('pnl-chart');
