@@ -93,6 +93,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 <div class="app">
 
 <div class="top">
+    <a href="index.html" style="color:var(--t2);text-decoration:none;font-size:18px;padding:4px 8px">&#8594;</a>
     <span class="top-brand">צלף ביטקוין<span class="ws-dot off" id="ws-dot"></span></span>
     <div>
         <span class="top-change" id="top-change">0.00%</span>
@@ -137,8 +138,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
                 <div class="ind"><span class="ind-name">מומנטום</span><span class="ind-val" id="ind-mom">—</span></div>
                 <div class="ind"><span class="ind-name">סטיית מחיר</span><span class="ind-val" id="ind-vwap">—</span></div>
                 <div class="ind"><span class="ind-name">מגמת נפח</span><span class="ind-val" id="ind-obv">—</span></div>
+                <div class="ind"><span class="ind-name">MACD</span><span class="ind-val" id="ind-macd">—</span></div>
+                <div class="ind"><span class="ind-name">בולינגר</span><span class="ind-val" id="ind-bb">—</span></div>
                 <div class="ind"><span class="ind-name">ספר פקודות</span><span class="ind-val" id="ind-ob">—</span></div>
                 <div class="ind"><span class="ind-name">מימון</span><span class="ind-val" id="ind-fund">—</span></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">ביצועים היום</div>
+            <div class="stats" style="grid-template-columns:1fr 1fr 1fr">
+                <div class="stat"><div class="sv" id="today-pnl">$0</div><div class="sl">רווח היום</div></div>
+                <div class="stat"><div class="sv" id="today-trades">0</div><div class="sl">עסקאות היום</div></div>
+                <div class="stat"><div class="sv" id="today-winrate">—</div><div class="sl">% ניצחון היום</div></div>
             </div>
         </div>
 
@@ -280,6 +292,34 @@ function volumeSpike(vols,threshold=2.0){
     return avg>0?vols[vols.length-1]/avg:1;
 }
 
+function calcMACD(closes){
+    if(closes.length<26)return{macd:0,signal:0,hist:0};
+    const ema12=calcEMA(closes,12);
+    const ema26=calcEMA(closes,26);
+    const macdLine=ema12-ema26;
+    const macdHistory=[];
+    for(let i=26;i<=closes.length;i++){
+        const e12=calcEMA(closes.slice(0,i),12);
+        const e26=calcEMA(closes.slice(0,i),26);
+        macdHistory.push(e12-e26);
+    }
+    const signalLine=macdHistory.length>=9?calcEMA(macdHistory,9):macdLine;
+    return{macd:macdLine,signal:signalLine,hist:macdLine-signalLine};
+}
+
+function calcBollinger(closes,period=20,mult=2){
+    if(closes.length<period)return{upper:0,middle:0,lower:0,pctB:0.5};
+    const slice=closes.slice(-period);
+    const mean=slice.reduce((a,b)=>a+b)/period;
+    const variance=slice.reduce((a,b)=>a+Math.pow(b-mean,2),0)/period;
+    const std=Math.sqrt(variance);
+    const upper=mean+std*mult;
+    const lower=mean-std*mult;
+    const current=closes[closes.length-1];
+    const pctB=(upper-lower)>0?(current-lower)/(upper-lower):0.5;
+    return{upper,middle:mean,lower,pctB,bandwidth:((upper-lower)/mean)*100};
+}
+
 // ===== ORDERBOOK & FUNDING =====
 let orderbookBias=0; // -100 to +100
 let fundingRate=0;
@@ -392,7 +432,19 @@ function generateSignal(){
         else if(accel<0&&d1<0){score-=7;reasons.push('Accelerating down');}
     }
 
-    // 9. Orderbook imbalance
+    // 9. MACD
+    const macd=calcMACD(closes);
+    if(macd.hist>0&&macd.macd>macd.signal){score+=12;reasons.push(`MACD חיובי (${macd.hist.toFixed(1)})`);}
+    else if(macd.hist<0&&macd.macd<macd.signal){score-=12;reasons.push(`MACD שלילי (${macd.hist.toFixed(1)})`);}
+
+    // 10. Bollinger Bands
+    const bb=calcBollinger(closes);
+    if(bb.pctB<0.05){score+=14;reasons.push(`בולינגר תחתון (${(bb.pctB*100).toFixed(0)}%)`);}
+    else if(bb.pctB>0.95){score-=14;reasons.push(`בולינגר עליון (${(bb.pctB*100).toFixed(0)}%)`);}
+    else if(bb.bandwidth>3&&bb.pctB<0.2){score+=8;reasons.push('פריצת בולינגר למטה');}
+    else if(bb.bandwidth>3&&bb.pctB>0.8){score-=8;reasons.push('פריצת בולינגר למעלה');}
+
+    // 11. Orderbook imbalance
     if(Math.abs(orderbookBias)>15){
         const obScore=orderbookBias>0?12:-12;
         score+=obScore;
@@ -430,7 +482,7 @@ function generateSignal(){
     }
 
     // Normalize to -100 to +100
-    const maxScore=120;
+    const maxScore=150;
     const normalized=Math.max(-100,Math.min(100,Math.round(score*100/maxScore)));
     const strength=Math.abs(normalized);
     const dir=normalized>0?'UP':'DOWN';
@@ -723,6 +775,10 @@ function updateIndicators(signal){
     setInd('ind-mom',(mom>=0?'+':'')+mom.toFixed(2)+'%',mom>0?'--green':'--red');
     setInd('ind-vwap',(vwapDev>=0?'+':'')+vwapDev.toFixed(3)+'%',vwapDev<-0.1?'--green':vwapDev>0.1?'--red':'--t1');
     setInd('ind-obv',obv>0?'+'+fmt(obv):fmt(obv),obv>0?'--green':'--red');
+    const macd=calcMACD(closes);
+    setInd('ind-macd',(macd.hist>=0?'+':'')+macd.hist.toFixed(1),macd.hist>0?'--green':macd.hist<0?'--red':'--t1');
+    const bb=calcBollinger(closes);
+    setInd('ind-bb',(bb.pctB*100).toFixed(0)+'%',bb.pctB<0.2?'--green':bb.pctB>0.8?'--red':'--t1');
     setInd('ind-ob',(orderbookBias>=0?'+':'')+orderbookBias.toFixed(0)+'%',orderbookBias>15?'--green':orderbookBias<-15?'--red':'--t1');
     setInd('ind-fund',fundingRate.toFixed(4)+'%',fundingRate>0.02?'--red':fundingRate<-0.02?'--green':'--t1');
 }
@@ -763,6 +819,15 @@ function updateUI(){
     const total=ST.stats.wins+ST.stats.losses;
     document.getElementById('s-winrate').textContent=total>0?(ST.stats.wins/total*100).toFixed(0)+'%':'—';
     document.getElementById('s-trades').textContent=total;
+    const today=new Date().toDateString();
+    const todayTrades=ST.trades.filter(t=>t.resolved&&new Date(t.time).toDateString()===today);
+    const todayPnl=todayTrades.reduce((s,t)=>s+t.pnl,0);
+    const todayWins=todayTrades.filter(t=>t.pnl>0).length;
+    const tpEl=document.getElementById('today-pnl');
+    tpEl.textContent=(todayPnl>=0?'+':'')+('$'+todayPnl.toFixed(2));
+    tpEl.style.color=todayPnl>=0?'var(--green)':'var(--red)';
+    document.getElementById('today-trades').textContent=todayTrades.length;
+    document.getElementById('today-winrate').textContent=todayTrades.length>0?(todayWins/todayTrades.length*100).toFixed(0)+'%':'—';
 }
 
 function updatePerformance(){
