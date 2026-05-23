@@ -92,6 +92,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 .tab.active{background:var(--bg3);color:var(--cyan)}
 
 .screen{display:none}.screen.active{display:block}
+.opt-strat{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .15s}
+.opt-strat:active{transform:scale(.97)}
+.opt-strat.selected{border-color:var(--cyan);background:rgba(57,208,216,.05)}
+.chain-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);align-items:center}
+.chain-row:last-child{border:0}
+.chain-row:active{background:var(--bg3)}
+.chain-strike{font-weight:700;font-size:13px}
+.chain-data{font-size:11px;color:var(--t2)}
 .disclaimer{font-size:10px;color:var(--t3);text-align:center;padding:12px;line-height:1.7;margin-top:12px;background:var(--bg3);border-radius:12px}
 
 .toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-120px);padding:14px 28px;border-radius:14px;font-size:16px;font-weight:900;font-family:'SF Mono',monospace;z-index:9999;opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1);pointer-events:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
@@ -116,8 +124,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 </div>
 
 <div class="main">
-    <div class="tabs">
+    <div class="tabs" style="flex-wrap:wrap">
         <div class="tab active" onclick="showTab('live')">חי</div>
+        <div class="tab" onclick="showTab('options')">אופציות</div>
         <div class="tab" onclick="showTab('wallet')">ארנק</div>
         <div class="tab" onclick="showTab('trades')">עסקאות</div>
         <div class="tab" onclick="showTab('settings')">הגדרות</div>
@@ -216,6 +225,110 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
             <div class="card-title">יומן חי</div>
             <div class="log" id="log-container"></div>
         </div>
+    </div>
+
+    <!-- OPTIONS TAB -->
+    <div id="tab-options" class="screen">
+        <!-- Alpaca Connection -->
+        <div class="card" id="opt-connect-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                <div class="card-title" style="margin:0">חיבור Alpaca</div>
+                <span id="opt-conn-status" style="font-size:10px;padding:3px 8px;border-radius:5px;font-weight:700;background:var(--bg3);color:var(--t3)">לא מחובר</span>
+            </div>
+            <div id="opt-no-keys" style="font-size:12px;color:var(--t2);margin-bottom:12px">
+                חבר חשבון Alpaca (חינם) כדי לסחור באופציות. נתמך Paper + Live.
+                <div style="margin-top:10px">
+                    <input type="text" id="alp-key" placeholder="API Key" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--t1);font-size:12px;margin-bottom:8px">
+                    <input type="password" id="alp-secret" placeholder="Secret Key" style="width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--t1);font-size:12px;margin-bottom:8px">
+                    <div class="setting" style="border:0;padding:8px 0"><label style="font-size:12px;color:var(--t2)">Paper Trading (סימולציה)</label><input type="checkbox" id="alp-paper" checked style="width:20px;height:20px;accent-color:var(--cyan)"></div>
+                    <button class="btn btn-go" onclick="connectAlpaca()" style="width:100%;padding:16px">התחבר ל-Alpaca</button>
+                </div>
+            </div>
+            <div id="opt-connected" style="display:none">
+                <div class="stats" style="grid-template-columns:1fr 1fr 1fr">
+                    <div class="stat"><div class="sv" id="alp-balance">$0</div><div class="sl">יתרה</div></div>
+                    <div class="stat"><div class="sv" id="alp-equity">$0</div><div class="sl">הון</div></div>
+                    <div class="stat"><div class="sv" id="alp-pnl">$0</div><div class="sl">רווח היום</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Scanner -->
+        <div class="card">
+            <div class="card-title">סורק מניות — Yahoo Finance</div>
+            <div style="display:flex;gap:8px;margin-bottom:12px">
+                <input type="text" id="opt-ticker" placeholder="סימול (SPY, AAPL, TSLA...)" style="flex:1;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--t1);font-size:13px;text-transform:uppercase">
+                <button class="btn btn-go" onclick="scanStock()" style="flex:0 0 auto;padding:12px 20px;font-size:12px">סרוק</button>
+            </div>
+            <div id="opt-stock-info" style="display:none">
+                <div class="stats" style="grid-template-columns:1fr 1fr 1fr 1fr;margin-bottom:0">
+                    <div class="stat"><div class="sv" id="opt-price">—</div><div class="sl">מחיר</div></div>
+                    <div class="stat"><div class="sv" id="opt-change">—</div><div class="sl">שינוי</div></div>
+                    <div class="stat"><div class="sv" id="opt-vol">—</div><div class="sl">נפח</div></div>
+                    <div class="stat"><div class="sv" id="opt-iv">—</div><div class="sl">IV</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategy Selection -->
+        <div class="card">
+            <div class="card-title">אסטרטגיות אופציות</div>
+            <div id="opt-strategies" style="display:flex;flex-direction:column;gap:8px">
+                <div class="opt-strat" onclick="selectStrategy('momentum_call')" id="strat-momentum_call">
+                    <div style="font-size:13px;font-weight:700">Momentum Call</div>
+                    <div style="font-size:10px;color:var(--t2)">קנה Call כשהמנייה פורצת מעלה עם נפח. רווח בלתי מוגבל, הפסד מוגבל.</div>
+                    <span style="font-size:9px;color:var(--cyan)">מתאים לפריצות חזקות</span>
+                </div>
+                <div class="opt-strat" onclick="selectStrategy('reversal_put')" id="strat-reversal_put">
+                    <div style="font-size:13px;font-weight:700">Mean Reversion Put</div>
+                    <div style="font-size:10px;color:var(--t2)">קנה Put כשמנייה מוגזמת (RSI>75). הימור על ירידה חזרה לממוצע.</div>
+                    <span style="font-size:9px;color:var(--red)">מתאים למניות מנופחות</span>
+                </div>
+                <div class="opt-strat" onclick="selectStrategy('iron_condor')" id="strat-iron_condor">
+                    <div style="font-size:13px;font-weight:700">Iron Condor</div>
+                    <div style="font-size:10px;color:var(--t2)">מכור Call+Put מרוחקים. מרוויח כשהמנייה נשארת בטווח. סיכון מוגבל.</div>
+                    <span style="font-size:9px;color:var(--green)">מתאים לשוק שקט</span>
+                </div>
+                <div class="opt-strat" onclick="selectStrategy('bull_spread')" id="strat-bull_spread">
+                    <div style="font-size:13px;font-weight:700">Bull Call Spread</div>
+                    <div style="font-size:10px;color:var(--t2)">קנה Call + מכור Call גבוה יותר. עלות נמוכה, רווח מוגבל, סיכון מוגבל.</div>
+                    <span style="font-size:9px;color:var(--green)">מתאים לעליה מתונה</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Options Chain -->
+        <div class="card" id="opt-chain-card" style="display:none">
+            <div class="card-title">שרשרת אופציות — <span id="opt-chain-ticker"></span></div>
+            <div style="display:flex;gap:8px;margin-bottom:10px">
+                <button class="btn" onclick="showChainType('calls')" id="chain-calls-btn" style="flex:1;padding:10px;background:rgba(63,185,80,.15);color:var(--green);border:1px solid var(--green);font-size:11px">Calls</button>
+                <button class="btn" onclick="showChainType('puts')" id="chain-puts-btn" style="flex:1;padding:10px;background:var(--bg3);color:var(--t2);border:1px solid var(--border);font-size:11px">Puts</button>
+            </div>
+            <div id="opt-chain-list" style="font-size:11px;max-height:250px;overflow-y:auto"></div>
+        </div>
+
+        <!-- Signal & Execute -->
+        <div class="card" id="opt-signal-card" style="display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                <div class="card-title" style="margin:0">ניתוח אסטרטגיה</div>
+                <span id="opt-signal-badge" style="font-size:10px;padding:3px 8px;border-radius:5px;font-weight:700"></span>
+            </div>
+            <div id="opt-analysis" style="font-size:12px;line-height:1.8;color:var(--t2);margin-bottom:12px"></div>
+            <div class="stats" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:12px">
+                <div class="stat"><div class="sv" id="opt-max-profit">—</div><div class="sl">רווח מקס</div></div>
+                <div class="stat"><div class="sv" id="opt-max-loss">—</div><div class="sl">הפסד מקס</div></div>
+                <div class="stat"><div class="sv" id="opt-ev">—</div><div class="sl">תוחלת</div></div>
+            </div>
+            <button class="btn btn-go" onclick="executeOptionsTrade()" id="opt-execute-btn" style="width:100%;padding:16px;font-size:14px">בצע עסקה</button>
+        </div>
+
+        <!-- Active Options -->
+        <div class="card">
+            <div class="card-title">פוזיציות פתוחות</div>
+            <div id="opt-positions" style="font-size:11px;color:var(--t3);text-align:center;padding:12px">אין פוזיציות פתוחות</div>
+        </div>
+
+        <div class="disclaimer">נתוני שוק מ-Yahoo Finance (עיכוב 15 דק).<br>ביצוע דרך Alpaca Markets API.<br>Paper Trading חינם — אין צורך בכסף אמיתי להתחלה.</div>
     </div>
 
     <!-- WALLET TAB -->
@@ -1215,10 +1328,11 @@ function showTab(id){
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     document.getElementById('tab-'+id).classList.add('active');
     const tabs=document.querySelectorAll('.tab');
-    const map={live:0,wallet:1,trades:2,settings:3};
+    const map={live:0,options:1,wallet:2,trades:3,settings:4};
     if(map[id]!==undefined)tabs[map[id]].classList.add('active');
     if(id==='trades')renderTrades();
     if(id==='wallet')initWalletUI();
+    if(id==='options')loadPositions();
 }
 
 // ===== FEAR & GREED =====
@@ -1417,6 +1531,310 @@ function drawPnlChart(){
     ctx.fillStyle=lastVal>=ST.initial?'#3fb950':'#f85149';
     ctx.fill();
 }
+
+// ===== OPTIONS TRADING =====
+let alpacaConfig={key:'',secret:'',paper:true};
+let optCurrentTicker='';
+let optCurrentStrategy='';
+let optStockData=null;
+let optChainData=null;
+let optSelectedOption=null;
+let optChainType='calls';
+
+function getAlpacaBase(){
+    return alpacaConfig.paper?'https://paper-api.alpaca.markets':'https://api.alpaca.markets';
+}
+function getAlpacaDataBase(){
+    return 'https://data.alpaca.markets';
+}
+
+async function connectAlpaca(){
+    const key=document.getElementById('alp-key').value.trim();
+    const secret=document.getElementById('alp-secret').value.trim();
+    if(!key||!secret){showToast('הזן API Key + Secret','lose');return;}
+    alpacaConfig={key,secret,paper:document.getElementById('alp-paper').checked};
+    localStorage.setItem('cis_alpaca',JSON.stringify(alpacaConfig));
+    try{
+        const r=await fetch(getAlpacaBase()+'/v2/account',{headers:{'APCA-API-KEY-ID':key,'APCA-API-SECRET-KEY':secret}});
+        if(!r.ok)throw new Error('אימות נכשל');
+        const acc=await r.json();
+        document.getElementById('opt-no-keys').style.display='none';
+        document.getElementById('opt-connected').style.display='block';
+        document.getElementById('alp-balance').textContent='$'+parseFloat(acc.cash).toFixed(0);
+        document.getElementById('alp-equity').textContent='$'+parseFloat(acc.equity).toFixed(0);
+        const pnl=parseFloat(acc.equity)-parseFloat(acc.last_equity);
+        document.getElementById('alp-pnl').textContent=(pnl>=0?'+':'')+('$'+pnl.toFixed(0));
+        document.getElementById('alp-pnl').style.color=pnl>=0?'var(--green)':'var(--red)';
+        const st=document.getElementById('opt-conn-status');
+        st.textContent=alpacaConfig.paper?'Paper':'Live';
+        st.style.background=alpacaConfig.paper?'rgba(57,208,216,.15)':'rgba(63,185,80,.15)';
+        st.style.color=alpacaConfig.paper?'var(--cyan)':'var(--green)';
+        showToast('Alpaca מחובר!','win');
+        log('Alpaca מחובר — '+(alpacaConfig.paper?'Paper':'Live'),'signal');
+    }catch(e){
+        showToast('שגיאה: '+e.message,'lose');
+    }
+}
+
+async function scanStock(){
+    const ticker=document.getElementById('opt-ticker').value.trim().toUpperCase();
+    if(!ticker){showToast('הזן סימול מנייה','lose');return;}
+    optCurrentTicker=ticker;
+    try{
+        const url=`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=5m&range=1d`;
+        const r=await fetch(url);
+        const d=await r.json();
+        const result=d.chart?.result?.[0];
+        if(!result)throw new Error('לא נמצא');
+        const meta=result.meta;
+        const price=meta.regularMarketPrice;
+        const prevClose=meta.previousClose||meta.chartPreviousClose;
+        const change=((price-prevClose)/prevClose*100);
+        const closes=result.indicators?.quote?.[0]?.close||[];
+        const volumes=result.indicators?.quote?.[0]?.volume||[];
+        const totalVol=volumes.reduce((s,v)=>s+(v||0),0);
+
+        optStockData={ticker,price,change,prevClose,closes:closes.filter(c=>c),volumes,totalVol,meta};
+
+        document.getElementById('opt-stock-info').style.display='block';
+        document.getElementById('opt-price').textContent='$'+price.toFixed(2);
+        const chEl=document.getElementById('opt-change');
+        chEl.textContent=(change>=0?'+':'')+change.toFixed(2)+'%';
+        chEl.style.color=change>=0?'var(--green)':'var(--red)';
+        document.getElementById('opt-vol').textContent=totalVol>1e6?(totalVol/1e6).toFixed(1)+'M':(totalVol/1e3).toFixed(0)+'K';
+
+        const iv=estimateIV(closes);
+        document.getElementById('opt-iv').textContent=iv.toFixed(0)+'%';
+
+        await fetchOptionsChain(ticker);
+        analyzeStrategy();
+        log(`סרק ${ticker}: $${price.toFixed(2)} (${change>=0?'+':''}${change.toFixed(2)}%)`,'signal');
+    }catch(e){
+        showToast('שגיאה בסריקת '+ticker,'lose');
+    }
+}
+
+function estimateIV(closes){
+    if(closes.length<10)return 25;
+    const returns=[];
+    for(let i=1;i<closes.length;i++){
+        if(closes[i]&&closes[i-1])returns.push(Math.log(closes[i]/closes[i-1]));
+    }
+    const mean=returns.reduce((s,r)=>s+r,0)/returns.length;
+    const variance=returns.reduce((s,r)=>s+Math.pow(r-mean,2),0)/returns.length;
+    return Math.sqrt(variance)*Math.sqrt(252*78)*100;
+}
+
+async function fetchOptionsChain(ticker){
+    try{
+        const url=`https://query1.finance.yahoo.com/v7/finance/options/${ticker}`;
+        const r=await fetch(url);
+        const d=await r.json();
+        const chain=d.optionChain?.result?.[0];
+        if(!chain)return;
+        optChainData={
+            calls:(chain.options?.[0]?.calls||[]).slice(0,15),
+            puts:(chain.options?.[0]?.puts||[]).slice(0,15),
+            expiry:chain.options?.[0]?.expirationDate
+        };
+        document.getElementById('opt-chain-card').style.display='block';
+        document.getElementById('opt-chain-ticker').textContent=ticker;
+        showChainType('calls');
+    }catch(e){}
+}
+
+function showChainType(type){
+    optChainType=type;
+    document.getElementById('chain-calls-btn').style.background=type==='calls'?'rgba(63,185,80,.15)':'var(--bg3)';
+    document.getElementById('chain-calls-btn').style.color=type==='calls'?'var(--green)':'var(--t2)';
+    document.getElementById('chain-puts-btn').style.background=type==='puts'?'rgba(248,81,73,.15)':'var(--bg3)';
+    document.getElementById('chain-puts-btn').style.color=type==='puts'?'var(--red)':'var(--t2)';
+    const list=document.getElementById('opt-chain-list');
+    const options=optChainData?.[type]||[];
+    if(!options.length){list.innerHTML='<div style="text-align:center;padding:12px;color:var(--t3)">אין נתונים</div>';return;}
+    const price=optStockData?.price||0;
+    list.innerHTML=options.map((o,i)=>{
+        const strike=o.strike;
+        const itm=type==='calls'?strike<price:strike>price;
+        const bid=o.bid||0;
+        const ask=o.ask||0;
+        const mid=((bid+ask)/2).toFixed(2);
+        const vol=o.volume||0;
+        const oi=o.openInterest||0;
+        return`<div class="chain-row" onclick="selectOption(${i},'${type}')" style="${itm?'background:rgba(57,208,216,.03)':''}">
+            <div><span class="chain-strike">${strike}</span><span style="font-size:9px;color:var(--t3);margin-right:6px">${itm?'ITM':'OTM'}</span></div>
+            <div class="chain-data">$${mid} | Vol:${vol} | OI:${oi}</div>
+        </div>`;
+    }).join('');
+}
+
+function selectOption(idx,type){
+    const opt=(optChainData?.[type]||[])[idx];
+    if(!opt)return;
+    optSelectedOption={...opt,type};
+    document.querySelectorAll('.chain-row').forEach(r=>r.style.borderColor='');
+    vibrate([30]);
+    analyzeStrategy();
+}
+
+function selectStrategy(strat){
+    optCurrentStrategy=strat;
+    document.querySelectorAll('.opt-strat').forEach(s=>s.classList.remove('selected'));
+    const el=document.getElementById('strat-'+strat);
+    if(el)el.classList.add('selected');
+    analyzeStrategy();
+}
+
+function analyzeStrategy(){
+    if(!optStockData||!optCurrentStrategy)return;
+    document.getElementById('opt-signal-card').style.display='block';
+    const price=optStockData.price;
+    const change=optStockData.change;
+    const closes=optStockData.closes;
+    const iv=estimateIV(closes);
+
+    let analysis='',maxProfit='—',maxLoss='—',ev='—',signal='',sigColor='';
+
+    if(optCurrentStrategy==='momentum_call'){
+        const bullish=change>0.5&&closes.length>5&&closes[closes.length-1]>closes[closes.length-5];
+        if(optSelectedOption&&optSelectedOption.type==='calls'){
+            const cost=(optSelectedOption.ask||optSelectedOption.lastPrice)*100;
+            maxLoss='$'+cost.toFixed(0);
+            maxProfit='אינסוף';
+            const probWin=bullish?0.55:0.35;
+            const avgWin=cost*1.5;
+            ev='$'+((probWin*avgWin)-(1-probWin)*cost).toFixed(0);
+        }
+        if(bullish){signal='מומנטום חיובי — מתאים';sigColor='green';}
+        else{signal='מומנטום חלש — סיכון גבוה';sigColor='yellow';}
+        analysis=`${optCurrentTicker} ${change>=0?'עולה':'יורדת'} ${Math.abs(change).toFixed(2)}% היום. `+
+            (bullish?'המנייה במגמת עליה — Momentum Call מתאים.':'אין מגמה ברורה כלפי מעלה — שקול להמתין.');
+    }
+    else if(optCurrentStrategy==='reversal_put'){
+        const rsi=calcSimpleRSI(closes);
+        const overbought=rsi>70;
+        if(optSelectedOption&&optSelectedOption.type==='puts'){
+            const cost=(optSelectedOption.ask||optSelectedOption.lastPrice)*100;
+            maxLoss='$'+cost.toFixed(0);
+            maxProfit='$'+(optSelectedOption.strike*100-cost).toFixed(0);
+            const probWin=overbought?0.55:0.30;
+            ev='$'+((probWin*cost*1.2)-(1-probWin)*cost).toFixed(0);
+        }
+        if(overbought){signal='RSI גבוה ('+rsi.toFixed(0)+') — הזדמנות Put';sigColor='green';}
+        else{signal='RSI תקין ('+rsi.toFixed(0)+') — לא מומלץ עכשיו';sigColor='red';}
+        analysis=`RSI של ${optCurrentTicker}: ${rsi.toFixed(0)}. `+
+            (overbought?'המנייה בקניית יתר — Put יכול להרוויח מתיקון.':'המנייה לא מוגזמת — Put מסוכן.');
+    }
+    else if(optCurrentStrategy==='iron_condor'){
+        signal='תנודתיות '+(iv>35?'גבוהה — פרמיה טובה':'נמוכה — פרמיה קטנה');
+        sigColor=iv>35?'green':'yellow';
+        maxProfit='פרמיה שנגבתה';maxLoss='רוחב הספרד - פרמיה';
+        ev=iv>35?'חיובי':'ניטרלי';
+        analysis=`Iron Condor על ${optCurrentTicker}. IV: ${iv.toFixed(0)}%. `+
+            (iv>35?'תנודתיות גבוהה = פרמיה גבוהה = הזדמנות טובה.':'תנודתיות נמוכה = פרמיה נמוכה = פחות משתלם.');
+    }
+    else if(optCurrentStrategy==='bull_spread'){
+        const bullish=change>0;
+        signal=bullish?'מגמה חיובית — מתאים':'מגמה שלילית — סיכון';
+        sigColor=bullish?'green':'red';
+        maxProfit='רוחב הספרד - עלות';maxLoss='עלות הספרד';
+        ev=bullish?'חיובי':'שלילי';
+        analysis=`Bull Call Spread על ${optCurrentTicker}. קנה Call ATM + מכור Call OTM. `+
+            (bullish?'עליה מתונה צפויה — ספרד יעיל.':'אין מגמת עליה — לא אידיאלי.');
+    }
+
+    document.getElementById('opt-analysis').textContent=analysis;
+    document.getElementById('opt-max-profit').textContent=maxProfit;
+    document.getElementById('opt-max-loss').textContent=maxLoss;
+    document.getElementById('opt-ev').textContent=ev;
+    const badge=document.getElementById('opt-signal-badge');
+    badge.textContent=signal;
+    badge.style.background=sigColor==='green'?'rgba(63,185,80,.15)':sigColor==='red'?'rgba(248,81,73,.15)':'rgba(210,153,34,.15)';
+    badge.style.color=sigColor==='green'?'var(--green)':sigColor==='red'?'var(--red)':'var(--yellow)';
+}
+
+function calcSimpleRSI(closes,period=14){
+    if(closes.length<period+1)return 50;
+    let gains=0,losses=0;
+    for(let i=closes.length-period;i<closes.length;i++){
+        const d=closes[i]-closes[i-1];
+        if(d>0)gains+=d;else losses-=d;
+    }
+    if(losses===0)return 100;
+    const rs=gains/losses;
+    return 100-100/(1+rs);
+}
+
+async function executeOptionsTrade(){
+    if(!alpacaConfig.key){showToast('חבר Alpaca קודם','lose');return;}
+    if(!optSelectedOption){showToast('בחר אופציה מהשרשרת','lose');return;}
+    if(!optCurrentStrategy){showToast('בחר אסטרטגיה','lose');return;}
+    const opt=optSelectedOption;
+    const ticker=optCurrentTicker;
+    try{
+        const symbol=`${ticker}${new Date(optChainData.expiry*1000).toISOString().slice(2,10).replace(/-/g,'')}${opt.type==='calls'?'C':'P'}${String(Math.round(opt.strike*1000)).padStart(8,'0')}`;
+        const order={
+            symbol:symbol,
+            qty:'1',
+            side:'buy',
+            type:'limit',
+            time_in_force:'day',
+            limit_price:String(opt.ask||opt.lastPrice)
+        };
+        const r=await fetch(getAlpacaBase()+'/v2/orders',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+                'APCA-API-KEY-ID':alpacaConfig.key,
+                'APCA-API-SECRET-KEY':alpacaConfig.secret
+            },
+            body:JSON.stringify(order)
+        });
+        const result=await r.json();
+        if(result.id){
+            showToast('פקודה נשלחה!','win');
+            soundWin();
+            log(`[אופציות] ${optCurrentStrategy} ${ticker} Strike:${opt.strike} — פקודה ${result.id.slice(0,8)}`,'trade');
+            loadPositions();
+        }else{
+            showToast(result.message||'שגיאה','lose');
+            log(`[אופציות] שגיאה: ${result.message||JSON.stringify(result).slice(0,60)}`,'warn');
+        }
+    }catch(e){
+        showToast('שגיאת ביצוע: '+e.message,'lose');
+    }
+}
+
+async function loadPositions(){
+    if(!alpacaConfig.key)return;
+    try{
+        const r=await fetch(getAlpacaBase()+'/v2/positions',{
+            headers:{'APCA-API-KEY-ID':alpacaConfig.key,'APCA-API-SECRET-KEY':alpacaConfig.secret}
+        });
+        const positions=await r.json();
+        const el=document.getElementById('opt-positions');
+        if(!positions.length||!Array.isArray(positions)){el.innerHTML='<div style="text-align:center;padding:12px;color:var(--t3)">אין פוזיציות פתוחות</div>';return;}
+        el.innerHTML=positions.map(p=>{
+            const pnl=parseFloat(p.unrealized_pl)||0;
+            return`<div class="trade-row">
+                <span style="font-weight:700;font-size:12px">${p.symbol}</span>
+                <span class="mono" style="font-size:11px">${p.qty} x $${parseFloat(p.avg_entry_price).toFixed(2)}</span>
+                <span class="mono" style="font-size:11px;color:var(${pnl>=0?'--green':'--red'})">${pnl>=0?'+':''}$${pnl.toFixed(2)}</span>
+            </div>`;
+        }).join('');
+    }catch(e){}
+}
+
+// Load saved Alpaca config
+(function(){
+    const saved=localStorage.getItem('cis_alpaca');
+    if(saved){
+        try{
+            alpacaConfig=JSON.parse(saved);
+            if(alpacaConfig.key)connectAlpaca();
+        }catch(e){}
+    }
+})();
 
 // ===== INIT =====
 loadConfig();
