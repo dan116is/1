@@ -92,6 +92,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 .tab.active{background:var(--bg3);color:var(--cyan)}
 
 .screen{display:none}.screen.active{display:block}
+.guide{background:linear-gradient(135deg,rgba(57,208,216,.08),rgba(88,166,255,.08));border:1px solid rgba(57,208,216,.2);border-radius:14px;padding:16px;margin-bottom:14px;font-size:12px;line-height:1.8;color:var(--t2)}
+.guide-title{font-size:11px;font-weight:800;color:var(--cyan);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.guide-step{display:flex;gap:8px;align-items:flex-start;padding:4px 0}
+.guide-num{background:var(--cyan);color:#000;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;margin-top:2px}
+.guide-close{position:absolute;top:10px;left:10px;background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;padding:4px}
+.help-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:10px;color:var(--cyan);cursor:pointer;font-weight:700}
 .opt-strat{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .15s}
 .opt-strat:active{transform:scale(.97)}
 .opt-strat.selected{border-color:var(--cyan);background:rgba(57,208,216,.05)}
@@ -134,6 +140,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 
     <!-- LIVE TAB -->
     <div id="tab-live" class="screen active">
+        <div class="guide" id="guide-live">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <div class="guide-title">איך עובד הבוט?</div>
+                <button class="guide-close" onclick="closeGuide('live')">&times;</button>
+            </div>
+            <div class="guide-step"><span class="guide-num">1</span><span>לחץ <b>"הפעל בוט"</b> למטה — הוא מתחבר לנתוני BTC בזמן אמת</span></div>
+            <div class="guide-step"><span class="guide-num">2</span><span>הבוט מנתח 14 אינדיקטורים כל 30 שניות ומחפש הזדמנויות</span></div>
+            <div class="guide-step"><span class="guide-num">3</span><span>כשהסיגנל חזק מספיק — הוא מהמר אוטומטית <b>עליה</b> או <b>ירידה</b></span></div>
+            <div class="guide-step"><span class="guide-num">4</span><span>אחרי 5 דקות העסקה נסגרת — ניצחון = 1.82x, הפסד = 0</span></div>
+            <div style="font-size:10px;color:var(--t3);margin-top:6px">מתחיל בסימולציה ($10 וירטואלי). עבור ל"ארנק" כדי לסחור בכסף אמיתי.</div>
+        </div>
         <div class="stats">
             <div class="stat"><div class="sv" id="s-balance">$10.00</div><div class="sl">יתרה</div></div>
             <div class="stat"><div class="sv" id="s-pnl">$0.00</div><div class="sl">רווח/הפסד</div></div>
@@ -229,6 +246,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 
     <!-- OPTIONS TAB -->
     <div id="tab-options" class="screen">
+        <div class="guide" id="guide-options">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <div class="guide-title">מסחר אופציות — מדריך מהיר</div>
+                <button class="guide-close" onclick="closeGuide('options')">&times;</button>
+            </div>
+            <div class="guide-step"><span class="guide-num">1</span><span>הירשם ב-<b>alpaca.markets</b> (חינם) → Paper Trading = כסף מדומה</span></div>
+            <div class="guide-step"><span class="guide-num">2</span><span>העתק API Key + Secret → הדבק למטה → לחץ <b>התחבר</b></span></div>
+            <div class="guide-step"><span class="guide-num">3</span><span>הקלד סימול מנייה (SPY, AAPL, TSLA) → לחץ <b>סרוק</b></span></div>
+            <div class="guide-step"><span class="guide-num">4</span><span>בחר <b>אסטרטגיה</b> (Momentum Call = הכי פשוט למתחילים)</span></div>
+            <div class="guide-step"><span class="guide-num">5</span><span>בחר <b>אופציה מהשרשרת</b> → בדוק את הניתוח → לחץ <b>בצע עסקה</b></span></div>
+            <div style="font-size:10px;color:var(--t3);margin-top:6px">Call = הימור על עליה | Put = הימור על ירידה | ITM = בתוך הכסף | OTM = מחוץ לכסף</div>
+        </div>
         <!-- Alpaca Connection -->
         <div class="card" id="opt-connect-card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -333,6 +362,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 
     <!-- WALLET TAB -->
     <div id="tab-wallet" class="screen">
+        <div class="guide" id="guide-wallet">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <div class="guide-title">ארנק — מסחר בכסף אמיתי</div>
+                <button class="guide-close" onclick="closeGuide('wallet')">&times;</button>
+            </div>
+            <div class="guide-step"><span class="guide-num">1</span><span>לחץ <b>"צור ארנק חדש"</b> — נוצר ארנק קריפטו פרטי על המכשיר שלך</span></div>
+            <div class="guide-step"><span class="guide-num">2</span><span>לחץ <b>Pay</b> → משלם $10 דרך Apple Pay → USDC מגיע לארנק</span></div>
+            <div class="guide-step"><span class="guide-num">3</span><span>לחץ <b>"עבור למסחר אמיתי"</b> → הבוט סוחר עם הכסף שלך ב-Polymarket</span></div>
+            <div style="font-size:10px;color:var(--t3);margin-top:6px">חשוב: שמור גיבוי של המפתח הפרטי! אם תמחק את האפליקציה בלי גיבוי — הכסף אבד.</div>
+        </div>
         <div class="card" id="wallet-setup" style="text-align:center">
             <div style="font-size:48px;margin-bottom:12px">&#128176;</div>
             <div style="font-size:16px;font-weight:800;margin-bottom:6px;color:var(--cyan)">הארנק שלך</div>
@@ -384,6 +423,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 
     <!-- TRADES TAB -->
     <div id="tab-trades" class="screen">
+        <div class="guide" id="guide-trades">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <div class="guide-title">עסקאות — מה רואים כאן?</div>
+                <button class="guide-close" onclick="closeGuide('trades')">&times;</button>
+            </div>
+            <div class="guide-step"><span class="guide-num">UP</span><span><b style="color:var(--green)">ירוק</b> = הימור על עליה | <b style="color:var(--red)">אדום</b> = הימור על ירידה</span></div>
+            <div class="guide-step"><span class="guide-num">$</span><span>סכום ההימור → תוצאה (+ רווח או - הפסד)</span></div>
+            <div style="font-size:10px;color:var(--t3);margin-top:4px">למטה: עסקה הכי טובה, הכי גרועה, רצף ניצחונות, ותשואה ממוצעת.</div>
+        </div>
         <div class="card">
             <div class="card-title">היסטוריית עסקאות</div>
             <div id="trades-list"></div>
@@ -401,6 +449,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 
     <!-- SETTINGS TAB -->
     <div id="tab-settings" class="screen">
+        <div class="guide" id="guide-settings">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <div class="guide-title">הגדרות — מה כל שדה עושה?</div>
+                <button class="guide-close" onclick="closeGuide('settings')">&times;</button>
+            </div>
+            <div style="font-size:11px;line-height:1.9">
+                <b>יתרה התחלתית</b> — כמה דולר לסימולציה (ברירת מחדל $10)<br>
+                <b>גודל הימור מקסימלי</b> — כמה % מהיתרה להמר בכל פעם<br>
+                <b>עוצמת סיגנל מינימלית</b> — כמה חזק הסיגנל צריך להיות (40% = סביר, 70% = רק סיגנלים חזקים מאוד)<br>
+                <b>זמן המתנה</b> — שניות בין הימורים (מונע ספאם)<br>
+                <b>RSI קניית/מכירת יתר</b> — ספי חוזק יחסי<br>
+                <b>סימולציה</b> — כסף מדומה (מומלץ בהתחלה!)<br>
+                <b>ביצוע אוטומטי</b> — הבוט סוחר לבד, בלי לשאול
+            </div>
+        </div>
         <div class="card">
             <div class="card-title">אסטרטגיה</div>
             <div class="setting"><label>יתרה התחלתית ($)</label><input type="number" id="set-balance" value="10"></div>
@@ -1836,9 +1899,26 @@ async function loadPositions(){
     }
 })();
 
+// ===== GUIDES =====
+function closeGuide(id){
+    const el=document.getElementById('guide-'+id);
+    if(el)el.style.display='none';
+    const closed=JSON.parse(localStorage.getItem('cis_guides_closed')||'{}');
+    closed[id]=true;
+    localStorage.setItem('cis_guides_closed',JSON.stringify(closed));
+}
+function loadGuides(){
+    const closed=JSON.parse(localStorage.getItem('cis_guides_closed')||'{}');
+    Object.keys(closed).forEach(id=>{
+        const el=document.getElementById('guide-'+id);
+        if(el)el.style.display='none';
+    });
+}
+
 // ===== INIT =====
 loadConfig();
 updateUI();
+loadGuides();
 const _w=getStoredWallet();
 if(_w){
     ST.config.pk=_w.pk;
