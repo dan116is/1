@@ -1,71 +1,95 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0a0e17">
-<link rel="manifest" href="manifest.json">
-<title>CIS Trading Suite</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0e17;color:#e6edf3;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-top:max(24px,env(safe-area-inset-top))}
-.logo{width:80px;height:80px;margin-bottom:24px}
-.logo svg{width:100%;height:100%}
-h1{font-size:20px;font-weight:700;margin-bottom:4px;color:#39d0d8}
-.sub{font-size:12px;color:#8b949e;margin-bottom:32px}
-.cards{display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px}
-.card{display:block;background:#131a2a;border:1px solid #243049;border-radius:16px;padding:20px;text-decoration:none;color:inherit;transition:all .2s}
-.card:active{transform:scale(.97);background:#1a2332}
-.card-icon{font-size:32px;margin-bottom:8px}
-.card-title{font-size:16px;font-weight:700;margin-bottom:4px}
-.card-desc{font-size:11px;color:#8b949e;line-height:1.5}
-.card-badge{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-top:8px}
-.badge-green{background:rgba(63,185,80,.12);color:#3fb950}
-.badge-cyan{background:rgba(57,208,216,.12);color:#39d0d8}
-.badge-purple{background:rgba(188,140,255,.12);color:#bc8cff}
-.footer{margin-top:32px;font-size:9px;color:#484f58;text-align:center;line-height:1.6}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080a0c">
+  <title>LUCY 12 — Intelligence, built around you.</title>
+  <meta name="description" content="LUCY 12 builds intelligent systems, products and digital infrastructure.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&family=Manrope:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lucy.css">
 </head>
 <body>
-<div class="logo">
-<svg viewBox="0 0 80 80"><rect width="80" height="80" rx="20" fill="#131a2a"/><polygon points="40,12 68,28 68,56 40,72 12,56 12,28" fill="none" stroke="#39d0d8" stroke-width="3"/><text x="40" y="48" text-anchor="middle" fill="#39d0d8" font-size="20" font-family="monospace" font-weight="bold">CIS</text></svg>
-</div>
-<h1>CIS Trading Suite</h1>
-<p class="sub">Autonomous AI Trading System</p>
+  <canvas id="world" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><i></i></div>
 
-<div class="cards">
-    <a href="polymarket.html" class="card">
-        <div class="card-icon">&#9889;</div>
-        <div class="card-title">Polymarket Sniper</div>
-        <div class="card-desc">BTC UP/DOWN 5-min markets. WebSocket real-time. 12 indicators. Auto-execute with Kelly sizing.</div>
-        <span class="card-badge badge-cyan">RECOMMENDED — START HERE</span>
-    </a>
+  <header class="topbar">
+    <a class="brand magnetic" href="#awakening" aria-label="Lucy 12 home"><span>LUCY</span><b>12</b></a>
+    <div class="top-actions"><button class="sound magnetic" aria-label="Toggle ambient sound"><i></i><span>SOUND OFF</span></button><a class="project-link magnetic" href="#contact">START A PROJECT <b>↗</b></a><button class="menu magnetic" aria-label="Open navigation"><span>MENU</span><i></i></button></div>
+  </header>
 
-    <a href="trader.html" class="card">
-        <div class="card-icon">&#128200;</div>
-        <div class="card-title">Spot Trader</div>
-        <div class="card-desc">Multi-asset spot trading. 5 AI agents. Dynamic EV. Trailing stops. Binance execution.</div>
-        <span class="card-badge badge-green">SPOT + BINANCE</span>
-    </a>
+  <nav class="nav-world" aria-hidden="true">
+    <div class="nav-meta mono">LUCY / NAVIGATION</div>
+    <a href="#build">WORK <sup>01</sup></a><a href="#core">INTELLIGENCE <sup>02</sup></a><a href="#ecosystem">SYSTEMS <sup>03</sup></a><a href="#process">PROCESS <sup>04</sup></a><a href="#contact">CONTACT <sup>05</sup></a>
+  </nav>
 
-    <a href="app.html" class="card">
-        <div class="card-icon">&#128202;</div>
-        <div class="card-title">Intelligence Dashboard</div>
-        <div class="card-desc">Market overview, briefings, signal analysis, architecture view.</div>
-        <span class="card-badge badge-purple">RESEARCH</span>
-    </a>
-</div>
+  <main>
+    <section id="awakening" class="scene awakening" data-scene="0">
+      <div class="scene-copy hero-copy">
+        <div class="eyebrow mono">01 / AWAKENING <span>SCROLL TO ENTER</span></div>
+        <h1><span>INTELLIGENCE.</span><span>BUILT AROUND YOU.</span></h1>
+        <p>LUCY 12 builds intelligent systems, products and digital infrastructure for businesses ready for what comes next.</p>
+      </div>
+      <div class="scroll-cue mono"><span></span>EXPLORE THE SYSTEM</div>
+    </section>
 
-<div class="footer">
-    CIS v2.0 — AI-Powered Trading Suite<br>
-    No guarantees. Crypto is volatile. Trade at your own risk.<br>
-    Add to Home Screen for full-screen app experience.
-</div>
+    <section id="core" class="scene core" data-scene="1">
+      <div class="scene-copy split-copy">
+        <div class="eyebrow mono">02 / LUCY CORE</div>
+        <h2>INTELLIGENCE<br>WITH STRUCTURE.</h2>
+        <p>One living architecture. Six ways it moves your business forward.</p>
+      </div>
+      <div class="verbs mono" aria-label="Core capabilities"><span>THINK</span><span>BUILD</span><span>AUTOMATE</span><span>ANALYZE</span><span>CONNECT</span><span>GROW</span></div>
+    </section>
 
-<script>
-if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
-</script>
+    <section id="reality" class="scene reality" data-scene="2">
+      <div class="prompt-build">
+        <div class="eyebrow mono">03 / FROM IDEA TO REALITY</div>
+        <h2>YOU BRING<br>THE PROBLEM.</h2>
+        <div class="request"><span class="mono">BUSINESS INPUT</span><p>“We need to automate our operation.”</p></div>
+      </div>
+      <div class="build-output">
+        <div class="mono build-status">LUCY BUILDS THE SYSTEM <em>LIVE</em></div>
+        <div class="modules mono"><span>DATA / 04</span><span>API / 12</span><span>AGENTS / 03</span><span>FLOWS / 28</span></div>
+      </div>
+    </section>
+
+    <section id="ecosystem" class="scene ecosystem" data-scene="3">
+      <div class="scene-copy ecosystem-copy">
+        <div class="eyebrow mono">04 / LUCY ECOSYSTEM</div>
+        <h2>ONE INTELLIGENCE.<br>MANY SYSTEMS.</h2>
+      </div>
+      <div class="orbit-labels mono"><span>AI PRODUCTS</span><span>DATA</span><span>AGENTS</span><span>OPERATIONS</span><span>WEB EXPERIENCES</span><span>INTERNAL TOOLS</span></div>
+    </section>
+
+    <section id="build" class="scene builds" data-scene="4">
+      <div class="project-count mono">05 / LUCY BUILDS <b>01 — 03</b></div>
+      <article class="case active" data-case="0"><span class="case-num mono">PROJECT 01</span><h2>OPERATING<br>INTELLIGENCE.</h2><p>A fragmented operation transformed into one predictive command system.</p><div class="impact mono"><span>DECISIONS</span><b>3.4× FASTER</b></div></article>
+      <article class="case" data-case="1"><span class="case-num mono">PROJECT 02</span><h2>AUTONOMOUS<br>COMMERCE.</h2><p>Agents that see demand, orchestrate inventory and act before the market moves.</p><div class="impact mono"><span>MANUAL WORK</span><b>−71%</b></div></article>
+      <article class="case" data-case="2"><span class="case-num mono">PROJECT 03</span><h2>THE BUSINESS,<br>CONNECTED.</h2><p>Every customer signal turned into one continuously learning growth engine.</p><div class="impact mono"><span>REVENUE VELOCITY</span><b>+42%</b></div></article>
+    </section>
+
+    <section id="process" class="scene process" data-scene="5">
+      <div class="scene-copy process-copy"><div class="eyebrow mono">06 / HOW LUCY THINKS</div><h2>BUILT TO<br>KEEP EVOLVING.</h2></div>
+      <div class="timeline"><div class="timeline-line"><i></i></div><ol class="mono"><li><b>01</b><span>UNDERSTAND</span></li><li><b>02</b><span>DESIGN</span></li><li><b>03</b><span>BUILD</span></li><li><b>04</b><span>CONNECT</span></li><li><b>05</b><span>LEARN</span></li><li><b>06</b><span>EVOLVE</span></li></ol></div>
+    </section>
+
+    <section id="future" class="scene future" data-scene="6">
+      <div class="future-type"><h2><span>THE FUTURE</span><span>DOESN’T <b>WAIT.</b></span></h2><div class="replacement">BUILD IT.</div><p class="mono">WITH LUCY 12</p></div>
+    </section>
+
+    <section id="contact" class="scene contact" data-scene="7">
+      <div class="contact-wrap"><div class="eyebrow mono">08 / START A CONVERSATION</div><h2>WHAT SHOULD<br>WE BUILD?</h2><p>Tell Lucy what your business needs.</p>
+        <form><label for="brief" class="sr-only">Describe your project</label><textarea id="brief" rows="1" placeholder="Describe what you want to change, automate or build…"></textarea><button class="submit magnetic" type="submit"><span>START WITH LUCY</span><b>↗</b></button></form>
+        <div class="success"><span class="mono">INPUT RECEIVED / CORE ACTIVE</span><h3>LET’S BUILD IT.</h3></div>
+      </div>
+      <footer><a href="mailto:hello@lucy12.ai">HELLO@LUCY12.AI</a><span class="mono">© 2026 / INTELLIGENCE IN MOTION</span><button class="loop mono">RETURN TO ORIGIN ↑</button></footer>
+    </section>
+  </main>
+  <div class="progress"><i></i><span class="mono">01</span></div>
+  <script src="lucy.js"></script>
 </body>
 </html>
